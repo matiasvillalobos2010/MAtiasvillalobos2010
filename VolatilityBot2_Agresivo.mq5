@@ -13,7 +13,7 @@ CTrade trade;
 
 //--- PARAMETROS DE ENTRADA (editables al arrastrar al grafico) ------
 input string  Sep1            = "===== ESTRATEGIA =====";
-input int     ADX_Threshold   = 40;        // ADX maximo (M15) para operar
+input int     ADX_Threshold   = 25;        // ADX maximo (M15) para operar
 input int     BB_Percentile   = 75;        // Percentil maximo BB Width (compresion)
 input int     MaxOpsDia       = 3;         // Maximo de operaciones por dia
 input double  RiskPct         = 5.0;       // % de riesgo por operacion
@@ -30,7 +30,9 @@ input int     BB_Period       = 20;
 input double  BB_Std          = 2.0;
 input int     Donchian_Period = 20;
 input int     BB_Lookback     = 500;
-input double  ATR_Mult_TP     = 1.5;
+input double  ATR_Mult_TP     = 1.5;   // Multiplicador ATR para TP
+input double  ATR_Mult_SL     = 1.0;   // Multiplicador ATR para SL (RR = TP/SL)
+input double  MinRR           = 1.2;   // RR minimo para abrir trade
 input int     ATR_Period      = 14;
 
 input string  Sep4            = "===== GESTION =====";
@@ -191,28 +193,32 @@ void OnTick()
    if(prevClose <= canalHi && currClose > canalHi)
    {
       double entrada = ask;
-      double sl = NormalizeDouble(slRef, digits);
+      double sl = NormalizeDouble(entrada - ATR_Mult_SL*atr, digits);
       double tp = NormalizeDouble(entrada + ATR_Mult_TP*atr, digits);
-      if(sl >= entrada) return;                  // coherencia
+      if(sl >= entrada) return;
+      double rrActual = (tp - entrada) / (entrada - sl);
+      if(rrActual < MinRR) return;               // filtro RR minimo
       double lotes = CalcularLotes(entrada, sl);
       if(trade.Buy(lotes, _Symbol, entrada, sl, tp, "VE-Bot2"))
       {
          opsHoy++;
-         Print("BUY ", _Symbol, " lotes=", lotes, " SL=", sl, " TP=", tp);
+         Print("BUY ", _Symbol, " lotes=", lotes, " SL=", sl, " TP=", tp, " RR=", rrActual);
       }
    }
    // SELL: ruptura bajista del canal
    else if(prevClose >= canalLo && currClose < canalLo)
    {
       double entrada = bid;
-      double sl = NormalizeDouble(slRef, digits);
+      double sl = NormalizeDouble(entrada + ATR_Mult_SL*atr, digits);
       double tp = NormalizeDouble(entrada - ATR_Mult_TP*atr, digits);
       if(sl <= entrada) return;
+      double rrActual = (entrada - tp) / (sl - entrada);
+      if(rrActual < MinRR) return;               // filtro RR minimo
       double lotes = CalcularLotes(entrada, sl);
       if(trade.Sell(lotes, _Symbol, entrada, sl, tp, "VE-Bot2"))
       {
          opsHoy++;
-         Print("SELL ", _Symbol, " lotes=", lotes, " SL=", sl, " TP=", tp);
+         Print("SELL ", _Symbol, " lotes=", lotes, " SL=", sl, " TP=", tp, " RR=", rrActual);
       }
    }
 }
