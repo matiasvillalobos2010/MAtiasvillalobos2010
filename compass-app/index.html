@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="theme-color" content="#0a0a1a"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="apple-mobile-web-app-title" content="Brújula GPS"/>
+  <link rel="manifest" href="./manifest.json"/>
+  <link rel="apple-touch-icon" href="./icon.svg"/>
+  <title>Brújula GPS</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red:    #e63946;
+      --gold:   #ffd166;
+      --white:  #f1faee;
+      --dim:    #a8dadc;
+      --bg:     #0a0a1a;
+      --panel:  rgba(255,255,255,0.05);
+      --border: rgba(255,255,255,0.10);
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--white);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      overflow: hidden;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: env(safe-area-inset-top, 16px) 16px env(safe-area-inset-bottom, 16px);
+      gap: 12px;
+    }
+
+    /* ── Header ── */
+    header {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 8px;
+    }
+
+    header h1 { font-size: 1.1rem; font-weight: 600; letter-spacing: 0.05em; }
+
+    #status-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: #555;
+      transition: background 0.4s;
+    }
+    #status-dot.active { background: #06d6a0; box-shadow: 0 0 8px #06d6a0; }
+    #status-dot.error  { background: var(--red); }
+
+    /* ── Heading display ── */
+    #heading-display {
+      text-align: center;
+      line-height: 1;
+    }
+    #heading-deg {
+      font-size: clamp(3rem, 18vw, 5rem);
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      color: var(--white);
+      letter-spacing: -2px;
+    }
+    #heading-cardinal {
+      font-size: clamp(1rem, 6vw, 1.5rem);
+      font-weight: 500;
+      color: var(--gold);
+      letter-spacing: 0.15em;
+      margin-top: 4px;
+    }
+
+    /* ── Compass ── */
+    #compass-wrap {
+      position: relative;
+      width: min(72vw, 320px);
+      aspect-ratio: 1;
+      flex-shrink: 0;
+    }
+
+    #compass-ring {
+      width: 100%; height: 100%;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #1e2040, #080814);
+      border: 2px solid var(--border);
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.04),
+        inset 0 0 40px rgba(0,0,0,0.6),
+        0 8px 32px rgba(0,0,0,0.6);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Tick marks */
+    #compass-ring::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: conic-gradient(
+        from 0deg,
+        transparent 0deg, transparent 1.5deg,
+        rgba(255,255,255,0.15) 1.5deg, rgba(255,255,255,0.15) 3deg,
+        transparent 3deg, transparent 30deg,
+        rgba(255,255,255,0.15) 30deg, rgba(255,255,255,0.15) 31.5deg,
+        transparent 31.5deg, transparent 60deg,
+        rgba(255,255,255,0.15) 60deg, rgba(255,255,255,0.15) 61.5deg,
+        transparent 61.5deg, transparent 90deg,
+        rgba(255,255,255,0.15) 90deg, rgba(255,255,255,0.15) 91.5deg,
+        transparent 91.5deg, transparent 120deg,
+        rgba(255,255,255,0.15) 120deg, rgba(255,255,255,0.15) 121.5deg,
+        transparent 121.5deg, transparent 150deg,
+        rgba(255,255,255,0.15) 150deg, rgba(255,255,255,0.15) 151.5deg,
+        transparent 151.5deg, transparent 180deg,
+        rgba(255,255,255,0.15) 180deg, rgba(255,255,255,0.15) 181.5deg,
+        transparent 181.5deg, transparent 210deg,
+        rgba(255,255,255,0.15) 210deg, rgba(255,255,255,0.15) 211.5deg,
+        transparent 211.5deg, transparent 240deg,
+        rgba(255,255,255,0.15) 240deg, rgba(255,255,255,0.15) 241.5deg,
+        transparent 241.5deg, transparent 270deg,
+        rgba(255,255,255,0.15) 270deg, rgba(255,255,255,0.15) 271.5deg,
+        transparent 271.5deg, transparent 300deg,
+        rgba(255,255,255,0.15) 300deg, rgba(255,255,255,0.15) 301.5deg,
+        transparent 301.5deg, transparent 330deg,
+        rgba(255,255,255,0.15) 330deg, rgba(255,255,255,0.15) 331.5deg,
+        transparent 331.5deg, transparent 360deg
+      );
+    }
+
+    /* Rose SVG rotates with heading */
+    #rose {
+      position: absolute;
+      inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      will-change: transform;
+    }
+
+    #rose svg { width: 90%; height: 90%; }
+
+    /* Fixed North pointer */
+    #north-marker {
+      position: absolute;
+      top: 6%;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: clamp(0.7rem, 3vw, 0.9rem);
+      font-weight: 700;
+      color: var(--red);
+      letter-spacing: 0.1em;
+      z-index: 10;
+      text-shadow: 0 0 8px var(--red);
+    }
+
+    /* Center dot */
+    #center-dot {
+      position: absolute;
+      inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      pointer-events: none;
+      z-index: 20;
+    }
+    #center-dot::after {
+      content: '';
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      background: var(--white);
+      box-shadow: 0 0 8px rgba(255,255,255,0.8);
+    }
+
+    /* ── GPS Data grid ── */
+    #data-grid {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .data-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .data-label {
+      font-size: 0.65rem;
+      font-weight: 600;
+      color: var(--dim);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .data-value {
+      font-size: clamp(1rem, 4.5vw, 1.3rem);
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      color: var(--white);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .data-value.highlight { color: var(--gold); }
+
+    /* ── Permission button ── */
+    #permission-screen {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      padding: 32px;
+      z-index: 100;
+      text-align: center;
+    }
+
+    #permission-screen svg { opacity: 0.8; }
+
+    #permission-screen h2 { font-size: 1.4rem; }
+    #permission-screen p  { color: var(--dim); font-size: 0.9rem; line-height: 1.6; }
+
+    #btn-start {
+      margin-top: 8px;
+      padding: 16px 40px;
+      border: none;
+      border-radius: 50px;
+      background: linear-gradient(135deg, var(--red), #c1121f);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(230,57,70,0.4);
+      letter-spacing: 0.05em;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    #btn-start:active { transform: scale(0.96); }
+
+    #error-msg {
+      display: none;
+      color: var(--red);
+      font-size: 0.8rem;
+      margin-top: 4px;
+    }
+
+    /* ── Accuracy ring ── */
+    #accuracy-bar {
+      width: 100%;
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    #accuracy-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--red), var(--gold), #06d6a0);
+      border-radius: 2px;
+      transition: width 0.5s;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Permission screen -->
+<div id="permission-screen">
+  <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+    <circle cx="40" cy="40" r="38" stroke="#e63946" stroke-width="2"/>
+    <polygon points="40,12 47,40 40,34 33,40" fill="#e63946"/>
+    <polygon points="40,68 47,40 40,46 33,40" fill="rgba(255,255,255,0.4)"/>
+    <circle cx="40" cy="40" r="5" fill="white"/>
+  </svg>
+  <h2>Brújula GPS</h2>
+  <p>Necesita acceso al <strong>giroscopio</strong> y al <strong>GPS</strong> para mostrar tu orientación y ubicación en tiempo real.</p>
+  <button id="btn-start">Activar Brújula</button>
+  <p id="error-msg"></p>
+</div>
+
+<!-- Main app -->
+<header>
+  <h1>🧭 Brújula GPS</h1>
+  <div id="status-dot"></div>
+</header>
+
+<div id="heading-display">
+  <div id="heading-deg">---°</div>
+  <div id="heading-cardinal">Calibrando...</div>
+</div>
+
+<div id="compass-wrap">
+  <div id="compass-ring">
+    <div id="north-marker">N</div>
+    <div id="rose">
+      <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <!-- Cardinal letters -->
+        <text x="100" y="22"  text-anchor="middle" fill="#e63946" font-size="14" font-weight="700" font-family="sans-serif">N</text>
+        <text x="178" y="105" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="12" font-weight="600" font-family="sans-serif">E</text>
+        <text x="100" y="190" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="12" font-weight="600" font-family="sans-serif">S</text>
+        <text x="22"  y="105" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="12" font-weight="600" font-family="sans-serif">O</text>
+
+        <!-- Intercardinals -->
+        <text x="158" y="48"  text-anchor="middle" fill="rgba(255,209,102,0.6)" font-size="9" font-family="sans-serif">NE</text>
+        <text x="158" y="160" text-anchor="middle" fill="rgba(255,209,102,0.6)" font-size="9" font-family="sans-serif">SE</text>
+        <text x="42"  y="160" text-anchor="middle" fill="rgba(255,209,102,0.6)" font-size="9" font-family="sans-serif">SO</text>
+        <text x="42"  y="48"  text-anchor="middle" fill="rgba(255,209,102,0.6)" font-size="9" font-family="sans-serif">NO</text>
+
+        <!-- North needle (red) -->
+        <polygon points="100,32 106,100 100,92 94,100" fill="#e63946" opacity="0.95"/>
+        <!-- South needle (white) -->
+        <polygon points="100,168 106,100 100,108 94,100" fill="rgba(255,255,255,0.5)"/>
+
+        <!-- Degree marks every 30° -->
+        <line x1="100" y1="36" x2="100" y2="44" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" transform="rotate(30 100 100)"/>
+        <line x1="100" y1="36" x2="100" y2="44" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" transform="rotate(60 100 100)"/>
+        <line x1="100" y1="36" x2="100" y2="44" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" transform="rotate(90 100 100)"/>
+        <line x1="100" y1="36" x2="100" y2="44" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" transform="rotate(120 100 100)"/>
+        <line x1="100" y1="36" x2="100" y2="44" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" transform="rotate(150 100 100)"/>
+        <line x1="100" y1="36" x2="100" y2="44" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" transform="rotate(180 100 100)"/>
+        <line x1="100" y1="36" x2="100" y2="44" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" transform="rotate(210 100 100)"/>
+        <line x1="100" y1="36" x2="100" y2="44" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" transform="rotate(240 100 100)"/>
+        <line x1="100" y1="36" x2="100" y2="44" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" transform="rotate(270 100 100)"/>
+        <line x1="100" y1="36" x2="100" y2="44" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" transform="rotate(300 100 100)"/>
+        <line x1="100" y1="36" x2="100" y2="44" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" transform="rotate(330 100 100)"/>
+      </svg>
+    </div>
+    <div id="center-dot"></div>
+  </div>
+</div>
+
+<div id="accuracy-bar"><div id="accuracy-fill"></div></div>
+
+<div id="data-grid">
+  <div class="data-card">
+    <div class="data-label">Latitud</div>
+    <div class="data-value" id="val-lat">---.------°</div>
+  </div>
+  <div class="data-card">
+    <div class="data-label">Longitud</div>
+    <div class="data-value" id="val-lon">---.------°</div>
+  </div>
+  <div class="data-card">
+    <div class="data-label">Velocidad</div>
+    <div class="data-value highlight" id="val-speed">-- km/h</div>
+  </div>
+  <div class="data-card">
+    <div class="data-label">Altitud</div>
+    <div class="data-value" id="val-alt">-- m</div>
+  </div>
+</div>
+
+<script>
+  const $ = id => document.getElementById(id);
+  const rose          = $('rose');
+  const headingDeg    = $('heading-deg');
+  const headingCard   = $('heading-cardinal');
+  const statusDot     = $('status-dot');
+  const permScreen    = $('permission-screen');
+  const btnStart      = $('btn-start');
+  const errorMsg      = $('error-msg');
+  const accuracyFill  = $('accuracy-fill');
+
+  const CARDINALS = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSO','SO','OSO','O','ONO','NO','NNO'];
+
+  function toCardinal(deg) {
+    return CARDINALS[Math.round(deg / 22.5) % 16];
+  }
+
+  let currentHeading = 0;
+  let targetHeading  = 0;
+  let rafId = null;
+
+  function lerp(a, b, t) {
+    let diff = b - a;
+    if (diff > 180)  diff -= 360;
+    if (diff < -180) diff += 360;
+    return a + diff * t;
+  }
+
+  function animateCompass() {
+    currentHeading = lerp(currentHeading, targetHeading, 0.12);
+    rose.style.transform = `rotate(${-currentHeading}deg)`;
+    rafId = requestAnimationFrame(animateCompass);
+  }
+
+  function setHeading(deg) {
+    const h = ((deg % 360) + 360) % 360;
+    targetHeading = h;
+    headingDeg.textContent  = Math.round(h) + '°';
+    headingCard.textContent = toCardinal(h);
+  }
+
+  // ── Orientation ──
+  function handleOrientation(e) {
+    let heading = null;
+
+    if (e.webkitCompassHeading !== undefined && e.webkitCompassHeading !== null) {
+      // iOS: already corrected to magnetic north
+      heading = e.webkitCompassHeading;
+    } else if (e.absolute && e.alpha !== null) {
+      // Android absolute
+      heading = 360 - e.alpha;
+    } else if (e.alpha !== null) {
+      heading = 360 - e.alpha;
+    }
+
+    if (heading !== null) {
+      setHeading(heading);
+      statusDot.className = 'active';
+    }
+  }
+
+  // ── GPS ──
+  function handlePosition(pos) {
+    const { latitude, longitude, altitude, speed, accuracy } = pos.coords;
+
+    $('val-lat').textContent  = latitude.toFixed(6) + '°';
+    $('val-lon').textContent  = longitude.toFixed(6) + '°';
+    $('val-alt').textContent  = altitude !== null ? Math.round(altitude) + ' m' : '-- m';
+
+    const kmh = speed !== null ? (speed * 3.6).toFixed(1) : '0.0';
+    $('val-speed').textContent = kmh + ' km/h';
+
+    // Accuracy bar: 100% = 5m, 0% = 100m+
+    const pct = Math.max(0, Math.min(100, 100 - (accuracy - 5)));
+    accuracyFill.style.width = pct + '%';
+  }
+
+  function handleGPSError(err) {
+    console.warn('GPS error:', err.message);
+  }
+
+  // ── Start ──
+  async function startApp() {
+    errorMsg.style.display = 'none';
+
+    // iOS 13+ requires permission for DeviceOrientation
+    if (typeof DeviceOrientationEvent !== 'undefined' &&
+        typeof DeviceOrientationEvent.requestPermission === 'function') {
+      try {
+        const res = await DeviceOrientationEvent.requestPermission();
+        if (res !== 'granted') {
+          showError('Permiso de orientación denegado. Actívalo en Ajustes > Safari > Sensor de movimiento.');
+          return;
+        }
+      } catch (err) {
+        showError('Error solicitando permiso: ' + err.message);
+        return;
+      }
+    }
+
+    // GPS
+    if ('geolocation' in navigator) {
+      navigator.geolocation.watchPosition(handlePosition, handleGPSError, {
+        enableHighAccuracy: true,
+        maximumAge: 1000,
+        timeout: 10000
+      });
+    }
+
+    // Orientation
+    window.addEventListener('deviceorientationabsolute', handleOrientation, true);
+    window.addEventListener('deviceorientation', handleOrientation, true);
+
+    // Animate
+    if (!rafId) animateCompass();
+
+    // Hide permission screen
+    permScreen.style.display = 'none';
+  }
+
+  function showError(msg) {
+    errorMsg.textContent = msg;
+    errorMsg.style.display = 'block';
+  }
+
+  btnStart.addEventListener('click', startApp);
+
+  // Register service worker
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  }
+</script>
+</body>
+</html>
