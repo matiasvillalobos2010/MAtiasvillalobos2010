@@ -1,48 +1,109 @@
 # Agente de Entrenamiento y Nutrición de Baloncesto
 
-Proyecto documental para construir un agente de IA capaz de generar entrenamientos funcionales y planes de nutrición para jugadores de baloncesto, adaptándose a cualquier escenario de implementos disponibles.
+Agente de IA que genera entrenamientos funcionales y planes de nutrición para jugadores de baloncesto, adaptándose a ocho escenarios de material disponible — desde una habitación vacía hasta un centro de alto rendimiento.
 
-**Estado actual: Fase 0 cerrada.** La estructura existe; el contenido está pendiente. Ver [`PLAN-DE-TRABAJO.md`](PLAN-DE-TRABAJO.md) para el plan completo, las dependencias entre fases y el estado de avance.
+**Estado: completo.** Fases 0-5 cerradas.
 
 ---
 
-## Principio de diseño
+## ⚠️ Lee esto antes de usarlo
 
-El agente no puede afirmar nada que no esté respaldado y citado en la fase de investigación previa. Cada decisión que tome debe ser rastreable, por un preparador físico que lea la documentación, hasta su fuente.
+**Ninguna fuente de este proyecto pudo abrirse directamente.** El entorno en que se produjo bloquea por política de red el acceso a PubMed, PMC, revistas indexadas y `doi.org`.
 
-De ahí el orden de construcción: **primero la investigación, después el agente.** Las fases se ejecutan en secuencia y no se abre una sin cerrar la anterior.
+Las 57 fuentes citadas fueron **localizadas** vía buscador —existencia, autoría, revista, año, identificador y extractos de contenido confirmados— pero no leídas en su origen. Eso es nivel de verificación `V2`, no `V1`.
 
-## Sistema de etiquetado
+Consecuencias concretas:
 
-Toda afirmación sustantiva del proyecto lleva una de estas marcas:
+- **La atribución de un dato a un estudio concreto puede fallar.** Donde había ambigüedad, está señalada en el texto.
+- **No se pudo evaluar la calidad metodológica de ningún estudio.**
+- **Las dosificaciones no tienen respaldo verificado.** La única dosis con evidencia real en todo el proyecto es la frecuencia del bloque preventivo: 2-3 sesiones semanales.
 
-- `[EVIDENCIA]` — respaldo científico en literatura indexada o consenso institucional, con cita y DOI/PMID.
-- `[PRÁCTICA]` — práctica común en la industria, sin evidencia fuerte que la sostenga.
-- `[INFERENCIA]` — deducción propia, declarando de qué afirmaciones deriva.
+**Antes de aplicar esto profesionalmente, abre las fuentes.** Los DOI y PMID están en [`01-investigacion/99-bibliografia.md`](01-investigacion/99-bibliografia.md) precisamente para eso.
 
-Donde no se localiza evidencia, el texto dice literalmente `sin evidencia sólida localizada`. No se rellena con contenido plausible.
+Detalle completo en [`01-investigacion/00-metodologia-y-fuentes.md`](01-investigacion/00-metodologia-y-fuentes.md).
 
-## Estructura
-
-| Carpeta | Contenido |
-|---|---|
-| `01-investigacion/` | Fisiología, lesiones, fuerza, carga, metodologías de liga, nutrición, bibliografía |
-| `02-agente/` | System prompt, protocolo de evaluación, motor de sustitución, reglas de seguridad |
-| `03-datos/` | Catálogo de implementos, biblioteca de ejercicios, 8 escenarios, tablas nutricionales |
-| `04-plantillas/` | Formatos de salida: plan de entrenamiento, plan de nutrición, informe de progreso |
-| `05-salidas/` | Planes generados |
+---
 
 ## Cómo usar el agente
 
-> Disponible al cerrar la Fase 4b.
+1. **Abre [`02-agente/SYSTEM-PROMPT.md`](02-agente/SYSTEM-PROMPT.md)** y carga su contenido como instrucción de sistema en el LLM que prefieras. Es autosuficiente: reglas de seguridad, principios de evidencia y motor de sustitución están dentro.
+2. **Opcional pero recomendado:** adjunta como contexto los archivos de [`03-datos/`](03-datos/) — biblioteca de 73 ejercicios, catálogo de implementos, 8 escenarios y tablas nutricionales.
+3. **Pídele un plan.** Ejemplos:
 
-Abrir [`02-agente/SYSTEM-PROMPT.md`](02-agente/SYSTEM-PROMPT.md) y cargarlo como instrucción de sistema en el LLM que se prefiera. El agente aplicará primero el cuestionario de [`02-agente/protocolo-de-evaluacion-inicial.md`](02-agente/protocolo-de-evaluacion-inicial.md) y no generará ningún plan antes de tener respuesta a los campos obligatorios — incluido el listado exacto de implementos disponibles.
+```
+Soy alero, 24 años, 88 kg, federado, 6 años jugando.
+Solo tengo una habitación pequeña y una pared. 4 días por semana,
+45 minutos. Estoy en pretemporada. Quiero mejorar el salto.
+```
+
+```
+Quiero un plan de nutrición. Pívot, 27 años, 104 kg, profesional,
+12 horas de entrenamiento a la semana, en plena temporada con
+2 partidos por semana.
+```
+
+El agente **te entrevistará primero** —salud, perfil, implementos, disponibilidad, contexto— y no generará nada hasta tener los campos bloqueantes. No es fricción gratuita: es lo que impide que te prescriba material que no tienes o carga que no deberías.
+
+### Qué esperar de su salida
+
+Todo plan incluye, obligatoriamente: qué cubre **y qué no**, las sustituciones aplicadas con su motivo, la justificación de cada decisión con su principio y etiqueta de evidencia, y la advertencia de nivel de verificación.
+
+---
+
+## Cómo está construido
+
+El orden importa: **primero la investigación, después el agente.** El agente no puede afirmar nada que no esté respaldado en la fase previa, y cada decisión suya es rastreable hasta su fuente en dos saltos.
+
+| Carpeta | Contenido |
+|---|---|
+| [`01-investigacion/`](01-investigacion/) | Fisiología y demandas, lesiones y prevención, fuerza y potencia, carga, metodologías de liga, nutrición, bibliografía |
+| [`02-agente/`](02-agente/) | System prompt, protocolo de evaluación, motor de sustitución, reglas de seguridad |
+| [`03-datos/`](03-datos/) | Catálogo de implementos, 73 ejercicios, 8 escenarios, fórmulas nutricionales |
+| [`04-plantillas/`](04-plantillas/) | Formatos de salida: entrenamiento, nutrición, informe de progreso |
+| [`05-salidas/`](05-salidas/) | Planes generados |
+
+[`PLAN-DE-TRABAJO.md`](PLAN-DE-TRABAJO.md) documenta las fases, dependencias, riesgos y estado.
+
+### Sistema de etiquetado
+
+Toda afirmación sustantiva lleva marca:
+
+- `[EVIDENCIA]` — respaldo en literatura indexada o consenso institucional, con cita.
+- `[PRÁCTICA]` — convención de la industria, sin evidencia fuerte de eficacia.
+- `[INFERENCIA]` — deducción propia, declarando de qué deriva.
+
+Donde no se localizó evidencia, el texto dice literalmente **"sin evidencia sólida localizada"**. No se rellenó con contenido plausible: **no hay ni una sola fuente, autor, DOI o cita inventada en el proyecto.**
+
+---
+
+## Tres cosas que este proyecto hace distinto
+
+**1. Documenta el ACWR junto con la crítica que lo impugna.** El ratio de carga aguda/crónica tiene objeciones metodológicas publicadas —acoplamiento matemático, artefactos estadísticos, ausencia de inferencia causal— y se solicitó formalmente la retractación de su figura más citada. El agente conserva el principio de progresión gradual y **no prescribe umbrales ni "zonas seguras"**.
+
+**2. No inventa una metodología de liga.** FIBA, NBA y EuroLeague publican la existencia de sus programas de formación, no su contenido. No se localizó ningún protocolo NBA/NBPA de gestión de carga o retorno al juego, pese a que suele darse por supuesto que son públicos. El agente **no invoca "el método NBA" como autoridad**.
+
+**3. No propone déficit calórico.** En baloncesto el problema documentado es la subalimentación: el 56 % de jugadores júnior de élite consume menos de 6 g/kg de carbohidrato. Proponer restricción en esta población empuja contra la evidencia.
+
+---
 
 ## Límites
 
-- No es una herramienta de rehabilitación ni de diagnóstico. Ante dolor agudo, lesión activa o patología diagnosticada, el agente frena y deriva a un profesional sanitario.
-- No recomienda sustancias prohibidas por la AMA/WADA ni restricciones calóricas agresivas.
-- Menores de edad requieren supervisión.
+- **No es rehabilitación ni diagnóstico.** Ante dolor agudo, lesión activa o patología diagnosticada, el agente frena y deriva.
+- **No calcula nutrición para menores en crecimiento.** Las fórmulas derivan de poblaciones adultas y no incorporan el coste del crecimiento.
+- **No certifica que ninguna sustancia esté permitida.** No se pudo consultar la lista de la AMA/WADA; remite a la lista oficial vigente.
+- **No sustituye a un profesional presencial.**
+
+---
+
+## Vacíos de evidencia más relevantes
+
+1. **Timing nutricional completo** — pre-partido, intra-partido, ventana de recuperación y días dobles. Bloque entero del encargo sin cubrir en baloncesto.
+2. **Dosificación de entrenamiento** — se sabe *qué* funciona, no *en qué dosis*. Requería abrir los metaanálisis.
+3. **Criterios de recuperación validados** — una de las decisiones más frecuentes en la práctica diaria, sin respaldo localizado. Y la crítica al ACWR deja un hueco real: se sabe qué no usar, no qué usar en su lugar.
+
+Lista completa de los 15 temas buscados y no localizados en [`01-investigacion/99-bibliografia.md`](01-investigacion/99-bibliografia.md) §6.
+
+---
 
 ## Público objetivo
 

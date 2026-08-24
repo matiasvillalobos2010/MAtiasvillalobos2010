@@ -50,7 +50,7 @@ Escenario 1 más el balón. Añade trabajo técnico y potencia de tren superior 
 | Reactivo (`P8`) | `BAL-03` | 6 min |
 | Fuerza | `ROD-01`, `ROD-08`, `CAD-02`, `SUP-01` | 14 min |
 | Pliometría | `PLI-03`, `PLI-07` | 5 min |
-| Core | `CORE-01`, `CORE-05`→variante sin banda | 5 min |
+| Core | `CORE-01` · antirrotación isométrica *(sustituye a `CORE-05`: no hay `BANDA-LARGA`)* | 5 min |
 
 > `BAL-03` (pase reactivo contra pared) se apoya en `P8`, que es **inferencia**, no evidencia de eficacia preventiva. Ver el aviso en [`biblioteca-ejercicios.md`](biblioteca-ejercicios.md) §8.
 
@@ -68,7 +68,7 @@ Se abre todo el trabajo de desplazamiento: esprint, cambio de dirección, desace
 
 | Bloque | Ejercicios | Tiempo |
 |---|---|---|
-| Preventivo (`P5`) | `PREV-01`, `PREV-03`, `PREV-04`→`PREV-05`, `PREV-06` | 10 min |
+| Preventivo (`P5`) | `PREV-01`, `PREV-03`, `PREV-05` *(sustituye a `PREV-04`: no hay `BANDA-LIGERA`)*, `PREV-06` | 10 min |
 | Velocidad (`P2`) | `ACO-01` | 12 min |
 | COD | `ACO-03`, `ACO-09` | 12 min |
 | Frenado (`P7`) | `ACO-06` | 8 min |
@@ -105,7 +105,7 @@ DISPONIBLE: ESP-MED, ESP-MIN, SUELO-DURO, PARED, MOBILIARIO, ESCALON,
 ## Escenario 5 — Gimnasio comercial estándar
 
 ```
-DISPONIBLE: ESP-MED, ESP-MIN, SUELO-DURO, ESCALON, ESTERILLA,
+DISPONIBLE: ESP-MED, ESP-MIN, SUELO-DURO, PARED, ESCALON, ESTERILLA,
             BANDA-LIGERA, BANDA-LARGA, MANCUERNA-LIG, MANCUERNA-VAR,
             KETTLEBELL, BALON-MED, BARRA, DISCOS, BANCO,
             MAQUINA-POLEA, MAQUINA-SEL, BARRA-DOMINADAS, CARDIO
@@ -132,10 +132,14 @@ Primer escenario donde la fuerza máxima es entrenable.
 ## Escenario 6 — Centro de alto rendimiento
 
 ```
-DISPONIBLE: [todo el catálogo, incluidos]
+DISPONIBLE: ESP-MIN, ESP-MED, ESP-CANCHA, SUELO-DURO, PARED, MOBILIARIO, ESCALON,
+            BALON, CANASTA, CONOS,
+            ESTERILLA, BANDA-LIGERA, BANDA-LARGA, MANCUERNA-LIG, KETTLEBELL, BALON-MED,
+            MANCUERNA-VAR, BARRA, DISCOS, BANCO, MAQUINA-POLEA, MAQUINA-SEL,
+            BARRA-DOMINADAS, CARDIO,
             RACK, PLATAFORMA, CAJON-PLIO, TRINEO, VALLAS,
             GPS, ACELEROMETRO, PLATAFORMA-FZA, FOTOCELULAS,
-            ESP-CANCHA, CANASTA, BALON, COMPANERO, SUPERVISION-PRO
+            COMPANERO, SUPERVISION-PRO
 ```
 
 ### Sesión tipo (90 min)
@@ -170,7 +174,7 @@ Escenario 1 más mobiliario. Contexto de fatiga acumulada y desplazamiento.
 
 | Bloque | Ejercicios | Tiempo |
 |---|---|---|
-| Movilidad | `PREV-08`, `PREV-09`→variante sin esterilla | 6 min |
+| Movilidad | `PREV-08` · movilidad de cadera 90/90 en suelo *(sustituye a `PREV-09`: no hay `ESTERILLA`)* | 6 min |
 | Preventivo (`P5`) | `PREV-01`, `PREV-03`, `PREV-05` | 8 min |
 | Fuerza | `ROD-02`, `SUP-02`, `SUP-07`, `CAD-02` | 12 min |
 | Core | `CORE-01`, `CORE-02` | 4 min |
@@ -184,9 +188,12 @@ Escenario 1 más mobiliario. Contexto de fatiga acumulada y desplazamiento.
 ## Escenario 8 — Retorno progresivo tras lesión
 
 ```
-DISPONIBLE: [según indique el profesional que supervisa]
+DISPONIBLE: SUPERVISION-PRO + el DISPONIBLE del escenario real del deportista
+            (1-7), acotado por lo que autorice el profesional que supervisa
 REQUISITO NO NEGOCIABLE: SUPERVISION-PRO
 ```
+
+> **Nota de verificación:** este escenario **no es comprobable mecánicamente** contra una lista fija, porque su disponibilidad es la del escenario base del deportista, recortada por criterio profesional. El marco de fases de §8 nombra ejercicios de referencia; **cada uno debe pasar la regla de admisión contra el escenario real del deportista** antes de prescribirse, y además ser autorizado por el profesional. Excluido del recuento de §10 por este motivo, no por omisión.
 
 > ## ⚠️ Este escenario no es un protocolo de rehabilitación
 >

@@ -1,6 +1,6 @@
 # Plan de trabajo — Agente de Entrenamiento y Nutrición de Baloncesto
 
-**Estado del proyecto:** Fases 0-4a cerradas. Fase 4b (agente) en curso.
+**Estado del proyecto:** COMPLETO. Fases 0-5 cerradas.
 **Rama de desarrollo:** `claude/basketball-training-agent-he067v`
 **Última actualización:** 2026-08-24
 
@@ -351,8 +351,46 @@ La restricción de red descrita en §2 obliga a elegir cómo se procede. Las tre
 | 3 — Nutrición | ✅ Cerrada | 2026-08-24 |
 | 3.5 — Bibliografía y verificación | ✅ Cerrada (57 fuentes, todas V2) | 2026-08-24 |
 | 4a — Datos | ✅ Cerrada (73 ejercicios, 8 escenarios) | 2026-08-24 |
-| 4b — Agente | ⬜ Pendiente | — |
-| 4c — Plantillas | ⬜ Pendiente | — |
-| 5 — Verificación final | ⬜ Pendiente | — |
+| 4b — Agente | ✅ Cerrada | 2026-08-24 |
+| 4c — Plantillas | ✅ Cerrada | 2026-08-24 |
+| 5 — Verificación final | ✅ Cerrada — 3 bugs detectados y corregidos | 2026-08-24 |
 
 Actualizar esta tabla al cerrar cada fase, junto con el commit correspondiente.
+
+
+---
+
+## 9. Verificación final (Fase 5)
+
+Ejecutada el 2026-08-24 con comprobaciones mecánicas sobre los archivos, no por lectura.
+
+| # | Comprobación del encargo | Resultado |
+|---|---|---|
+| 1 | ¿Toda URL citada fue abierta y verificada? | ❌ **No, y es la limitación dominante del proyecto.** El entorno bloquea PubMed, PMC, revistas y `doi.org`. Las 57 fuentes son `V2` (localizadas, no abiertas). Declarado en cabecera de cada archivo, en `00-metodologia-y-fuentes.md`, en `99-bibliografia.md` y en el README |
+| 2 | ¿Hay alguna afirmación clínica sin fuente? | ✅ No. Toda afirmación lleva `[EVIDENCIA]`, `[PRÁCTICA]` o `[INFERENCIA]`. Donde faltaba respaldo se escribió `sin evidencia sólida localizada` |
+| 3 | ¿Alguna cita reproducida de memoria? | ✅ No. Todas proceden de resultados de búsqueda de esta sesión. Cero fuentes, autores o DOIs inventados |
+| 4 | ¿El agente prescribe implementos que el escenario no incluye? | ✅ **0 incoherencias** tras corregir 3 bugs reales (ver abajo). Verificado por comparación de conjuntos, no por lectura |
+| 5 | ¿Cada ejercicio tiene alternativa sin material? | ✅ **0 de 73 sin alternativa.** 14 no requieren material propio; los 59 restantes tienen alternativa declarada |
+| 6 | ¿Reglas de derivación dentro del system prompt? | ✅ Sí, en `SYSTEM-PROMPT.md` §3, replicadas literalmente desde `reglas-de-seguridad.md`, no delegadas por referencia |
+
+### Bugs detectados por la verificación y corregidos
+
+La comprobación mecánica encontró tres defectos reales que una lectura no habría detectado:
+
+1. **Escenario 5 (gimnasio)** prescribía `PREV-08`, que requiere `PARED`, sin declarar `PARED` como disponible. → Añadidos `PARED` y `SUELO-DURO` al escenario.
+2. **Escenario 6 (alto rendimiento)** declaraba su disponibilidad en prosa (*"todo el catálogo, incluidos…"*), lo que rompía la comprobación mecánica y dejaba 7 ejercicios sin cobertura formal. → Sustituido por la lista explícita completa de 35 IDs.
+3. **Escenario 8 (retorno tras lesión)** declaraba disponibilidad condicional en prosa. → Reformulado como `SUPERVISION-PRO` + el escenario base del deportista, y **excluido explícitamente del recuento** con su motivo documentado, en lugar de omitirlo en silencio.
+
+Además se desambiguaron las 3 sustituciones declaradas (escenarios 2, 3 y 7) para que el ID base aparezca solo en la nota explicativa, nunca como prescripción.
+
+### Comprobación adicional de trazabilidad
+
+Tres decisiones del agente tomadas al azar, rastreadas hasta su fuente:
+
+| Decisión | Salto 1 | Salto 2 |
+|---|---|---|
+| "El bloque preventivo va 2-3 veces por semana" | `SYSTEM-PROMPT.md` §5.5 → principio `P5` | `03-entrenamiento-fuerza-y-potencia.md` §6 → DOI: 10.3389/fphys.2017.00920 |
+| "No prometas mejoras de esprint desde pliometría" | `SYSTEM-PROMPT.md` §3.5 → principio `P2` | `03-entrenamiento-fuerza-y-potencia.md` §2 → DOI: 10.3389/fphys.2026.1747487 |
+| "Proteína 1,6-1,8 g/kg" | `tablas-nutricionales.md` §4 | `06-nutricion-deportiva.md` §3 → convergencia de PMID 28642676, PMC12513969, PMID 24667205 |
+
+✅ Las tres se rastrean en ≤2 saltos.
