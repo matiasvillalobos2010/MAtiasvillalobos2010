@@ -1,6 +1,6 @@
 # Plan de trabajo — Agente de Entrenamiento y Nutrición de Baloncesto
 
-**Estado del proyecto:** Fases 0-3 cerradas. Fase 3.5 (bibliografía) en curso.
+**Estado del proyecto:** Fases 0-4a cerradas. Fase 4b (agente) en curso.
 **Rama de desarrollo:** `claude/basketball-training-agent-he067v`
 **Última actualización:** 2026-08-24
 
@@ -349,8 +349,8 @@ La restricción de red descrita en §2 obliga a elegir cómo se procede. Las tre
 | 1 — Investigación clínica | ✅ Cerrada (vía A, nivel V2) | 2026-08-24 |
 | 2 — Metodologías | ✅ Cerrada (vacío documental declarado) | 2026-08-24 |
 | 3 — Nutrición | ✅ Cerrada | 2026-08-24 |
-| 3.5 — Bibliografía y verificación | ⬜ Pendiente | — |
-| 4a — Datos | ⬜ Pendiente | — |
+| 3.5 — Bibliografía y verificación | ✅ Cerrada (57 fuentes, todas V2) | 2026-08-24 |
+| 4a — Datos | ✅ Cerrada (73 ejercicios, 8 escenarios) | 2026-08-24 |
 | 4b — Agente | ⬜ Pendiente | — |
 | 4c — Plantillas | ⬜ Pendiente | — |
 | 5 — Verificación final | ⬜ Pendiente | — |
