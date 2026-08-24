@@ -1,6 +1,6 @@
 # Plan de trabajo — Agente de Entrenamiento y Nutrición de Baloncesto
 
-**Estado del proyecto:** Fase 0 cerrada. Fase 1 pendiente de arranque.
+**Estado del proyecto:** Fases 0-3 cerradas. Fase 3.5 (bibliografía) en curso.
 **Rama de desarrollo:** `claude/basketball-training-agent-he067v`
 **Última actualización:** 2026-08-24
 
@@ -68,7 +68,7 @@ Lo que sí permite la búsqueda web es confirmar que un trabajo existe, con su t
 | `V2 — localizada` | Existencia y metadatos confirmados por buscador; **contenido no comprobado directamente** |
 | `V0 — no verificada` | Ni abierta ni localizada → la cita se elimina y la afirmación se borra o se marca como vacío |
 
-Bajo la restricción actual, el máximo alcanzable es `V2`. Toda cita del proyecto tendría que llevar esa marca de forma visible, y `99-bibliografia.md` declararlo en cabecera. **Decisión pendiente del usuario** (ver §8).
+Bajo la restricción actual, el máximo alcanzable es `V2`. **Decisión tomada el 2026-08-24: se procede por la vía A.** Toda cita del proyecto es `V2`, declarado en cabecera de cada archivo de investigación y en `01-investigacion/00-metodologia-y-fuentes.md`.
 
 ### Formato de cita
 
@@ -347,8 +347,8 @@ La restricción de red descrita en §2 obliga a elegir cómo se procede. Las tre
 |---|---|---|
 | 0 — Estructura | ✅ Cerrada | 2026-08-24 |
 | 1 — Investigación clínica | ✅ Cerrada (vía A, nivel V2) | 2026-08-24 |
-| 2 — Metodologías | ⬜ Pendiente | — |
-| 3 — Nutrición | ⬜ Pendiente | — |
+| 2 — Metodologías | ✅ Cerrada (vacío documental declarado) | 2026-08-24 |
+| 3 — Nutrición | ✅ Cerrada | 2026-08-24 |
 | 3.5 — Bibliografía y verificación | ⬜ Pendiente | — |
 | 4a — Datos | ⬜ Pendiente | — |
 | 4b — Agente | ⬜ Pendiente | — |
