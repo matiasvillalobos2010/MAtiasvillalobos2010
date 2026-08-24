@@ -337,7 +337,7 @@ La restricción de red descrita en §2 obliga a elegir cómo se procede. Las tre
 
 **C — Vía mixta.** Se construye ahora todo lo que no depende de verificación de fuentes (catálogo de implementos, esqueleto de escenarios, motor de sustitución, plantillas, reglas de seguridad en su parte estructural), y la investigación citada queda pendiente de un entorno con acceso. Reduce el tiempo perdido pero deja el proyecto a medias por diseño.
 
-Sin esta decisión no se abre la Fase 1: empezar a citar sin definir el nivel de verificación es exactamente el fallo que la regla dura del §2 existe para impedir.
+**Decisión tomada (2026-08-24): vía A.** Se procede con investigación por búsqueda web y toda cita marcada como `V2`. El nivel de verificación está declarado en cabecera de cada archivo y en `00-metodologia-y-fuentes.md`.
 
 ---
 
@@ -346,7 +346,7 @@ Sin esta decisión no se abre la Fase 1: empezar a citar sin definir el nivel de
 | Fase | Estado | Fecha |
 |---|---|---|
 | 0 — Estructura | ✅ Cerrada | 2026-08-24 |
-| 1 — Investigación clínica | ⬜ Pendiente | — |
+| 1 — Investigación clínica | ✅ Cerrada (vía A, nivel V2) | 2026-08-24 |
 | 2 — Metodologías | ⬜ Pendiente | — |
 | 3 — Nutrición | ⬜ Pendiente | — |
 | 3.5 — Bibliografía y verificación | ⬜ Pendiente | — |
