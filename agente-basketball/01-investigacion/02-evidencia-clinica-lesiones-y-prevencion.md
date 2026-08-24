@@ -89,9 +89,26 @@ Revisión sobre prevención específica en la deportista: [*ACL Injury preventio
 
 ## 5. Lumbalgia
 
-**`sin evidencia sólida localizada`** para baloncesto específicamente, en las búsquedas realizadas. No se citará nada al respecto.
+*Vacío cubierto en una segunda ronda de búsqueda dirigida a fuentes universitarias y de la NCAA.*
 
-Es un vacío relevante: la lumbalgia figuraba explícitamente en el encargo. Queda como una de las limitaciones declaradas del proyecto.
+**`[EVIDENCIA]`** La prevalencia global de dolor lumbar en jugadores de baloncesto es del **26 % (IC 95 %: 16-37 %)**, con variación considerable entre estudios. En jugadores en edad escolar, la prevalencia puntual fue del **12,8 %**. [Prevalencia y factores de riesgo de trastornos musculoesqueléticos en jugadores de baloncesto: revisión sistemática y metaanálisis, *Healthcare*](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10138073/) — DOI: 10.3390/healthcare11081190 | PMC10138073.
+
+**`[EVIDENCIA]`** En baloncesto de la NCAA, las lesiones de columna lumbar (LSI) son frecuentes y **con tendencia a la recidiva y al dolor persistente**:
+
+| | Tasa por 10.000 exposiciones | Dolor lumbar inespecífico |
+|---|---|---|
+| Mujeres | 2,16 | 65,3 % de las LSI |
+| Hombres | 3,47 | 59,0 % de las LSI |
+
+Los hombres presentaron **1,61 veces** más probabilidad de sufrir una LSI que las mujeres. [Epidemiología de lesiones de columna lumbar en baloncesto masculino y femenino de la NCAA](https://pmc.ncbi.nlm.nih.gov/articles/PMC6823986/) — PMID: 31700939 | PMC6823986.
+
+**`[EVIDENCIA]`** En NBA, una evaluación longitudinal de 17 años encontró que el **10,2 % de todas las lesiones** afectaban a la columna lumbar, y el **0,9 %** se debían a degeneración discal lumbar. Misma fuente.
+
+### El hallazgo con más consecuencia práctica
+
+**`[EVIDENCIA]`** Los jugadores con **dolor de miembro inferior presentan más dolor lumbar**: quienes tenían dolor de rodilla mostraron una odds ratio ajustada de **4,25**, y quienes tenían dolor de tobillo, de **3,79**. [Alta prevalencia de dolor lumbar en jugadores jóvenes de baloncesto con dolor de miembro inferior: estudio transversal, *BMC Sports Science, Medicine and Rehabilitation*](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7339456/) — DOI: 10.1186/s13102-020-00189-6 | PMC7339456.
+
+**`[INFERENCIA]`** Esto conecta dos bloques que el cuestionario del agente trataba por separado: el historial de tobillo y rodilla no solo predice recidiva en esa articulación, sino que **se asocia a dolor lumbar**. Es una asociación transversal —no establece dirección causal— pero justifica que el agente pregunte por lumbalgia aunque el motivo de consulta sea de miembro inferior, y viceversa. Trasladado a [`../02-agente/protocolo-de-evaluacion-inicial.md`](../02-agente/protocolo-de-evaluacion-inicial.md) B7.
 
 ---
 
@@ -151,6 +168,22 @@ Ver §4. Riesgo diferencial de LCA documentado en dirección, con magnitud no ve
 ### Amateur vs. profesional
 
 Ver [`01-fisiologia-y-demandas-del-baloncesto.md`](01-fisiologia-y-demandas-del-baloncesto.md) §8. `sin evidencia sólida localizada` en magnitudes.
+
+---
+
+## 7bis. Criterios de retorno al juego
+
+*Vacío cubierto en la segunda ronda de búsqueda.* Sostiene el marco del escenario 8 en [`../03-datos/escenarios-de-entrenamiento.md`](../03-datos/escenarios-de-entrenamiento.md).
+
+**`[EVIDENCIA]`** Consenso internacional de expertos sobre retorno al juego tras reconstrucción de LCA. Recomendación central: **evitar la decisión basada únicamente en el tiempo transcurrido**, en favor de un enfoque que integre valoración funcional, psicológica y demandas específicas del deporte. [APKASS 2024 consensus statement on anterior cruciate ligament reconstruction, part III: Return to play](https://www.sciencedirect.com/science/article/pii/S2214687326000099).
+
+**`[EVIDENCIA]`** Componentes que el consenso respalda: valoración isocinética de fuerza, simetría en pruebas de salto (*hop tests*), y medidas de resultado reportadas por el paciente validadas (IKDC, escala ACL-RSI). Se refrendan las pruebas manuales de estabilidad (Lachman, pivot shift) y **el papel crítico de la disposición psicológica**. Misma fuente.
+
+**`[EVIDENCIA]`** Sobre el tiempo: estudios prospectivos muestran que retornar **antes de los nueve meses** postoperatorios puede multiplicar por **hasta siete** el riesgo de una segunda lesión de LCA, y que **cada mes adicional de espera hasta los nueve reduce el riesgo de recidiva en torno al 50 %**. Misma fuente.
+
+> ⚠️ **Esto no convierte al agente en gestor de retornos.** El consenso describe un proceso clínico multidisciplinar con valoración isocinética, pruebas manuales de estabilidad y escalas validadas — nada de lo cual puede hacer un agente conversacional. Se documenta para que el marco del escenario 8 esté anclado en algo real, y para reforzar por qué la supervisión profesional es no negociable allí.
+>
+> El dato de los nueve meses es, de hecho, un argumento **contra** que el agente participe en esa decisión: la consecuencia de equivocarse está cuantificada.
 
 ---
 

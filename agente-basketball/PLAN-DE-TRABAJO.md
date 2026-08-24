@@ -1,6 +1,6 @@
 # Plan de trabajo — Agente de Entrenamiento y Nutrición de Baloncesto
 
-**Estado del proyecto:** COMPLETO. Fases 0-5 cerradas.
+**Estado del proyecto:** COMPLETO. Fases 0-5 cerradas + segunda ronda de investigación (COI, NCAA, universidades).
 **Rama de desarrollo:** `claude/basketball-training-agent-he067v`
 **Última actualización:** 2026-08-24
 
@@ -94,6 +94,7 @@ agente-basketball/
 │   ├── 04-acondicionamiento-y-carga.md
 │   ├── 05-metodologias-fiba-nba-euroliga.md
 │   ├── 06-nutricion-deportiva.md
+│   ├── 07-casos-de-exito-y-benchmarks.md   ← añadido en la 2.ª ronda
 │   └── 99-bibliografia.md
 ├── 02-agente/
 │   ├── SYSTEM-PROMPT.md
@@ -394,3 +395,28 @@ Tres decisiones del agente tomadas al azar, rastreadas hasta su fuente:
 | "Proteína 1,6-1,8 g/kg" | `tablas-nutricionales.md` §4 | `06-nutricion-deportiva.md` §3 → convergencia de PMID 28642676, PMC12513969, PMID 24667205 |
 
 ✅ Las tres se rastrean en ≤2 saltos.
+
+
+---
+
+## 10. Segunda ronda de investigación (2026-08-24)
+
+A petición del usuario se amplió la búsqueda a Comité Olímpico Internacional, NCAA e investigación universitaria.
+
+**Primero se comprobó si esos dominios eludían el bloqueo de red.** No: `olympics.com`, `ncaa.org`, `stanford.edu`, `ku.dk` y `example.com` devuelven todos `EGRESS_BLOCKED`. **El bloqueo es total**, no selectivo por institución. Cambiar de fuente no cambia el nivel de verificación: todo sigue siendo `V2`.
+
+Lo que sí rindió fue **buscar** en esas fuentes. 13 fuentes nuevas, cuatro vacíos cubiertos:
+
+| Vacío de la primera ronda | Estado tras la segunda |
+|---|---|
+| Lumbalgia en baloncesto | ✅ **Cubierto** — prevalencia 26 %, tasas NCAA por sexo, asociación con dolor de miembro inferior (OR 4,25 rodilla / 3,79 tobillo) |
+| Métodos de entrenamiento de RSA | ✅ **Cubierto** — metaanálisis de HIIT en baloncesto; protocolo 20×15 m más representativo que 10×30 m |
+| Criterios de retorno al juego | ✅ **Cubierto** — consenso APKASS 2024; retorno antes de 9 meses multiplica por hasta 7 el riesgo de segunda lesión de LCA |
+| Fuerza máxima en baloncesto | ⚠️ **Parcial** — su desarrollo sí está documentado (+36,5 % 1RM); su transferencia al gesto, no |
+| Timing nutricional | ⚠️ **Parcial** — ECA cruzado sobre comida pre-partido; intra-partido y días dobles siguen sin respaldo |
+
+**Añadido además:** consenso del COI sobre carga (Soligard et al. 2016, Parts 1 y 2), que resuelve una tensión aparente — el COI sostiene que la gestión de carga importa, la crítica de Impellizzeri sostiene que *el ACWR concretamente* es defectuoso para operacionalizarla. No se contradicen, y el proyecto adopta el principio descartando la métrica.
+
+**Nuevo archivo:** `01-investigacion/07-casos-de-exito-y-benchmarks.md`, a petición de comparar siempre contra casos de éxito. Recoge las intervenciones con resultado positivo documentado, con su magnitud y su n, **y sus contraejemplos en la misma página**. Conectado al system prompt en §5.6, que obliga al agente a contrastar cada bloque contra su benchmark de referencia.
+
+Este archivo es una extensión de la estructura original especificada en el encargo, no una sustitución: los 20 archivos pedidos siguen existiendo tal cual.

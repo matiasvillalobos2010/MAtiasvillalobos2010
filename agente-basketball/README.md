@@ -2,7 +2,7 @@
 
 Agente de IA que genera entrenamientos funcionales y planes de nutrición para jugadores de baloncesto, adaptándose a ocho escenarios de material disponible — desde una habitación vacía hasta un centro de alto rendimiento.
 
-**Estado: completo.** Fases 0-5 cerradas.
+**Estado: completo.** Fases 0-5 cerradas, más una segunda ronda de investigación que cubrió cuatro vacíos.
 
 ---
 
@@ -10,7 +10,7 @@ Agente de IA que genera entrenamientos funcionales y planes de nutrición para j
 
 **Ninguna fuente de este proyecto pudo abrirse directamente.** El entorno en que se produjo bloquea por política de red el acceso a PubMed, PMC, revistas indexadas y `doi.org`.
 
-Las 57 fuentes citadas fueron **localizadas** vía buscador —existencia, autoría, revista, año, identificador y extractos de contenido confirmados— pero no leídas en su origen. Eso es nivel de verificación `V2`, no `V1`.
+Las 70 fuentes citadas fueron **localizadas** vía buscador —existencia, autoría, revista, año, identificador y extractos de contenido confirmados— pero no leídas en su origen. Eso es nivel de verificación `V2`, no `V1`.
 
 Consecuencias concretas:
 
@@ -56,7 +56,7 @@ El orden importa: **primero la investigación, después el agente.** El agente n
 
 | Carpeta | Contenido |
 |---|---|
-| [`01-investigacion/`](01-investigacion/) | Fisiología y demandas, lesiones y prevención, fuerza y potencia, carga, metodologías de liga, nutrición, bibliografía |
+| [`01-investigacion/`](01-investigacion/) | Fisiología y demandas, lesiones y prevención, fuerza y potencia, carga, metodologías de liga, nutrición, **casos de éxito y benchmarks**, bibliografía |
 | [`02-agente/`](02-agente/) | System prompt, protocolo de evaluación, motor de sustitución, reglas de seguridad |
 | [`03-datos/`](03-datos/) | Catálogo de implementos, 73 ejercicios, 8 escenarios, fórmulas nutricionales |
 | [`04-plantillas/`](04-plantillas/) | Formatos de salida: entrenamiento, nutrición, informe de progreso |
@@ -95,13 +95,34 @@ Donde no se localizó evidencia, el texto dice literalmente **"sin evidencia só
 
 ---
 
+## Casos de éxito: contra qué se compara todo
+
+[`01-investigacion/07-casos-de-exito-y-benchmarks.md`](01-investigacion/07-casos-de-exito-y-benchmarks.md) recoge las intervenciones con **resultado positivo documentado** —qué se hizo, en quién, con qué magnitud— y son la referencia contra la que el agente contrasta cada decisión.
+
+| Intervención | Respaldo | Magnitud | ¿Transfiere? |
+|---|---|---|---|
+| Pliometría | ★★★ 32 estudios, 818 jugadores | Pequeño a grande | Salto y COD **sí**; esprint **no** |
+| HIIT / RSA | ★★★ metaanálisis | Significativo | VO₂máx, velocidad, COD, RSA |
+| Fuerza máxima | ★★ ECA n=21 | +36,5 % 1RM | Al 1RM **sí**; al gesto **no demostrado** |
+| Prevención neuromuscular 2-3×/sem | ★★ frágil en baloncesto | IRR 0,64 | Lesión de miembro inferior |
+| Proteína+CHO pre-partido | ★ ECA cruzado n=10 | CK 56 vs. 100 U·L⁻¹ | Daño muscular y tiro libre en el 4.º cuarto |
+| Gestión de carga vía ACWR | ✗ impugnado | — | **No** |
+
+Ese archivo incluye también los **contraejemplos** —dónde el efecto esperado no apareció— en la misma página y con el mismo peso. Una lista solo de éxitos sobreestima sistemáticamente lo que cabe esperar.
+
+**El patrón que emerge, y es el hallazgo más útil del proyecto:** las intervenciones funcionan para lo que entrenan; la transferencia a otras cualidades falla más de lo que se asume. Si quieres una cualidad, entrénala directamente.
+
+---
+
 ## Vacíos de evidencia más relevantes
 
-1. **Timing nutricional completo** — pre-partido, intra-partido, ventana de recuperación y días dobles. Bloque entero del encargo sin cubrir en baloncesto.
-2. **Dosificación de entrenamiento** — se sabe *qué* funciona, no *en qué dosis*. Requería abrir los metaanálisis.
-3. **Criterios de recuperación validados** — una de las decisiones más frecuentes en la práctica diaria, sin respaldo localizado. Y la crítica al ACWR deja un hueco real: se sabe qué no usar, no qué usar en su lugar.
+Tras la segunda ronda de búsqueda (COI, NCAA, investigación universitaria), que cubrió lumbalgia, RSA, retorno al juego y comida pre-partido:
 
-Lista completa de los 15 temas buscados y no localizados en [`01-investigacion/99-bibliografia.md`](01-investigacion/99-bibliografia.md) §6.
+1. **Timing nutricional intra-partido y días dobles** — la comida pre-partido sí tiene un ECA específico de baloncesto; el resto del bloque, no.
+2. **Dosificación de entrenamiento** — se sabe *qué* funciona, no *en qué dosis*. Requería abrir los metaanálisis.
+3. **Alternativa validada al ACWR** — la crítica al modelo es sólida y **no hay sustituto con mejor respaldo**. Se sabe qué no usar, no qué usar.
+
+Lista completa de temas buscados y no localizados en [`01-investigacion/99-bibliografia.md`](01-investigacion/99-bibliografia.md) §6, y casos de éxito que no se pudieron documentar en [`07-casos-de-exito-y-benchmarks.md`](01-investigacion/07-casos-de-exito-y-benchmarks.md) §5.
 
 ---
 

@@ -6,11 +6,17 @@
 
 ## 1. RSA — capacidad de repetir esprints
 
-**`sin evidencia sólida localizada`** sobre métodos de entrenamiento de la RSA (*repeated sprint ability*) en baloncesto, ni sobre protocolos de evaluación validados en esta población.
+*Vacío cubierto en una segunda ronda de búsqueda dirigida.*
 
-**`[INFERENCIA]`** *(deriva de [`01-fisiologia-y-demandas-del-baloncesto.md`](01-fisiologia-y-demandas-del-baloncesto.md) §2)* La justificación de trabajar la RSA en baloncesto es de análisis de demanda, no de evidencia de intervención: en ventanas de 60 segundos de máxima exigencia, un base acumula 7,3 aceleraciones y 6,9 desaceleraciones — [PMC7187750](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7187750/). La capacidad de sostener la calidad de esas acciones repetidas es, por definición del perfil, determinante.
+**`[EVIDENCIA]`** El **HIIT** (*high-intensity interval training*, entrenamiento interválico de alta intensidad) en jugadores de baloncesto produce mejoras significativas en VO₂máx, velocidad, capacidad de cambio de dirección, potencia explosiva y **RSA**. [Efectos del entrenamiento interválico de alta intensidad en jugadores de baloncesto: revisión sistemática y metaanálisis](https://pmc.ncbi.nlm.nih.gov/articles/PMC11877297/) — PMC11877297.
 
-Que la cualidad sea relevante no dice **cómo** entrenarla. Esa parte queda sin respaldo verificado en este proyecto.
+**`[EVIDENCIA]`** Distinción entre modalidades: el **entrenamiento de esprints repetidos (RST)** consiste en esprints máximos cortos (≤10 s) con recuperaciones breves, y entrena principalmente el sistema ATP-PC; el **entrenamiento interválico de esprints (SIT)** emplea esfuerzos máximos más largos (>20-30 s) con recuperaciones extendidas. Misma fuente.
+
+**`[EVIDENCIA]`** Comparación de protocolos en jugadores de élite: **20×15 m frente a 10×30 m**. El protocolo de 20×15 m resultó **más representativo de las demandas específicas del baloncesto**. [Capacidad de repetir esprints en jugadores de élite de baloncesto: efectos de los protocolos 10×30 m vs. 20×15 m sobre variables fisiológicas y rendimiento en esprint](https://pubmed.ncbi.nlm.nih.gov/34168703/) — PMID: 34168703.
+
+**`[EVIDENCIA]`** El entrenamiento de esprints repetidos es eficaz para acondicionar velocidad en esprint corto, salto y aptitud aeróbica en jugadores universitarios durante la **última fase de pretemporada**; y el trabajo de RSA **en temporada** puede ser estímulo suficiente para mejorar carreras de alta intensidad y potencia muscular en jugadores de alto nivel. Mismas fuentes.
+
+**`[INFERENCIA]`** *(deriva de [`01-fisiologia-y-demandas-del-baloncesto.md`](01-fisiologia-y-demandas-del-baloncesto.md) §2)* La preferencia del protocolo 20×15 m sobre 10×30 m es coherente con el perfil de demanda documentado: en ventanas de máxima exigencia el base acumula ~7 aceleraciones y ~7 desaceleraciones en 60 s. **Muchas repeticiones cortas se parecen más al juego que pocas largas.** La coherencia entre ambos hallazgos es lectura propia; cada uno por separado es evidencia.
 
 ---
 
@@ -28,7 +34,23 @@ Que la cualidad sea relevante no dice **cómo** entrenarla. Esa parte queda sin 
 
 **ACWR** (*acute:chronic workload ratio*): cociente entre la carga acumulada reciente (aguda, típicamente 7 días) y la carga de referencia (crónica, típicamente 28 días).
 
-### El modelo tiene crítica metodológica seria y publicada
+### Marco de consenso del COI sobre carga
+
+*Añadido en la segunda ronda de búsqueda, a petición de ampliar a fuentes del Comité Olímpico Internacional.*
+
+**`[EVIDENCIA]`** El COI reunió a un grupo de expertos para revisar la evidencia sobre la relación entre carga —cambios rápidos en carga de entrenamiento y competición, **congestión del calendario**, carga psicológica y viajes— y desenlaces de salud. Conclusión central: **la gestión inapropiada de la carga es un factor de riesgo significativo de enfermedad aguda y de síndrome de sobreentrenamiento**. Publicado en dos partes en el *British Journal of Sports Medicine*, 2016: [*How much is too much? (Part 1) IOC consensus statement on load in sport and risk of injury*](https://repository.up.ac.za/bitstream/handle/2263/57024/Soligard_How_2016.pdf?sequence=1) (Soligard et al.) y Part 2, sobre riesgo de enfermedad (Schwellnus et al.).
+
+**`[EVIDENCIA]`** El consenso ofrece guías prácticas en dos frentes: **(1) prescripción** de carga de entrenamiento y competición, y **(2) monitorización** de carga de entrenamiento, competición y psicológica, bienestar del deportista y lesión. Misma fuente.
+
+**`[EVIDENCIA]`** Marco metodológico complementario del COI para registrar y reportar datos epidemiológicos de lesión y enfermedad, incluida la extensión STROBE-SIIS: [IOC consensus statement: methods for recording and reporting of epidemiological data on injury and illness in sport 2020](https://pubmed.ncbi.nlm.nih.gov/32071062/) — PMID: 32071062.
+
+**`[INFERENCIA]`** El consenso del COI y la crítica al ACWR (§3, abajo) **no se contradicen**, y conviene no leerlos así. El COI sostiene que la gestión de carga importa; la crítica de Impellizzeri sostiene que *el ACWR concretamente* es una métrica defectuosa para operacionalizarla. Se puede aceptar lo primero y rechazar lo segundo — que es exactamente lo que hace este proyecto: conserva el principio de progresión gradual y descarta el ratio y sus umbrales.
+
+Un elemento del consenso del COI que este proyecto sí adopta y el ACWR no capturaba: la **congestión del calendario, la carga psicológica y los viajes** cuentan como carga. Coherente con lo documentado en [`05-metodologias-fiba-nba-euroliga.md`](05-metodologias-fiba-nba-euroliga.md) §4 sobre calendarios de tres partidos por semana.
+
+---
+
+## 3bis. ACWR — el modelo tiene crítica metodológica seria y publicada
 
 Presentar el ACWR como herramienta consolidada sin recoger sus objeciones sería un fallo de rigor. La crítica principal está publicada en revista indexada:
 
@@ -118,7 +140,7 @@ Se localizó un documento divulgativo de un instituto vinculado a la industria d
 
 ## 9. Vacíos declarados
 
-1. **Métodos de entrenamiento de RSA en baloncesto** — §1.
+1. ~~Métodos de entrenamiento de RSA en baloncesto~~ — **cubierto** en la segunda ronda (§1).
 2. **Papel cuantificado de la capacidad aeróbica** — §2.
 3. **Criterios de recuperación validados** — §6. Vacío grave: es una de las decisiones más frecuentes en la práctica diaria y el proyecto no puede sostenerla con evidencia.
 4. **Alternativa validada al ACWR.** La crítica es sólida; **no se localizó una métrica sustitutiva con mejor respaldo**. Queda un hueco real: se sabe qué no usar, no qué usar en su lugar.

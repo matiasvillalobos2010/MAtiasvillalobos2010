@@ -222,7 +222,29 @@ Cita el principio, no un estudio inventado:
 | `P8` | Conviene incluir componente reactivo además del patrón cerrado | `[INFERENCIA]` |
 | `P9` | La fuerza máxima se incluye por razonamiento, no por evidencia específica de baloncesto | `[INFERENCIA]` |
 
-### 5.6 Degradaciones por perfil
+### 5.6 Compara siempre contra el caso de éxito de referencia
+
+Cuando justifiques un bloque del plan, **contrástalo con la intervención de resultado documentado de su categoría**. No basta con decir que algo "está respaldado": di contra qué se compara y cuánto se espera.
+
+| Si propones… | Benchmark | Declara |
+|---|---|---|
+| Pliometría | Metaanálisis de **32 estudios, 818 jugadores**: efectos pequeños a grandes en salto, CMJ y COD; mayor efecto en >16,3 años | Que es la intervención mejor respaldada del proyecto |
+| Fuerza | ECA en universitarios: **1RM sentadilla +36,5 %** (control +32,3 %) | Que el efecto grande viene de **entrenar fuerza**, no del método concreto |
+| Acondicionamiento / RSA | HIIT mejora VO₂máx, velocidad, COD y RSA; protocolo **20×15 m** más representativo que 10×30 m | Que muchas repeticiones cortas se ajustan mejor al juego |
+| Preventivo | **2-3 sesiones/semana** >> 1; IRR 0,64 en deporte juvenil | Que la dosis importa y que en baloncesto la evidencia es frágil (4 de 9 estudios) |
+| Comida pre-partido | ECA cruzado: proteína+carbohidrato frente a carbohidrato solo → **CK 56 vs. 100 U·L⁻¹**, mejor tiro libre en el 4.º cuarto | Que **n = 10**, solo hombres, sesión única |
+
+**Y contrasta también contra los contraejemplos**, que son igual de importantes:
+
+- Pliometría **no** mejora el esprint de 20 m.
+- Fuerza máxima **no** se asoció a mejoras de esprint ni salto en deportes afines.
+- Pliometría en juveniles **no** mejora la fuerza de miembro inferior.
+- El ACWR **no** demostró reducir lesiones.
+- Suplementar vitamina D corrige la analítica, pero **el beneficio sobre hueso y rendimiento es escaso**.
+
+**El patrón, y dilo cuando venga al caso:** las intervenciones funcionan **para lo que entrenan**; la transferencia a otras cualidades falla más de lo que se asume. Si el deportista quiere una cualidad, se entrena directamente.
+
+### 5.7 Degradaciones por perfil
 
 Se aplican **después** de resolver disponibilidad, y pueden degradar un ejercicio perfectamente admisible: sin experiencia → fuera los levantamientos con barra · menor supervisado → sin carga máxima ni saltos de profundidad · dolor anterior de rodilla → sin saltos de profundidad · historial de tobillo → preventivo obligatorio · historial de LCA → aterrizaje obligatorio · **1 sesión/semana → declara que el preventivo queda infradosificado** · **3+ partidos/semana → reduce volumen y no asumas recuperación completa con 72 h**.
 
@@ -347,6 +369,7 @@ Antes de enviar cualquier plan, verifica:
 7. ¿He citado alguna fuente fuera de la bibliografía del proyecto? *(no debo)*
 8. ¿Está la advertencia de nivel de verificación V2?
 9. Si hay plan nutricional: ¿se muestra el cálculo y sus supuestos? ¿El deportista es mayor de edad?
-10. ¿He prometido algo que la evidencia no sostiene — esprint desde pliometría, prevención desde gestión de carga, un método de liga como autoridad?
+10. ¿He prometido algo que la evidencia no sostiene — esprint desde pliometría, salto desde 1RM, prevención desde gestión de carga, un método de liga como autoridad?
+11. ¿He comparado cada bloque contra su caso de éxito de referencia, con su magnitud y su n?
 
 **Si alguna respuesta falla, corrige antes de entregar.**

@@ -94,16 +94,44 @@ Es el dato de hidratación con mejor respaldo del capítulo, y es específico de
 
 ## 5. Timing nutricional
 
-**`sin evidencia sólida localizada`** en las búsquedas realizadas, para baloncesto específicamente, en:
+*Vacío parcialmente cubierto en una segunda ronda de búsqueda dirigida a fuentes indexadas.*
 
-- Pauta pre-partido
-- Ingesta intra-partido
-- Ventana de recuperación
-- Días dobles
+### Comida pre-ejercicio: el mejor estudio del capítulo
 
-Es un vacío importante: era uno de los cinco bloques explícitos del encargo. Lo único adyacente localizado con respaldo es el reparto proteico en 4-6 tomas diarias (PMC12513969, §3) y el momento de toma de cafeína (§6).
+**`[EVIDENCIA]`** Ensayo aleatorizado cruzado en **10 jugadores de baloncesto masculinos bien entrenados**. Comparó, 90 minutos antes de un protocolo de ejercicio de 87 minutos:
 
-**`[INFERENCIA]`** El agente puede aplicar el principio de distribución proteica documentado, pero **no debe emitir pautas horarias detalladas de pre/intra/post partido** presentándolas como respaldadas. No lo están en este proyecto.
+| Condición | Composición |
+|---|---|
+| **PRO/CHO** | 1 g·kg⁻¹ de carbohidrato **+** 1 g·kg⁻¹ de proteína |
+| **CHO** | 2 g·kg⁻¹ de carbohidrato solo |
+
+Resultados:
+
+- **Daño muscular:** el aumento de creatina quinasa (CK) desde el basal hasta post-ejercicio fue **menor con PRO/CHO (56 ± 13 U·L⁻¹) que con CHO solo (100 ± 10 U·L⁻¹)**, p = 0,018.
+- **Glucemia:** más alta durante y después del ejercicio con PRO/CHO (p < 0,050).
+- **Rendimiento específico:** mayor **precisión en tiros libres en el cuarto periodo** con PRO/CHO (p = 0,027).
+
+[Ensayo aleatorizado de composición de la comida pre-ejercicio sobre rendimiento y daño muscular en jugadores de baloncesto bien entrenados, *Journal of the International Society of Sports Nutrition*, 2014](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4105559/) — PMID: 25053925 | DOI: 10.1186/1550-2783-11-33 | PMC4105559.
+
+**Por qué este estudio importa más que la mayoría del capítulo:** es aleatorizado, cruzado, específico de baloncesto, con desenlace de rendimiento en cancha (tiro libre en el cuarto periodo) y no solo de laboratorio. Es lo más cercano a un caso de éxito documentado que tiene el bloque nutricional.
+
+**Límites que hay que decir en la misma frase:** **n = 10**, solo hombres, una sola sesión aguda. No demuestra efecto sostenido en temporada.
+
+### Recuperación en calendario congestionado
+
+**`[EVIDENCIA]`** Estudio sobre suplementación proteica, minutos jugados y cinética de recuperación durante un **calendario congestionado** de baloncesto: [El efecto de la suplementación proteica y los minutos de juego sobre la cinética de la recuperación en un calendario congestionado de baloncesto, *Nutrients*](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11722783/) — DOI: 10.3390/nu17010128 | PMC11722783. **Cifras no extraídas.**
+
+Es una referencia directamente pertinente para el vacío de "días dobles" y conecta con el hallazgo de que 72 h pueden no bastar para recuperar ([`05-metodologias-fiba-nba-euroliga.md`](05-metodologias-fiba-nba-euroliga.md) §4). Merece abrirse.
+
+### Lo que sigue sin respaldo admisible
+
+`sin evidencia sólida localizada` para: **ingesta intra-partido** y **pautas de días dobles** con cifras concretas.
+
+> ⚠️ **Cifras deliberadamente excluidas.** La búsqueda devolvió pautas muy concretas y atractivas —2,5 g/kg de CHO tres horas antes; 1-3 g/kg 3-4 h antes del calentamiento; 5-7 g/kg el día previo; 1,2 g/kg inmediatamente post-partido; "ventana" de 30-60 minutos— **procedentes de blogs comerciales, marcas de nutrición deportiva y un instituto financiado por un fabricante de bebidas deportivas**. Ninguna de fuente indexada.
+>
+> No se admiten y **no se trasladan a las fórmulas del agente**. Son exactamente el tipo de cifra que habría hecho que este apartado pareciera resuelto.
+
+**`[INFERENCIA]`** Lo que el agente sí puede aplicar con respaldo: el reparto proteico en 4-6 tomas diarias (PMC12513969), y **añadir proteína a la comida pre-ejercicio en lugar de solo carbohidrato**, por el ensayo de arriba. Pautas horarias detalladas más allá de eso, no.
 
 ---
 
@@ -214,7 +242,7 @@ Es un vacío relevante dado que la revisión existe y es específica de la pobla
 
 ## 10. Vacíos declarados
 
-1. **Timing nutricional completo** (pre, intra, recuperación, días dobles) — §5. Bloque entero del encargo sin cubrir.
+1. **Timing nutricional parcial** — la comida pre-ejercicio sí tiene un ECA específico de baloncesto (§5); **intra-partido y días dobles siguen sin respaldo admisible**.
 2. **Requerimientos por posición** — no se localizó ninguna fuente que diferencie requerimientos por posición de juego. Ver [`../03-datos/tablas-nutricionales.md`](../03-datos/tablas-nutricionales.md) §2 para cómo se resuelve esto sin inventar coeficientes.
 3. **Requerimientos por fase de temporada** — no se localizaron cifras específicas por pretemporada / temporada / playoffs / off-season.
 4. **Estatus regulatorio AMA/WADA** — no verificable desde este entorno. §6.
@@ -222,7 +250,7 @@ Es un vacío relevante dado que la revisión existe y es específica de la pobla
 6. **Adaptaciones de contexto real** — §8.
 7. **Nutrición de la jugadora** — revisión localizada, contenido no extraído. §8.
 
-Siete vacíos sobre cinco bloques pedidos. **Es el capítulo con peor cobertura del proyecto**, y conviene que el lector lo sepa antes de confiar en las tablas derivadas.
+Siete vacíos sobre cinco bloques pedidos, uno de ellos parcialmente cubierto en la segunda ronda. **Sigue siendo el capítulo con peor cobertura del proyecto**, y conviene que el lector lo sepa antes de confiar en las tablas derivadas.
 
 ---
 

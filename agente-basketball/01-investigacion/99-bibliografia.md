@@ -13,7 +13,7 @@
 | Nivel | Definición | Entradas |
 |---|---|---|
 | `V1` | Abierta y comprobada | **0** |
-| `V2` | Localizada, contenido no comprobado directamente | **57** |
+| `V2` | Localizada, contenido no comprobado directamente | **70** |
 | `V0` | No localizada → eliminada | Ver §5 |
 
 ---
@@ -119,12 +119,51 @@
 
 ---
 
+## 4bis. Segunda ronda de búsqueda — 13 entradas
+
+Añadidas al ampliar a fuentes del Comité Olímpico Internacional, la NCAA e investigación universitaria. Cubrieron cuatro vacíos que la primera ronda había declarado.
+
+### Comité Olímpico Internacional — carga y epidemiología
+
+58. **Soligard T, et al., 2016. How much is too much? (Part 1) IOC consensus statement on load in sport and risk of injury** — British Journal of Sports Medicine. [PDF vía repositorio universitario](https://repository.up.ac.za/bitstream/handle/2263/57024/Soligard_How_2016.pdf?sequence=1) · `V2`
+59. **Schwellnus M, et al., 2016. How much is too much? (Part 2) IOC consensus statement on load in sport and risk of illness** — British Journal of Sports Medicine. `V2` — *acceso solo vía repositorio de terceros*
+60. **IOC consensus statement: methods for recording and reporting of epidemiological data on injury and illness in sport 2020 (STROBE-SIIS)** — PMID: 32071062. [Enlace](https://pubmed.ncbi.nlm.nih.gov/32071062/) · `V2`
+
+### Lumbalgia y columna lumbar — vacío cubierto
+
+61. **Epidemiología de lesiones de columna lumbar en baloncesto masculino y femenino de la NCAA** — PMID: 31700939 | PMC6823986. [Enlace](https://pmc.ncbi.nlm.nih.gov/articles/PMC6823986/) · `V2`
+62. **Alta prevalencia de dolor lumbar en jugadores jóvenes de baloncesto con dolor de miembro inferior: estudio transversal** — BMC Sports Science, Medicine and Rehabilitation. DOI: 10.1186/s13102-020-00189-6 | PMC7339456. [Enlace](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7339456/) · `V2`
+63. **Prevalencia y factores de riesgo de trastornos musculoesqueléticos en jugadores de baloncesto: revisión sistemática y metaanálisis** — Healthcare. DOI: 10.3390/healthcare11081190 | PMC10138073. [Enlace](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10138073/) · `V2`
+
+### RSA y acondicionamiento — vacío cubierto
+
+64. **Efectos del entrenamiento interválico de alta intensidad en jugadores de baloncesto: revisión sistemática y metaanálisis** — PMC11877297. [Enlace](https://pmc.ncbi.nlm.nih.gov/articles/PMC11877297/) · `V2`
+65. **Capacidad de repetir esprints en jugadores de élite de baloncesto: protocolos 10×30 m vs. 20×15 m** — PMID: 34168703. [Enlace](https://pubmed.ncbi.nlm.nih.gov/34168703/) · `V2`
+
+### Fuerza máxima — vacío parcialmente cubierto
+
+66. **Efectos del entrenamiento con resistencia variable dentro del entrenamiento complejo sobre adaptaciones neuromusculares en jugadores universitarios de baloncesto** — PMC9679182. [Enlace](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9679182/) · `V2`
+67. **Efectos de distintos tipos de entrenamiento excéntrico sobrecargado en jugadoras de baloncesto** — PMC7739370. [Enlace](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7739370/) · `V2` — *cifras no extraídas*
+68. **Improved maximal strength is not associated with improvements in sprint time or jump height in high-level female football players: cluster-randomized controlled trial** — PMC6747739. [Enlace](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6747739/) · `V2` — *contraejemplo D2*
+
+### Timing nutricional — vacío parcialmente cubierto
+
+69. **Ensayo aleatorizado de composición de la comida pre-ejercicio sobre rendimiento y daño muscular en jugadores de baloncesto bien entrenados** — Journal of the International Society of Sports Nutrition, 2014. PMID: 25053925 | DOI: 10.1186/1550-2783-11-33 | PMC4105559. [Enlace](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4105559/) · `V2`
+70. **El efecto de la suplementación proteica y los minutos de juego sobre la cinética de la recuperación en un calendario congestionado de baloncesto** — Nutrients. DOI: 10.3390/nu17010128 | PMC11722783. [Enlace](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11722783/) · `V2` — *cifras no extraídas*
+
+### Retorno al juego — vacío cubierto
+
+**APKASS 2024 consensus statement on anterior cruciate ligament reconstruction, part III: Return to play** — [ScienceDirect](https://www.sciencedirect.com/science/article/pii/S2214687326000099) · `V2`
+
+---
+
 ## 5. Fuentes descartadas y por qué
 
 Se consignan para dejar constancia de que aparecieron en las búsquedas y de por qué no se usaron. **Es el material con el que se podría haber hecho parecer completo este proyecto.**
 
 | Fuente | Motivo de descarte | Dónde se documenta |
 |---|---|---|
+| Blogs comerciales y marcas de nutrición con pautas concretas de timing (2,5 g/kg 3 h antes; 1,2 g/kg post; "ventana" de 30-60 min) | Contenido de marketing, no indexado | [`06-nutricion-deportiva.md`](06-nutricion-deportiva.md) §5 |
 | Instituto de ciencia deportiva financiado por fabricante de bebidas deportivas (varios artículos sobre hidratación, nutrición y monitorización de fatiga en baloncesto) | Conflicto de interés comercial; no indexado | [`06-nutricion-deportiva.md`](06-nutricion-deportiva.md) §1, §4; [`04-acondicionamiento-y-carga.md`](04-acondicionamiento-y-carga.md) §6 |
 | Sitio divulgativo sobre distancia recorrida por partido | No indexado, sin autoría verificable | [`01-fisiologia-y-demandas-del-baloncesto.md`](01-fisiologia-y-demandas-del-baloncesto.md) §4 |
 | Sitio divulgativo especializado con la cifra de recidiva de esguince de tobillo (60 %) | No indexado; atribución no identificable | [`02-evidencia-clinica-lesiones-y-prevencion.md`](02-evidencia-clinica-lesiones-y-prevencion.md) §2 |

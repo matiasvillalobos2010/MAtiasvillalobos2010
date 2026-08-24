@@ -41,11 +41,21 @@ Esto es lo contrario de lo que suele venderse. La pliometría tiene buen respald
 
 ## 3. Fuerza máxima
 
-**`sin evidencia sólida localizada`** específica de baloncesto sobre métodos, dosificación y transferencia de fuerza máxima al rendimiento en cancha.
+*Vacío parcialmente cubierto en una segunda ronda de búsqueda dirigida.*
 
-Lo localizado se refiere a población de deportes de equipo femeninos y adolescentes, no a baloncesto: [*Effects of Strength and Plyometric Training on Vertical Jump, Linear Sprint, and Change-of-Direction Speed in Female Adolescent Team Sport Athletes: A Systematic Review and Meta-Analysis*](https://pmc.ncbi.nlm.nih.gov/articles/PMC12131141/) — PMC12131141. **Sus cifras no se pudieron extraer.**
+**`[EVIDENCIA]`** En jugadores universitarios de baloncesto, un programa de entrenamiento con resistencia variable frente a resistencia constante produjo incrementos significativos de 1RM en sentadilla trasera en **ambos** grupos (+36,5 % y +32,3 % respectivamente), junto con mejoras en CMJ y salto en sentadilla. [Efectos del entrenamiento con resistencia variable dentro del entrenamiento complejo sobre adaptaciones neuromusculares en jugadores universitarios de baloncesto](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9679182/) — PMC9679182.
 
-Este es un vacío importante y conviene nombrarlo sin rodeos: el proyecto tiene mejor evidencia localizada para pliometría que para fuerza máxima, que es la cualidad más básica del bloque. Cualquier prescripción de fuerza máxima que haga el agente se apoya en principios generales de entrenamiento, no en evidencia específica de baloncesto verificada aquí.
+**`[EVIDENCIA]`** Trabajo excéntrico sobrecargado en jugadoras de baloncesto, con desenlaces en fuerza, velocidad, potencia y cambio de dirección: [Efectos de distintos tipos de entrenamiento excéntrico sobrecargado en jugadoras de baloncesto](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7739370/) — PMC7739370. *Cifras no extraídas.*
+
+### El matiz que impide vender esto de más
+
+**`[EVIDENCIA]`** Un ensayo controlado aleatorizado por conglomerados en futbolistas de alto nivel femeninas encontró que **la mejora de la fuerza máxima vía 1RM en sentadilla no se asoció con mejoras en tiempo de esprint ni en altura de salto**. [Improved maximal strength is not associated with improvements in sprint time or jump height in high-level female football players](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6747739/) — PMC6747739.
+
+> Es fútbol, no baloncesto. Pero apunta en la misma dirección que `P2` sobre la pliometría: **la ganancia en una capacidad no implica transferencia automática al gesto deportivo.** Un plan que prometa más salto por subir la sentadilla está haciendo una promesa que estas fuentes no respaldan.
+
+**Estado del bloque tras la segunda ronda:** hay evidencia de que **la fuerza máxima se puede desarrollar** en jugadores de baloncesto con protocolos concretos. Lo que sigue sin respaldo localizado es su **transferencia al rendimiento en cancha**, y ahí la evidencia disponible en deportes afines es más bien escéptica. `P9` se mantiene como `[INFERENCIA]`: la fuerza máxima se incluye por razonamiento, no porque su transferencia esté demostrada.
+
+Referencia adicional en deportes de equipo femeninos adolescentes, cifras no extraídas: [PMC12131141](https://pmc.ncbi.nlm.nih.gov/articles/PMC12131141/).
 
 **`[INFERENCIA]`** *(deriva de PMC11457583 y del perfil de desaceleraciones en `01-...` §2)* Dos argumentos sostienen incluir fuerza máxima pese al vacío:
 1. La pliometría por sí sola no desarrolla fuerza de miembro inferior en jóvenes (evidencia localizada).
@@ -102,7 +112,7 @@ Los ejercicios de [`../03-datos/biblioteca-ejercicios.md`](../03-datos/bibliotec
 
 ## 7. Vacíos declarados
 
-1. **Fuerza máxima en baloncesto** — sin evidencia específica localizada. §3.
+1. **Transferencia de la fuerza máxima al rendimiento en cancha** — su desarrollo sí está documentado en baloncesto (§3); su transferencia, no. La evidencia en deportes afines es escéptica.
 2. **Agilidad reactiva** — sin evidencia de transferencia localizada. §4.
 3. **Normativas de CMJ** — sin baremos verificados. §5.
 4. **Dosificación** (series, repeticiones, intensidades, progresión concreta) — **no se pudo extraer de ningún metaanálisis**, porque requería abrir los artículos. Es el vacío más limitante de este archivo para uso práctico: se sabe *qué* funciona, no *en qué dosis*.
