@@ -44,6 +44,32 @@ Cada afirmación sustantiva del proyecto lleva una de estas tres marcas:
 
 Sin etiqueta = la afirmación no debería estar en el archivo.
 
+### ⚠️ Restricción de red del entorno (comprobada 2026-08-24)
+
+El entorno de ejecución tiene una política de egreso restrictiva. Comprobado empíricamente:
+
+| Recurso | Estado |
+|---|---|
+| Búsqueda web (WebSearch) | ✅ Funciona — devuelve títulos, URLs y extractos |
+| `pubmed.ncbi.nlm.nih.gov` | ❌ `EGRESS_BLOCKED` |
+| `pmc.ncbi.nlm.nih.gov` | ❌ `EGRESS_BLOCKED` |
+| `bjsm.bmj.com` | ❌ `EGRESS_BLOCKED` |
+| `journals.plos.org` | ❌ `EGRESS_BLOCKED` |
+
+**Consecuencia directa:** el criterio de calidad nº 1 del encargo — *"cada fuente citada existe y es accesible; verifica cada URL antes de incluirla"* — **no se puede cumplir en este entorno tal como está definido.** No es posible abrir ni un solo artículo.
+
+Lo que sí permite la búsqueda web es confirmar que un trabajo existe, con su título, autoría, revista, año y URL, a partir de los resultados del buscador. Eso es *localización*, no *verificación directa*. La diferencia importa y no se puede disimular.
+
+**Niveles de verificación que se usarán, según cómo se resuelva esta restricción:**
+
+| Nivel | Significado |
+|---|---|
+| `V1 — abierta` | URL abierta directamente; contenido comprobado contra la afirmación |
+| `V2 — localizada` | Existencia y metadatos confirmados por buscador; **contenido no comprobado directamente** |
+| `V0 — no verificada` | Ni abierta ni localizada → la cita se elimina y la afirmación se borra o se marca como vacío |
+
+Bajo la restricción actual, el máximo alcanzable es `V2`. Toda cita del proyecto tendría que llevar esa marca de forma visible, y `99-bibliografia.md` declararlo en cabecera. **Decisión pendiente del usuario** (ver §8).
+
 ### Formato de cita
 
 ```
@@ -301,7 +327,21 @@ Checklist ejecutada y reportada antes de dar el proyecto por terminado:
 
 ---
 
-## 7. Estado de avance
+## 7. Decisión pendiente antes de abrir la Fase 1
+
+La restricción de red descrita en §2 obliga a elegir cómo se procede. Las tres vías:
+
+**A — Proceder con verificación `V2`.** Se investiga con búsqueda web. Cada cita lleva marcado que sus metadatos están confirmados pero su contenido no se abrió directamente. El proyecto avanza completo; el rigor declarado baja un escalón respecto al encargo original, pero de forma explícita y auditable, nunca disimulada.
+
+**B — Habilitar acceso de red y proceder con `V1`.** Requiere un entorno cuya política de egreso permita `pubmed.ncbi.nlm.nih.gov`, `pmc.ncbi.nlm.nih.gov` y los dominios de las revistas indexadas. Es la única vía que cumple el encargo tal como está escrito.
+
+**C — Vía mixta.** Se construye ahora todo lo que no depende de verificación de fuentes (catálogo de implementos, esqueleto de escenarios, motor de sustitución, plantillas, reglas de seguridad en su parte estructural), y la investigación citada queda pendiente de un entorno con acceso. Reduce el tiempo perdido pero deja el proyecto a medias por diseño.
+
+Sin esta decisión no se abre la Fase 1: empezar a citar sin definir el nivel de verificación es exactamente el fallo que la regla dura del §2 existe para impedir.
+
+---
+
+## 8. Estado de avance
 
 | Fase | Estado | Fecha |
 |---|---|---|
