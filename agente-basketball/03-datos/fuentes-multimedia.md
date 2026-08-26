@@ -121,3 +121,36 @@ Sirve, eso sí, como hoja de ruta si algún día se licencia ese material direct
 **Dónde se queda corta, y hay que decirlo:** una figura esquemática lateral muestra el patrón, no el detalle. No enseña la posición exacta del pie, ni el gesto de la mano, ni el matiz que distingue una técnica buena de una aceptable. Para eso hace falta vídeo real o, mejor, un profesional presencial mirando.
 
 Por eso cada ficha de la guía lleva **errores frecuentes descritos**: es la forma de transmitir por escrito lo que un vídeo enseñaría por imitación.
+
+---
+
+## 6. Animaciones incorporadas para uso privado (2026-08-26)
+
+**Decisión del usuario, tomada tras exponerle el estado de la licencia dos veces.** La app incorpora **25 animaciones GIF** procedentes de `hasaneyldrm/exercises-dataset`, cuyos medios son **© Gym visual**.
+
+### El estado real, sin adornos
+
+Esos medios están en aquel repositorio con permiso escrito del titular **para ese repositorio**. Su `NOTICE.md` dice literalmente que clonarlo no otorga licencia a terceros. **No estamos licenciados para redistribuirlos.**
+
+| Uso | Estado |
+|---|---|
+| Uso personal y privado del propietario del proyecto | Decisión asumida por el usuario |
+| Compartir la app, publicarla o distribuirla | **No permitido** sin licencia propia de Gym visual |
+
+La atribución `© Gym visual — gymvisual.com` aparece en cada ficha y en el pie de la app, que es lo mínimo que exigen sus términos.
+
+**Si esta app llega a salir del uso privado**, hay dos salidas limpias:
+1. Retirar las 25 animaciones y volver a las imágenes fijas de `free-exercise-db` (dominio público) y `RepDB` (licencia de app con atribución), que ya están integradas y cubren 27 ejercicios.
+2. Licenciar el material directamente en <https://gymvisual.com/>.
+
+### Cobertura final
+
+| Origen | Ejercicios | Licencia |
+|---|---|---|
+| Gym visual (animación) | 25 | ⚠ solo uso privado |
+| RepDB / free-exercise-db (imagen fija) | 2 | ✅ limpia |
+| **Sin medio** | **5** | — |
+
+Los cinco sin nada son `CAD-05` bisagra de cadera, `SUP-05` flexión en pica, `PLI-03` saltos repetidos, `PREV-01` equilibrio monopodal y `PREV-08` movilidad de tobillo.
+
+**Quinta confirmación del patrón**, y esta vez sin la excusa de la licencia: ni siquiera la base de 1.324 animaciones cubre el equilibrio monopodal, los saltos repetidos ni la movilidad de tobillo. Son de gimnasio; eso es propiocepción y prevención.
