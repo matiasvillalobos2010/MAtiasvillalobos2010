@@ -1,0 +1,474 @@
+<title>Registro de Progreso</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+
+<style>
+:root{
+  --bg:#F5F8F8; --surface:#FFFFFF; --surface-2:#EEF3F3;
+  --ink:#10201F; --ink-2:#3A4E4C; --muted:#5F7371;
+  --line:#DBE5E4; --line-2:#C6D4D3;
+  --accent:#0E7C7B; --accent-soft:#DCEDEC; --accent-ink:#0A5C5B;
+  --good:#2E7D4F; --good-soft:#E1F0E7;
+  --warn:#9C5A00; --warn-soft:#FBEDD9;
+  --crit:#A82018; --crit-soft:#FBE5E3;
+  --shadow:0 1px 2px rgba(16,32,31,.06),0 1px 8px rgba(16,32,31,.04);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0C1413; --surface:#141F1E; --surface-2:#1B2726;
+    --ink:#E4EEED; --ink-2:#B7C9C7; --muted:#8CA3A1;
+    --line:#22312F; --line-2:#2F413F;
+    --accent:#3FC9C2; --accent-soft:#12312F; --accent-ink:#7FDFD9;
+    --good:#5FC98A; --good-soft:#122C1E;
+    --warn:#E0A64A; --warn-soft:#33260F;
+    --crit:#F08A80; --crit-soft:#331714;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 1px 10px rgba(0,0,0,.25);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0C1413; --surface:#141F1E; --surface-2:#1B2726;
+  --ink:#E4EEED; --ink-2:#B7C9C7; --muted:#8CA3A1;
+  --line:#22312F; --line-2:#2F413F;
+  --accent:#3FC9C2; --accent-soft:#12312F; --accent-ink:#7FDFD9;
+  --good:#5FC98A; --good-soft:#122C1E;
+  --warn:#E0A64A; --warn-soft:#33260F;
+  --crit:#F08A80; --crit-soft:#331714;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 1px 10px rgba(0,0,0,.25);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:"IBM Plex Sans",system-ui,-apple-system,sans-serif;
+  font-size:15px; line-height:1.55; -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3{font-family:Archivo,system-ui,sans-serif; text-wrap:balance; margin:0}
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace; font-variant-numeric:tabular-nums}
+
+.wrap{max-width:1180px; margin:0 auto; padding:28px 20px 72px}
+
+/* header */
+header.top{display:flex; flex-wrap:wrap; gap:16px; align-items:flex-end; justify-content:space-between; padding-bottom:20px; border-bottom:1px solid var(--line)}
+.brand{display:flex; flex-direction:column; gap:4px}
+.eyebrow{font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted)}
+h1{font-size:clamp(24px,3.4vw,34px); font-weight:700; letter-spacing:-.02em}
+.sub{color:var(--ink-2); font-size:14px; max-width:62ch}
+button.ghost{
+  font-family:"IBM Plex Sans",sans-serif; font-size:13px; font-weight:500;
+  background:var(--surface); color:var(--ink-2); border:1px solid var(--line-2);
+  border-radius:7px; padding:8px 12px; cursor:pointer;
+}
+button.ghost:hover{border-color:var(--accent); color:var(--accent-ink)}
+:focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:4px}
+
+/* objective bar */
+.objbar{
+  margin-top:22px; background:var(--surface); border:1px solid var(--line);
+  border-radius:12px; padding:16px 18px; box-shadow:var(--shadow);
+  display:flex; flex-wrap:wrap; gap:14px; align-items:flex-end;
+}
+.field{display:flex; flex-direction:column; gap:5px; min-width:0}
+.field label{font-size:11px; font-family:"IBM Plex Mono",monospace; letter-spacing:.1em; text-transform:uppercase; color:var(--muted)}
+select,input[type="text"],input[type="number"],input[type="date"]{
+  font-family:"IBM Plex Sans",sans-serif; font-size:14px;
+  background:var(--surface); color:var(--ink);
+  border:1px solid var(--line-2); border-radius:7px; padding:8px 10px;
+}
+input[type="number"]{font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums}
+select{cursor:pointer}
+.grow{flex:1 1 200px}
+
+/* stat tiles */
+.tiles{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:14px; margin-top:14px}
+.tile{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:15px 17px; box-shadow:var(--shadow)}
+.tile .k{font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted)}
+.tile .v{font-family:Archivo,sans-serif; font-size:30px; font-weight:600; letter-spacing:-.02em; font-variant-numeric:tabular-nums; margin-top:3px; line-height:1.1}
+.tile .n{font-size:12.5px; color:var(--ink-2); margin-top:3px}
+.pill{display:inline-flex; align-items:center; gap:5px; font-size:11.5px; font-weight:600; font-family:"IBM Plex Mono",monospace; padding:2px 8px; border-radius:999px; margin-top:6px}
+.pill.good{background:var(--good-soft); color:var(--good)}
+.pill.warn{background:var(--warn-soft); color:var(--warn)}
+.pill.crit{background:var(--crit-soft); color:var(--crit)}
+
+/* layout */
+.cols{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.15fr); gap:18px; margin-top:18px; align-items:start}
+@media (max-width:860px){.cols{grid-template-columns:1fr}}
+.card{background:var(--surface); border:1px solid var(--line); border-radius:12px; box-shadow:var(--shadow); overflow:hidden}
+.card > h2{font-size:15px; font-weight:600; letter-spacing:-.01em; padding:15px 18px 0}
+.card .hint{font-size:12.5px; color:var(--muted); padding:3px 18px 0; max-width:60ch}
+.card .body{padding:14px 18px 18px}
+.stack{display:flex; flex-direction:column; gap:18px}
+
+form .row{display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:11px}
+form .row + .row{margin-top:11px}
+.check{display:flex; gap:9px; align-items:flex-start; margin-top:13px; font-size:13.5px; color:var(--ink-2); cursor:pointer}
+.check input{margin-top:3px; accent-color:var(--accent); width:15px; height:15px; flex:none}
+button.primary{
+  margin-top:15px; width:100%; font-family:"IBM Plex Sans",sans-serif;
+  font-size:14px; font-weight:600; background:var(--accent); color:#fff;
+  border:none; border-radius:8px; padding:11px; cursor:pointer;
+}
+button.primary:hover{filter:brightness(1.08)}
+:root[data-theme="dark"] button.primary{color:#08201F}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) button.primary{color:#08201F}}
+
+/* table */
+.tablewrap{overflow-x:auto}
+table{width:100%; border-collapse:collapse; font-size:13.5px}
+th{font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); text-align:left; font-weight:500; padding:8px 10px; border-bottom:1px solid var(--line)}
+td{padding:9px 10px; border-bottom:1px solid var(--line); color:var(--ink-2); white-space:nowrap}
+td.num{font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums; color:var(--ink)}
+tr:last-child td{border-bottom:none}
+.del{background:none; border:none; color:var(--muted); cursor:pointer; font-size:15px; line-height:1; padding:2px 5px; border-radius:5px}
+.del:hover{color:var(--crit); background:var(--crit-soft)}
+
+/* chart */
+.chart{width:100%; display:block}
+.chartnote{font-size:12px; color:var(--muted); margin-top:9px; max-width:62ch}
+.tip{
+  position:fixed; pointer-events:none; opacity:0; transition:opacity .1s;
+  background:var(--ink); color:var(--bg); font-family:"IBM Plex Mono",monospace;
+  font-size:11.5px; padding:6px 9px; border-radius:6px; z-index:50; white-space:nowrap;
+}
+
+/* achievements */
+.logros{display:flex; flex-direction:column; gap:9px}
+.logro{display:flex; gap:11px; align-items:flex-start; padding:11px 13px; border-radius:9px; background:var(--surface-2); border:1px solid var(--line)}
+.logro.on{background:var(--good-soft); border-color:transparent}
+.logro .mk{font-family:"IBM Plex Mono",monospace; font-size:12px; font-weight:600; flex:none; width:20px; text-align:center; color:var(--muted)}
+.logro.on .mk{color:var(--good)}
+.logro .t{font-size:13.5px; font-weight:600; color:var(--ink)}
+.logro .d{font-size:12.5px; color:var(--ink-2)}
+
+/* alert */
+.alert{border-radius:10px; padding:14px 16px; font-size:13.5px; line-height:1.5}
+.alert.crit{background:var(--crit-soft); color:var(--crit); border:1px solid transparent}
+.alert.crit strong{display:block; font-family:Archivo,sans-serif; font-size:14.5px; margin-bottom:4px}
+.alert.warn{background:var(--warn-soft); color:var(--warn)}
+
+.empty{color:var(--muted); font-size:13.5px; padding:16px 0; text-align:center}
+footer{margin-top:34px; padding-top:20px; border-top:1px solid var(--line); font-size:12.5px; color:var(--muted); max-width:76ch}
+footer strong{color:var(--ink-2)}
+footer p{margin:0 0 9px}
+textarea{width:100%; min-height:110px; font-family:"IBM Plex Mono",monospace; font-size:11.5px; background:var(--surface-2); color:var(--ink-2); border:1px solid var(--line-2); border-radius:8px; padding:10px; resize:vertical}
+</style>
+
+<div class="wrap">
+
+<header class="top">
+  <div class="brand">
+    <span class="eyebrow">Agente de baloncesto · módulo de progreso</span>
+    <h1>Registro de progreso</h1>
+    <p class="sub">Carga de sesión, métrica de objetivo y dosis del bloque preventivo. Todo se guarda en este navegador.</p>
+  </div>
+  <button class="ghost" id="theme">Cambiar tema</button>
+</header>
+
+<section class="objbar">
+  <div class="field grow">
+    <label for="obj">Objetivo</label>
+    <select id="obj">
+      <option value="OBJ-SALTO">Fortalecer el salto</option>
+      <option value="OBJ-EXPL">Mejorar explosividad</option>
+      <option value="OBJ-RESIS">Mejorar resistencia</option>
+      <option value="OBJ-FULL">Full body</option>
+      <option value="OBJ-EQUIL">Equilibrado</option>
+      <option value="OBJ-VET">Veterano (≥35-40 años)</option>
+    </select>
+  </div>
+  <div class="field grow">
+    <label for="mname">Métrica de seguimiento</label>
+    <input type="text" id="mname" placeholder="CMJ, dominadas, kg en sentadilla…">
+  </div>
+  <div class="field" style="width:110px">
+    <label for="munit">Unidad</label>
+    <input type="text" id="munit" placeholder="cm">
+  </div>
+  <div class="field" style="width:130px">
+    <label for="mgoal">Meta (opcional)</label>
+    <input type="number" id="mgoal" step="0.1" placeholder="—">
+  </div>
+</section>
+
+<section class="tiles" id="tiles"></section>
+
+<div class="cols">
+
+  <div class="stack">
+    <div class="card">
+      <h2>Registrar sesión</h2>
+      <p class="hint">La carga se calcula como esfuerzo percibido × minutos.</p>
+      <div class="body">
+        <form id="fs">
+          <div class="row">
+            <div class="field"><label for="sd">Fecha</label><input type="date" id="sd" required></div>
+            <div class="field"><label for="sm">Minutos</label><input type="number" id="sm" min="5" max="300" value="60" required></div>
+            <div class="field"><label for="sr">Esfuerzo 1-10</label><input type="number" id="sr" min="1" max="10" step="0.5" value="6" required></div>
+          </div>
+          <div class="row">
+            <div class="field"><label for="st">Tipo de sesión</label>
+              <select id="st">
+                <option>Fuerza</option><option>Pliometría</option><option>Acondicionamiento</option>
+                <option>Preventivo</option><option>Técnico con balón</option><option>Partido</option><option>Mixta</option>
+              </select>
+            </div>
+          </div>
+          <label class="check"><input type="checkbox" id="sp"> Incluyó el bloque preventivo neuromuscular</label>
+          <label class="check"><input type="checkbox" id="sa"> Dolor que persistió más de 24 h, o alguna señal de alarma</label>
+          <button class="primary" type="submit">Guardar sesión</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Registrar medición</h2>
+      <p class="hint">La métrica que definiste arriba. Solo te compara contigo mismo.</p>
+      <div class="body">
+        <form id="fm">
+          <div class="row">
+            <div class="field"><label for="md">Fecha</label><input type="date" id="md" required></div>
+            <div class="field"><label for="mv">Valor</label><input type="number" id="mv" step="0.1" required></div>
+          </div>
+          <button class="primary" type="submit">Guardar medición</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Sesiones registradas</h2>
+      <div class="body" style="padding-top:6px">
+        <div class="tablewrap"><table id="tbl"><tbody></tbody></table></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stack">
+    <div id="alertbox"></div>
+
+    <div class="card">
+      <h2>Carga semanal</h2>
+      <p class="hint">Suma de esfuerzo × minutos por semana. Últimas 10 semanas con registro.</p>
+      <div class="body"><svg class="chart" id="cLoad" role="img" aria-label="Carga de entrenamiento por semana"></svg>
+        <p class="chartnote">No se calcula ACWR ni "zonas seguras": el modelo tiene crítica metodológica publicada. Lo que sí importa es evitar saltos bruscos de una semana a la siguiente.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 id="mtitle">Progreso de la métrica</h2>
+      <p class="hint" id="mhint">Define una métrica arriba y registra mediciones.</p>
+      <div class="body"><svg class="chart" id="cMet" role="img" aria-label="Evolución de la métrica de seguimiento"></svg>
+        <p class="chartnote">Comparación intraindividual. No existen baremos normativos verificados en este proyecto, así que no hay percentiles ni clasificación frente a otros.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Logros</h2>
+      <p class="hint">Se activan solos a partir de lo que registras.</p>
+      <div class="body"><div class="logros" id="logros"></div></div>
+    </div>
+
+    <div class="card">
+      <h2>Copia de seguridad</h2>
+      <p class="hint">Los datos viven solo en este navegador. Copia este texto para conservarlos.</p>
+      <div class="body"><textarea id="dump" readonly></textarea></div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p><strong>Qué no hace este registro.</strong> No calcula ACWR ni umbrales de carga. No te compara con baremos normativos. No interpreta señales de dolor: si marcas una, te dice que consultes, no la analiza.</p>
+  <p><strong>La única dosis con evidencia real</strong> del proyecto es la frecuencia del bloque preventivo neuromuscular: 2-3 sesiones por semana producen una reducción de riesgo sustancialmente mayor que una sola. El resto de las cifras son práctica convencional.</p>
+  <p>Fuentes de nivel V2 — localizadas pero no abiertas directamente. Este registro no sustituye a un profesional presencial.</p>
+</footer>
+</div>
+
+<div class="tip" id="tip"></div>
+
+<script>
+const K='bkb-progreso-v1';
+const S={obj:'OBJ-SALTO',mname:'',munit:'',mgoal:'',ses:[],med:[]};
+let D=Object.assign({},S);
+
+function load(){try{const r=localStorage.getItem(K); if(r)D=Object.assign({},S,JSON.parse(r));}catch(e){}}
+function save(){try{localStorage.setItem(K,JSON.stringify(D));}catch(e){}}
+
+const $=id=>document.getElementById(id);
+const fmt=n=>Number(n).toLocaleString('es-ES',{maximumFractionDigits:1});
+const iso=d=>d.toISOString().slice(0,10);
+
+// lunes de la semana de una fecha
+function wkKey(s){const d=new Date(s+'T00:00:00');const day=(d.getDay()+6)%7;d.setDate(d.getDate()-day);return iso(d);}
+function wkLabel(k){const d=new Date(k+'T00:00:00');return d.getDate()+'/'+(d.getMonth()+1);}
+
+function weeks(){
+  const m=new Map();
+  D.ses.forEach(s=>{const k=wkKey(s.d);
+    if(!m.has(k))m.set(k,{k,load:0,n:0,prev:0});
+    const w=m.get(k); w.load+=s.r*s.m; w.n++; if(s.p)w.prev++;});
+  return [...m.values()].sort((a,b)=>a.k<b.k?-1:1);
+}
+function thisWeek(){const k=wkKey(iso(new Date()));return weeks().find(w=>w.k===k)||{load:0,n:0,prev:0};}
+
+function tiles(){
+  const w=thisWeek(), ws=weeks(), tot=D.ses.length;
+  const prevPill = w.prev>=2
+    ? '<span class="pill good">✓ dosis cumplida</span>'
+    : (tot? '<span class="pill warn">△ infradosificado</span>':'');
+  // variación de carga semana a semana
+  let delta='—', dn='Sin semana previa';
+  if(ws.length>=2){
+    const a=ws[ws.length-1].load, b=ws[ws.length-2].load;
+    if(b>0){const p=Math.round((a-b)/b*100); delta=(p>0?'+':'')+p+'%';
+      dn = Math.abs(p)>=40 ? 'Salto brusco respecto a la semana anterior' : 'Cambio moderado';}
+  }
+  const meds=D.med.slice().sort((x,y)=>x.d<y.d?-1:1);
+  let best='—', bn='Sin mediciones';
+  if(meds.length){const mx=Math.max(...meds.map(m=>m.v));
+    best=fmt(mx)+(D.munit?' '+D.munit:''); bn='Mejor marca registrada';}
+
+  $('tiles').innerHTML=`
+   <div class="tile"><div class="k">Sesiones esta semana</div><div class="v">${w.n}</div><div class="n">${tot} en total</div></div>
+   <div class="tile"><div class="k">Carga semanal</div><div class="v">${fmt(w.load)}</div><div class="n">esfuerzo × minutos</div></div>
+   <div class="tile"><div class="k">Variación de carga</div><div class="v">${delta}</div><div class="n">${dn}</div></div>
+   <div class="tile"><div class="k">Preventivo</div><div class="v">${w.prev}<span style="font-size:16px;color:var(--muted)">/sem</span></div>${prevPill||'<div class="n">Objetivo: 2-3 por semana</div>'}</div>`;
+}
+
+function alerts(){
+  const has=D.ses.some(s=>s.a);
+  $('alertbox').innerHTML = has ? `<div class="alert crit">
+    <strong>Has marcado una señal de alarma</strong>
+    Dolor que persiste más de 24 h tras la sesión, aumento de inflamación, pérdida de rango o sensación de fallo articular son motivos para consultar a un profesional sanitario. Este registro no interpreta síntomas ni decide si puedes seguir entrenando.</div>` : '';
+}
+
+const CSS=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const tip=$('tip');
+function showTip(e,t){tip.textContent=t;tip.style.opacity='1';tip.style.left=(e.clientX+14)+'px';tip.style.top=(e.clientY-12)+'px';}
+function hideTip(){tip.style.opacity='0';}
+
+function barChart(el,data,unit){
+  const W=520,H=190,PL=42,PR=12,PT=14,PB=30;
+  const acc=CSS('--accent'),line=CSS('--line'),mut=CSS('--muted');
+  if(!data.length){el.innerHTML=`<text x="12" y="30" fill="${mut}" font-family="IBM Plex Sans" font-size="13">Aún no hay sesiones registradas.</text>`;el.setAttribute('viewBox','0 0 520 60');return;}
+  el.setAttribute('viewBox',`0 0 ${W} ${H}`);
+  const max=Math.max(...data.map(d=>d.load))*1.15||1;
+  const iw=W-PL-PR, ih=H-PT-PB;
+  const bw=Math.min(46,iw/data.length-8), step=iw/data.length;
+  let g='';
+  for(let i=0;i<=2;i++){const y=PT+ih-(ih*i/2);
+    g+=`<line x1="${PL}" x2="${W-PR}" y1="${y}" y2="${y}" stroke="${line}" stroke-width="1"/>
+        <text x="${PL-8}" y="${y+4}" text-anchor="end" fill="${mut}" font-family="IBM Plex Mono" font-size="10">${fmt(max*i/2)}</text>`;}
+  data.forEach((d,i)=>{
+    const h=Math.max(3,ih*d.load/max), x=PL+step*i+(step-bw)/2, y=PT+ih-h;
+    g+=`<rect class="bar" data-t="Semana del ${wkLabel(d.k)} · ${fmt(d.load)} ${unit} · ${d.n} sesion${d.n===1?'':'es'}" x="${x}" y="${y}" width="${bw}" height="${h}" rx="4" fill="${acc}"/>
+        <text x="${x+bw/2}" y="${H-10}" text-anchor="middle" fill="${mut}" font-family="IBM Plex Mono" font-size="10">${wkLabel(d.k)}</text>`;});
+  el.innerHTML=g;
+  el.querySelectorAll('.bar').forEach(b=>{
+    b.addEventListener('mousemove',e=>showTip(e,b.dataset.t));
+    b.addEventListener('mouseleave',hideTip);});
+}
+
+function lineChart(el,data,unit,goal){
+  const W=520,H=190,PL=46,PR=14,PT=16,PB=30;
+  const acc=CSS('--accent'),line=CSS('--line'),mut=CSS('--muted'),sur=CSS('--surface'),warn=CSS('--warn');
+  if(data.length<1){el.innerHTML=`<text x="12" y="30" fill="${mut}" font-family="IBM Plex Sans" font-size="13">Aún no hay mediciones registradas.</text>`;el.setAttribute('viewBox','0 0 520 60');return;}
+  el.setAttribute('viewBox',`0 0 ${W} ${H}`);
+  const vals=data.map(d=>d.v).concat(goal?[goal]:[]);
+  let lo=Math.min(...vals),hi=Math.max(...vals);
+  if(hi===lo){hi=lo+1;lo=Math.max(0,lo-1);}
+  const pad=(hi-lo)*.18; lo-=pad; hi+=pad;
+  const iw=W-PL-PR, ih=H-PT-PB;
+  const X=i=>PL+(data.length===1?iw/2:iw*i/(data.length-1));
+  const Y=v=>PT+ih-ih*(v-lo)/(hi-lo);
+  let g='';
+  for(let i=0;i<=2;i++){const v=lo+(hi-lo)*i/2,y=Y(v);
+    g+=`<line x1="${PL}" x2="${W-PR}" y1="${y}" y2="${y}" stroke="${line}" stroke-width="1"/>
+        <text x="${PL-8}" y="${y+4}" text-anchor="end" fill="${mut}" font-family="IBM Plex Mono" font-size="10">${fmt(v)}</text>`;}
+  if(goal){const y=Y(goal);
+    g+=`<line x1="${PL}" x2="${W-PR}" y1="${y}" y2="${y}" stroke="${warn}" stroke-width="2" stroke-dasharray="5 4"/>
+        <text x="${W-PR}" y="${y-6}" text-anchor="end" fill="${warn}" font-family="IBM Plex Mono" font-size="10">meta ${fmt(goal)}</text>`;}
+  if(data.length>1){
+    g+=`<path d="${data.map((d,i)=>(i?'L':'M')+X(i)+' '+Y(d.v)).join(' ')}" fill="none" stroke="${acc}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;}
+  data.forEach((d,i)=>{
+    const last=i===data.length-1;
+    g+=`<circle class="pt" data-t="${d.d} · ${fmt(d.v)} ${unit}" cx="${X(i)}" cy="${Y(d.v)}" r="${last?6:4.5}" fill="${acc}" stroke="${sur}" stroke-width="2"/>`;});
+  const l=data[data.length-1];
+  g+=`<text x="${X(data.length-1)}" y="${Y(l.v)-13}" text-anchor="${data.length===1?'middle':'end'}" fill="${CSS('--ink')}" font-family="IBM Plex Mono" font-size="11.5" font-weight="600">${fmt(l.v)} ${unit}</text>`;
+  el.innerHTML=g;
+  el.querySelectorAll('.pt').forEach(p=>{
+    p.addEventListener('mousemove',e=>showTip(e,p.dataset.t));
+    p.addEventListener('mouseleave',hideTip);});
+}
+
+function logros(){
+  const ws=weeks(), meds=D.med.slice().sort((a,b)=>a.d<b.d?-1:1);
+  const prevWeeks=ws.filter(w=>w.prev>=2).length;
+  const first=meds.length?meds[0].v:null, best=meds.length?Math.max(...meds.map(m=>m.v)):null;
+  const gain=(first!==null&&first!==0)?((best-first)/Math.abs(first)*100):0;
+  const streak=(()=>{let c=0;for(let i=ws.length-1;i>=0;i--){if(ws[i].n>0)c++;else break;}return c;})();
+  const L=[
+    [D.ses.length>=1,'Primera sesión registrada','El seguimiento empieza cuando hay algo que seguir.'],
+    [prevWeeks>=1,'Dosis preventiva cumplida','Una semana con 2 o más sesiones de bloque preventivo.'],
+    [prevWeeks>=4,'Dosis preventiva sostenida','Cuatro semanas cumpliendo la única dosis con evidencia del proyecto.'],
+    [streak>=3,'Tres semanas seguidas','Constancia por encima de intensidad.'],
+    [D.ses.length>=12,'Doce sesiones','Volumen suficiente para que la métrica empiece a decir algo.'],
+    [meds.length>=2,'Métrica en seguimiento','Dos mediciones o más: ya hay tendencia, no solo un dato.'],
+    [gain>=5,'Mejora del 5 %','Sobre tu propia primera medición, no sobre ningún baremo.'],
+    [D.mgoal&&best!==null&&best>=Number(D.mgoal),'Meta alcanzada','Llegaste al valor que fijaste al principio.']
+  ];
+  $('logros').innerHTML=L.map(([on,t,d])=>
+    `<div class="logro${on?' on':''}"><span class="mk">${on?'✓':'○'}</span><div><div class="t">${t}</div><div class="d">${d}</div></div></div>`).join('');
+}
+
+function table(){
+  const rows=D.ses.slice().sort((a,b)=>a.d<b.d?1:-1).slice(0,14);
+  const tb=$('tbl').querySelector('tbody');
+  if(!rows.length){tb.innerHTML='<tr><td colspan="6"><div class="empty">Todavía no has registrado ninguna sesión.</div></td></tr>';return;}
+  tb.innerHTML='<tr><th>Fecha</th><th>Tipo</th><th>Min</th><th>RPE</th><th>Carga</th><th></th></tr>'+
+   rows.map(s=>`<tr><td class="num">${s.d}</td><td>${s.t}${s.p?' <span class="pill good" style="margin:0;padding:1px 6px">prev</span>':''}${s.a?' <span class="pill crit" style="margin:0;padding:1px 6px">alarma</span>':''}</td>
+   <td class="num">${s.m}</td><td class="num">${s.r}</td><td class="num">${fmt(s.r*s.m)}</td>
+   <td><button class="del" data-id="${s.id}" aria-label="Eliminar sesión del ${s.d}">×</button></td></tr>`).join('');
+  tb.querySelectorAll('.del').forEach(b=>b.onclick=()=>{
+    D.ses=D.ses.filter(x=>x.id!==b.dataset.id); save(); render();});
+}
+
+function render(){
+  tiles(); alerts(); table(); logros();
+  barChart($('cLoad'),weeks().slice(-10),'de carga');
+  const meds=D.med.slice().sort((a,b)=>a.d<b.d?-1:1);
+  lineChart($('cMet'),meds,D.munit||'',D.mgoal?Number(D.mgoal):null);
+  $('mtitle').textContent = D.mname ? 'Progreso · '+D.mname : 'Progreso de la métrica';
+  $('mhint').textContent = D.mname
+    ? 'Cada punto es una medición tuya. La línea discontinua, si la hay, es tu meta.'
+    : 'Define una métrica arriba y registra mediciones.';
+  $('dump').value=JSON.stringify(D);
+}
+
+// eventos
+['obj','mname','munit','mgoal'].forEach(id=>{
+  $(id).addEventListener('input',()=>{D[id]=$(id).value; save(); render();});});
+
+$('fs').addEventListener('submit',e=>{
+  e.preventDefault();
+  D.ses.push({id:Date.now()+'',d:$('sd').value,m:+$('sm').value,r:+$('sr').value,
+              t:$('st').value,p:$('sp').checked,a:$('sa').checked});
+  $('sp').checked=false; $('sa').checked=false;
+  save(); render();});
+
+$('fm').addEventListener('submit',e=>{
+  e.preventDefault();
+  D.med.push({d:$('md').value,v:+$('mv').value});
+  $('mv').value=''; save(); render();});
+
+$('theme').addEventListener('click',()=>{
+  const cur=document.documentElement.getAttribute('data-theme');
+  const dark=cur? cur==='dark' : matchMedia('(prefers-color-scheme:dark)').matches;
+  document.documentElement.setAttribute('data-theme',dark?'light':'dark');
+  render();});
+
+matchMedia('(prefers-color-scheme:dark)').addEventListener('change',render);
+
+load();
+$('obj').value=D.obj; $('mname').value=D.mname; $('munit').value=D.munit; $('mgoal').value=D.mgoal;
+$('sd').value=iso(new Date()); $('md').value=iso(new Date());
+render();
+</script>

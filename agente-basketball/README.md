@@ -44,6 +44,35 @@ Quiero un plan de nutrición. Pívot, 27 años, 104 kg, profesional,
 
 El agente **te entrevistará primero** —salud, perfil, implementos, disponibilidad, contexto— y no generará nada hasta tener los campos bloqueantes. No es fricción gratuita: es lo que impide que te prescriba material que no tienes o carga que no deberías.
 
+### Recomendador por objetivo
+
+El agente parte de **qué quieres conseguir** y traduce el objetivo a una distribución concreta de bloques, apoyada en el benchmark de esa cualidad:
+
+| Objetivo | Bloque dominante | Lo que NO conseguirá |
+|---|---|---|
+| Fortalecer el salto | Pliometría 40 % + fuerza 30 % | Esprint lineal |
+| Explosividad | Pliometría multidireccional + frenado excéntrico | Velocidad lineal |
+| Resistencia | RSA/HIIT 45 %, formato 20×15 m | No es trote continuo |
+| Full body | Un ejercicio por patrón | Transferencia al gesto no demostrada |
+| Equilibrado | Preventivo 20 %, innegociable | Ninguna cualidad destaca |
+| Veterano ≥35-40 años | Preventivo 30 % + fuerza 35 % | **Sin evidencia de esa población** |
+
+**Cada objetivo declara lo que el plan no va a conseguir.** Un recomendador que solo dice lo que mejora está vendiendo, no recomendando.
+
+Detalle en [`02-agente/recomendador-por-objetivo.md`](02-agente/recomendador-por-objetivo.md).
+
+---
+
+## App de seguimiento
+
+[`06-app/seguimiento.html`](06-app/seguimiento.html) — se abre en el navegador y guarda los datos en él. Registra sesiones (carga = esfuerzo percibido × minutos), la métrica que fijaste con el agente, y activa logros solo.
+
+Lo que **no** hace, por coherencia con la investigación: no calcula ACWR ni "zonas seguras" de carga, no te compara con baremos normativos, y no interpreta señales de dolor — si marcas una, te dice que consultes.
+
+Lo que sí vigila es la única dosis con evidencia real del proyecto: **2-3 sesiones semanales de bloque preventivo**. Por debajo de eso, avisa.
+
+---
+
 ### Qué esperar de su salida
 
 Todo plan incluye, obligatoriamente: qué cubre **y qué no**, las sustituciones aplicadas con su motivo, la justificación de cada decisión con su principio y etiqueta de evidencia, y la advertencia de nivel de verificación.
@@ -57,10 +86,11 @@ El orden importa: **primero la investigación, después el agente.** El agente n
 | Carpeta | Contenido |
 |---|---|
 | [`01-investigacion/`](01-investigacion/) | Fisiología y demandas, lesiones y prevención, fuerza y potencia, carga, metodologías de liga, nutrición, **casos de éxito y benchmarks**, bibliografía |
-| [`02-agente/`](02-agente/) | System prompt, protocolo de evaluación, motor de sustitución, reglas de seguridad |
+| [`02-agente/`](02-agente/) | System prompt, protocolo de evaluación, **recomendador por objetivo**, motor de sustitución, reglas de seguridad |
 | [`03-datos/`](03-datos/) | Catálogo de implementos, 73 ejercicios, 8 escenarios, fórmulas nutricionales |
 | [`04-plantillas/`](04-plantillas/) | Formatos de salida: entrenamiento, nutrición, informe de progreso |
 | [`05-salidas/`](05-salidas/) | Planes generados |
+| [`06-app/`](06-app/) | **App de seguimiento de progreso** (HTML, funciona en el navegador) |
 
 [`PLAN-DE-TRABAJO.md`](PLAN-DE-TRABAJO.md) documenta las fases, dependencias, riesgos y estado.
 
