@@ -63,6 +63,22 @@ Detalle en [`02-agente/recomendador-por-objetivo.md`](02-agente/recomendador-por
 
 ---
 
+## La app
+
+[`06-app/app.html`](06-app/app.html) — un solo archivo, sin dependencias, que funciona en **móvil, tablet y navegador**. Tres secciones:
+
+| Sección | Qué hace |
+|---|---|
+| **Hoy** | Tu objetivo, el reparto de bloques que le corresponde, y —siempre— **lo que ese plan no va a conseguir** |
+| **Ejercicios** | 24 fichas con imagen, esquema lateral y frontal, mapa muscular, errores frecuentes y progresiones |
+| **Progreso** | Sesiones, carga semanal, métrica del objetivo y logros |
+
+Navegación inferior en móvil, en cabecera desde tablet. Los datos se guardan en el navegador.
+
+Las dos apps originales siguen en la carpeta por separado: [`guia-ejecucion.html`](06-app/guia-ejecucion.html) y [`seguimiento.html`](06-app/seguimiento.html).
+
+---
+
 ## Guía de ejecución
 
 [`06-app/guia-ejecucion.html`](06-app/guia-ejecucion.html) — cómo se hace cada ejercicio. Para cada uno: **animación del movimiento**, **mapa muscular** con grupos principales y secundarios, colocación paso a paso, tempo, **errores frecuentes** y qué hacer si es demasiado o demasiado poco.
@@ -104,7 +120,7 @@ El orden importa: **primero la investigación, después el agente.** El agente n
 | [`03-datos/`](03-datos/) | Catálogo de implementos, 73 ejercicios, 8 escenarios, fórmulas nutricionales |
 | [`04-plantillas/`](04-plantillas/) | Formatos de salida: entrenamiento, nutrición, informe de progreso |
 | [`05-salidas/`](05-salidas/) | Planes generados |
-| [`06-app/`](06-app/) | **Guía de ejecución** y **app de seguimiento** (HTML, funcionan en el navegador) |
+| [`06-app/`](06-app/) | **App unificada** (`app.html`) más las dos apps originales por separado |
 
 [`PLAN-DE-TRABAJO.md`](PLAN-DE-TRABAJO.md) documenta las fases, dependencias, riesgos y estado.
 
