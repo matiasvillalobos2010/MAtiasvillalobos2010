@@ -1,0 +1,555 @@
+<title>Guía de Ejecución</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+
+<style>
+:root{
+  --bg:#F5F8F8; --surface:#FFFFFF; --surface-2:#EDF3F2;
+  --ink:#10201F; --ink-2:#3A4E4C; --muted:#5F7371;
+  --line:#DBE5E4; --line-2:#C6D4D3;
+  --accent:#0E7C7B; --accent-soft:#DCEDEC; --accent-ink:#0A5C5B;
+  --sec:#8AB9B6;
+  --good:#2E7D4F; --good-soft:#E1F0E7;
+  --warn:#9C5A00; --warn-soft:#FBEDD9;
+  --crit:#A82018; --crit-soft:#FBE5E3;
+  --body:#CBD9D8; --figure:#10201F;
+  --shadow:0 1px 2px rgba(16,32,31,.06),0 1px 8px rgba(16,32,31,.04);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0C1413; --surface:#141F1E; --surface-2:#1B2726;
+  --ink:#E4EEED; --ink-2:#B7C9C7; --muted:#8CA3A1;
+  --line:#22312F; --line-2:#2F413F;
+  --accent:#3FC9C2; --accent-soft:#12312F; --accent-ink:#7FDFD9;
+  --sec:#3E6D6A;
+  --good:#5FC98A; --good-soft:#122C1E;
+  --warn:#E0A64A; --warn-soft:#33260F;
+  --crit:#F08A80; --crit-soft:#331714;
+  --body:#2B3A38; --figure:#E4EEED;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 1px 10px rgba(0,0,0,.25);
+}}
+:root[data-theme="dark"]{
+  --bg:#0C1413; --surface:#141F1E; --surface-2:#1B2726;
+  --ink:#E4EEED; --ink-2:#B7C9C7; --muted:#8CA3A1;
+  --line:#22312F; --line-2:#2F413F;
+  --accent:#3FC9C2; --accent-soft:#12312F; --accent-ink:#7FDFD9;
+  --sec:#3E6D6A;
+  --good:#5FC98A; --good-soft:#122C1E;
+  --warn:#E0A64A; --warn-soft:#33260F;
+  --crit:#F08A80; --crit-soft:#331714;
+  --body:#2B3A38; --figure:#E4EEED;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 1px 10px rgba(0,0,0,.25);
+}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:Archivo,system-ui,sans-serif;text-wrap:balance;margin:0}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 20px 70px}
+
+header.top{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between;padding-bottom:18px;border-bottom:1px solid var(--line)}
+.eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+h1{font-size:clamp(24px,3.4vw,34px);font-weight:700;letter-spacing:-.02em;margin-top:4px}
+.sub{color:var(--ink-2);font-size:14px;max-width:64ch;margin:5px 0 0}
+button.ghost{font-size:13px;font-weight:500;font-family:inherit;background:var(--surface);color:var(--ink-2);border:1px solid var(--line-2);border-radius:7px;padding:8px 12px;cursor:pointer}
+button.ghost:hover{border-color:var(--accent);color:var(--accent-ink)}
+
+.filters{display:flex;flex-wrap:wrap;gap:7px;margin:18px 0 16px}
+.chip{font-family:"IBM Plex Mono",monospace;font-size:12px;background:var(--surface);color:var(--ink-2);border:1px solid var(--line-2);border-radius:999px;padding:6px 13px;cursor:pointer}
+.chip:hover{border-color:var(--accent)}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+:root[data-theme="dark"] .chip[aria-pressed="true"],
+:root:not([data-theme="light"]) .chip[aria-pressed="true"]{color:#08201F}
+
+.cols{display:grid;grid-template-columns:288px minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:900px){.cols{grid-template-columns:1fr}}
+
+.list{background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);overflow:hidden;max-height:78vh;overflow-y:auto}
+.li{display:flex;gap:11px;align-items:baseline;width:100%;text-align:left;background:none;border:none;border-bottom:1px solid var(--line);padding:11px 15px;cursor:pointer;font-family:inherit;font-size:14px;color:var(--ink-2)}
+.li:hover{background:var(--surface-2)}
+.li[aria-current="true"]{background:var(--accent-soft);color:var(--accent-ink);font-weight:600}
+.li .id{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);flex:none;width:52px}
+.li[aria-current="true"] .id{color:var(--accent-ink)}
+
+.detail{display:flex;flex-direction:column;gap:18px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);overflow:hidden}
+.card > h2{font-size:15px;font-weight:600;padding:15px 18px 0}
+.card .body{padding:13px 18px 18px}
+
+.hero{padding:18px}
+.hero .name{font-family:Archivo,sans-serif;font-size:22px;font-weight:700;letter-spacing:-.02em}
+.meta{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}
+.tag{font-family:"IBM Plex Mono",monospace;font-size:11px;padding:3px 9px;border-radius:999px;background:var(--surface-2);color:var(--ink-2);border:1px solid var(--line)}
+.tag.acc{background:var(--accent-soft);color:var(--accent-ink);border-color:transparent}
+.tag.no{background:var(--good-soft);color:var(--good);border-color:transparent}
+
+.visuals{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
+@media (max-width:620px){.visuals{grid-template-columns:1fr}}
+.panel{background:var(--surface-2);border-radius:10px;padding:12px}
+.panel h3{font-size:11px;font-family:"IBM Plex Mono",monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:6px}
+svg.viz{width:100%;height:auto;display:block}
+.ctrl{display:flex;gap:8px;align-items:center;margin-top:8px}
+.ctrl button{font-family:"IBM Plex Mono",monospace;font-size:11.5px;background:var(--surface);border:1px solid var(--line-2);color:var(--ink-2);border-radius:6px;padding:4px 10px;cursor:pointer}
+.ctrl button:hover{border-color:var(--accent)}
+.legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:9px;font-size:12px;color:var(--ink-2)}
+.legend span{display:flex;align-items:center;gap:6px}
+.sw{width:11px;height:11px;border-radius:3px;flex:none}
+
+ol.cues{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:7px;font-size:14px;color:var(--ink-2)}
+ol.cues strong{color:var(--ink)}
+ul.errs{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px}
+ul.errs li{display:flex;gap:10px;font-size:14px;color:var(--ink-2)}
+ul.errs .x{color:var(--crit);font-weight:700;flex:none;font-family:"IBM Plex Mono",monospace}
+ul.errs b{color:var(--ink);font-weight:600}
+
+.prog{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:620px){.prog{grid-template-columns:1fr}}
+.prog div{background:var(--surface-2);border-radius:9px;padding:12px 14px}
+.prog .k{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.prog .t{font-size:14px;color:var(--ink-2);margin-top:3px}
+
+.alert{border-radius:9px;padding:12px 15px;font-size:13.5px;line-height:1.5;background:var(--warn-soft);color:var(--warn)}
+.alert.crit{background:var(--crit-soft);color:var(--crit)}
+.alert b{display:block;font-family:Archivo,sans-serif;font-size:14px;margin-bottom:3px}
+
+footer{margin-top:32px;padding-top:20px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted);max-width:78ch}
+footer p{margin:0 0 9px}
+footer strong{color:var(--ink-2)}
+
+@media (prefers-reduced-motion:reduce){.fig *{animation:none !important}}
+.j{transform-box:view-box;transform-origin:0 0}
+</style>
+
+<div class="wrap">
+<header class="top">
+  <div>
+    <span class="eyebrow">Agente de baloncesto · módulo de ejecución</span>
+    <h1>Guía de ejecución</h1>
+    <p class="sub">Cómo se hace cada ejercicio, qué músculos trabaja y los errores que hay que evitar. Las animaciones y los mapas musculares están dibujados aquí: no hay vídeos externos.</p>
+  </div>
+  <button class="ghost" id="theme">Cambiar tema</button>
+</header>
+
+<div class="filters" id="filters"></div>
+
+<div class="cols">
+  <nav class="list" id="list" aria-label="Ejercicios"></nav>
+  <div class="detail" id="detail"></div>
+</div>
+
+<footer>
+  <p><strong>Por qué no hay vídeos de YouTube aquí.</strong> Este proyecto se construyó en un entorno sin acceso de red: no pude abrir ni comprobar ni un solo enlace de vídeo. Enlazar material que no he visto es exactamente el fallo que el resto del proyecto evita. Las animaciones y los mapas musculares de esta página están dibujados en el propio código, así que funcionan sin conexión y sin problemas de licencia.</p>
+  <p><strong>Los mapas musculares son esquemáticos.</strong> Indican qué grupos participan de forma dominante, no una disección anatómica. Sirven para orientar, no para estudiar anatomía.</p>
+  <p><strong>Las dosificaciones y los detalles técnicos son práctica convencional</strong>, no evidencia verificada. Ante dolor agudo, lesión activa o patología diagnosticada, consulta a un profesional en lugar de seguir esta guía.</p>
+</footer>
+</div>
+
+<script>
+// ---- Grupos musculares del mapa esquemático ----
+const M={
+ pect:'Pectoral', delt:'Deltoides', bic:'Bíceps', tric:'Tríceps', antebr:'Antebrazo',
+ abdo:'Abdominal', obli:'Oblicuos', dors:'Dorsal ancho', trap:'Trapecio', erec:'Erectores espinales',
+ glut:'Glúteo', cuad:'Cuádriceps', isq:'Isquiosurales', aduc:'Aductores', abd:'Abductores/glúteo medio',
+ gem:'Gemelo y sóleo', tib:'Tibial anterior'
+};
+
+// ---- Poses: [torso, muslo, tibia, brazo]  (grados) ----
+// Cinemática directa en JS: el pie se apoya solo, salvo poses con air.
+const EX=[
+{id:'ROD-01',n:'Sentadilla con peso corporal',pat:'Dominante de rodilla',mat:false,
+ pri:['cuad','glut'],sec:['isq','erec','abdo','gem'],
+ poses:[[8,0,0,0],[32,-52,66,-72],[8,0,0,0]],dur:3.4,
+ setup:['Pies a la anchura de los hombros, puntas ligeramente hacia fuera.','Peso repartido en todo el pie, no en las puntas.','Costillas abajo, mirada al frente.'],
+ exec:['<strong>Baja</strong> llevando la cadera atrás y abajo a la vez, como si te sentaras en una silla que está detrás.','<strong>Rodillas en línea con las puntas de los pies</strong>: ni hacia dentro ni forzadas hacia fuera.','Baja hasta donde puedas mantener la espalda neutra. La profundidad la marca tu movilidad, no el ego.','<strong>Sube</strong> empujando el suelo con todo el pie y apretando el glúteo arriba.'],
+ tempo:'3 s bajando · 1 s abajo · 1 s subiendo',
+ errs:[['Rodillas hacia dentro al subir','Es el patrón de valgo asociado al mecanismo de lesión de LCA. Si aparece, reduce el rango o la carga.'],['Talones que se despegan','Falta movilidad de tobillo. Trabájala con PREV-08 antes de forzar profundidad.'],['Espalda que se redondea abajo','Has pasado tu rango útil. Sube el punto de parada.']],
+ reg:'Sentadilla a caja o silla, controlando la profundidad.',
+ pro:'Tempo más lento, pausa isométrica de 3 s abajo, o pasar a ROD-04 con carga.'},
+
+{id:'ROD-05',n:'Zancada estática',pat:'Dominante de rodilla',mat:false,
+ pri:['cuad','glut'],sec:['isq','aduc','abdo','gem'],
+ poses:[[6,-14,14,0],[10,-46,52,0],[6,-14,14,0]],dur:3.2,
+ setup:['Un pie delante y otro detrás, separados un paso largo.','Tronco erguido, peso repartido entre ambas piernas.'],
+ exec:['<strong>Baja</strong> vertical: la rodilla de atrás cae hacia el suelo, no hacia delante.','La rodilla delantera se mantiene sobre el pie, sin desplazarse hacia dentro.','<strong>Sube</strong> empujando con el talón de la pierna delantera.'],
+ tempo:'2 s bajando · 1 s subiendo',
+ errs:[['Tronco que cae hacia delante','Reduce el rango y activa el core antes de bajar.'],['Rodilla delantera hacia dentro','Mismo patrón de valgo que en la sentadilla. Baja menos.'],['Paso demasiado corto','Sobrecarga la rodilla delantera. Alarga el paso.']],
+ reg:'Apoyar la mano en una pared para el equilibrio.',
+ pro:'Zancada caminando (ROD-06), o búlgara con el pie trasero elevado (ROD-02).'},
+
+{id:'ROD-08',n:'Sentadilla isométrica en pared',pat:'Dominante de rodilla',mat:'PARED',
+ pri:['cuad'],sec:['glut','abdo'],
+ poses:[[0,-58,58,-90],[0,-62,62,-90],[0,-58,58,-90]],dur:2.6,
+ setup:['Espalda apoyada en la pared, pies separados de ella medio metro.','Deslízate hasta que las rodillas queden a 90°.'],
+ exec:['<strong>Mantén</strong> la posición con la espalda pegada a la pared.','Rodillas sobre los tobillos, no por delante de las puntas.','Respira con normalidad: no aguantes la respiración.'],
+ tempo:'Isométrico: 30-45 s por serie',
+ errs:[['Aguantar la respiración','Sube la presión arterial sin aportar nada. Respira.'],['Rodillas por delante de las puntas','Aleja más los pies de la pared.']],
+ reg:'Ángulo de rodilla más abierto, o menos tiempo.',
+ pro:'Más tiempo, o pasar a una pierna.'},
+
+{id:'CAD-01',n:'Puente de glúteo',pat:'Dominante de cadera',mat:false,
+ pri:['glut'],sec:['isq','erec','abdo'],
+ poses:[[92,-96,84,4],[74,-96,84,4],[92,-96,84,4]],dur:2.8,
+ setup:['Tumbado boca arriba, rodillas flexionadas, pies apoyados cerca del glúteo.','Brazos a los lados.'],
+ exec:['<strong>Empuja con los talones</strong> y eleva la cadera hasta alinear rodilla, cadera y hombro.','<strong>Aprieta el glúteo arriba</strong> 1 segundo. El movimiento lo hace el glúteo, no la lumbar.','Baja controlando, sin dejarte caer.'],
+ tempo:'1 s subiendo · 1 s arriba · 2 s bajando',
+ errs:[['Arquear la lumbar en vez de extender la cadera','Si notas la zona baja de la espalda, has subido de más. Para antes.'],['Empujar con las puntas de los pies','El empuje va por el talón.'],['Calambre en el isquiosural','Acerca los pies al glúteo y reduce el rango.']],
+ reg:'Menor rango de elevación.',
+ pro:'Puente a una pierna (CAD-02), o con pausa de 3 s arriba.'},
+
+{id:'CAD-02',n:'Puente a una pierna',pat:'Dominante de cadera',mat:false,
+ pri:['glut'],sec:['isq','erec','abdo','obli'],
+ poses:[[92,-96,84,4],[70,-98,86,4],[92,-96,84,4]],dur:3,
+ setup:['Igual que el puente, pero con una pierna extendida o la rodilla al pecho.'],
+ exec:['<strong>Empuja con el talón de la pierna de apoyo.</strong>','<strong>Mantén la pelvis nivelada</strong>: no dejes que caiga el lado libre.','Baja con control y repite antes de cambiar de pierna.'],
+ tempo:'1 s subiendo · 2 s bajando',
+ errs:[['Pelvis que se inclina hacia el lado libre','Es lo que este ejercicio entrena. Reduce el rango hasta que puedas mantenerla nivelada.'],['Compensar con la lumbar','El glúteo hace el trabajo, no la espalda.']],
+ reg:'Volver al puente bipodal (CAD-01).',
+ pro:'Pausa arriba, o pie de apoyo elevado.'},
+
+{id:'CAD-05',n:'Bisagra de cadera con peso corporal',pat:'Dominante de cadera',mat:false,
+ pri:['isq','glut'],sec:['erec','abdo'],
+ poses:[[4,0,0,0],[62,4,-4,-18],[4,0,0,0]],dur:3.2,
+ setup:['De pie, pies a la anchura de la cadera, rodillas ligeramente flexionadas.','Manos en la cadera o cruzadas al pecho.'],
+ exec:['<strong>Lleva la cadera hacia atrás</strong>, no bajes el pecho. El movimiento nace en la cadera.','La espalda se mantiene recta durante todo el recorrido.','Baja hasta notar tensión en el isquiosural, sin perder la posición de la espalda.','<strong>Sube</strong> empujando la cadera hacia delante.'],
+ tempo:'3 s bajando · 1 s subiendo',
+ errs:[['Convertirlo en una sentadilla','Si las rodillas se flexionan mucho, no es bisagra. La cadera va atrás, no abajo.'],['Redondear la espalda','Es el error que más carga la zona lumbar. Reduce el rango.'],['Hiperextender arriba','Termina en posición neutra, no arqueado.']],
+ reg:'Menor rango, con una referencia detrás para tocar con la cadera.',
+ pro:'Peso muerto rumano con carga (CAD-04), o versión a una pierna.'},
+
+{id:'CAD-07',n:'Deslizamiento de talón excéntrico',pat:'Excéntrico de isquiosurales',mat:'SUELO-DURO',
+ pri:['isq'],sec:['glut','abdo','gem'],
+ poses:[[92,-96,84,4],[80,-70,52,4],[86,-100,88,4]],dur:3.6,
+ setup:['Tumbado boca arriba en puente, talones apoyados en una superficie deslizante (calcetín en suelo liso).'],
+ exec:['<strong>Extiende las piernas lentamente</strong> manteniendo la cadera arriba. Aquí está el estímulo.','Vuelve a la posición inicial flexionando las rodillas, ayudándote si hace falta.','La fase lenta es la de extensión: es trabajo excéntrico.'],
+ tempo:'4-5 s extendiendo · vuelta asistida',
+ errs:[['Dejar caer la cadera','Si la cadera baja, el isquiosural deja de trabajar.'],['Ir demasiado rápido','El estímulo está en la lentitud, no en las repeticiones.']],
+ reg:'Menor rango de extensión, o solo una pierna asistida.',
+ pro:'Rango completo, o curl nórdico asistido (CAD-06).',
+ nota:'Se incluye por P7, que es <b>inferencia</b> del volumen de desaceleraciones del baloncesto, no evidencia de intervención en esta población. La evidencia de protocolos nórdicos procede del fútbol.'},
+
+{id:'SUP-01',n:'Flexión de brazos',pat:'Empuje horizontal',mat:false,
+ pri:['pect','tric'],sec:['delt','abdo','erec'],
+ poses:[[88,-92,92,-6],[88,-92,92,-38],[88,-92,92,-6]],dur:2.6,
+ setup:['Manos algo más abiertas que los hombros, bajo el pecho.','Cuerpo en línea recta de la cabeza a los talones.'],
+ exec:['<strong>Baja</strong> con los codos a unos 45° del tronco, no abiertos en cruz.','El pecho llega cerca del suelo manteniendo la línea del cuerpo.','<strong>Empuja</strong> el suelo para volver, sin dejar caer la cadera.'],
+ tempo:'2 s bajando · 1 s subiendo',
+ errs:[['Cadera hundida','El core no está activo. Aprieta glúteo y abdomen desde el inicio.'],['Codos abiertos en cruz','Carga innecesariamente el hombro. Mételos hacia el tronco.'],['Cuello adelantado','La cabeza sigue la línea del tronco.']],
+ reg:'Manos elevadas en una superficie estable (SUP-02), o rodillas apoyadas.',
+ pro:'Pies elevados, tempo más lento, o pausa abajo.'},
+
+{id:'SUP-05',n:'Flexión en pica',pat:'Empuje vertical',mat:false,
+ pri:['delt','tric'],sec:['pect','trap','abdo'],
+ poses:[[124,-128,120,-24],[124,-128,120,-52],[124,-128,120,-24]],dur:2.8,
+ setup:['Posición de flexión pero con la cadera elevada, formando una V invertida.','Manos a la anchura de los hombros.'],
+ exec:['<strong>Baja la cabeza</strong> hacia el suelo entre las manos.','Los codos van ligeramente hacia atrás, no en cruz.','<strong>Empuja</strong> hasta extender los brazos.'],
+ tempo:'2 s bajando · 1 s subiendo',
+ errs:[['Perder la posición de V','Si la cadera baja, se convierte en una flexión normal.'],['Dolor en el hombro al bajar','Reduce el rango y revisa la movilidad antes de insistir.']],
+ reg:'Manos elevadas, o menos inclinación.',
+ pro:'Pies elevados para aumentar el ángulo.'},
+
+{id:'SUP-07',n:'Remo invertido bajo mesa',pat:'Tracción horizontal',mat:'MOBILIARIO',
+ pri:['dors','bic'],sec:['trap','delt','abdo','erec'],
+ poses:[[86,-88,88,-118],[86,-88,88,-152],[86,-88,88,-118]],dur:2.8,
+ setup:['Tumbado bajo una mesa estable, agarrando el borde con las manos.','Cuerpo recto, talones apoyados.'],
+ exec:['<strong>Tira</strong> llevando el pecho hacia el borde de la mesa.','<strong>Junta las escápulas</strong> al final del recorrido: el movimiento empieza en la espalda, no en los brazos.','Baja con control hasta extender los codos.'],
+ tempo:'1 s tirando · 1 s arriba · 2 s bajando',
+ errs:[['Tirar solo con los brazos','Piensa en llevar los codos hacia atrás y juntar las escápulas.'],['Cadera hundida','Mantén la línea del cuerpo apretando glúteo y abdomen.'],['Mesa inestable','Comprueba el mueble antes. Es el riesgo real de este ejercicio.']],
+ reg:'Cuerpo más vertical, con los pies más cerca.',
+ pro:'Pies elevados, o pasar a dominadas (SUP-06).'},
+
+{id:'SUP-08',n:'Tracción isométrica de escápulas',pat:'Tracción',mat:false,
+ pri:['trap','dors'],sec:['delt'],
+ poses:[[4,0,0,-96],[4,0,0,-104],[4,0,0,-96]],dur:2.4,
+ setup:['De pie o sentado, brazos al frente o a los lados.'],
+ exec:['<strong>Junta las escápulas</strong> hacia atrás y abajo, como si sujetaras algo entre ellas.','Mantén 3-5 segundos sin encoger los hombros hacia las orejas.','Suelta con control.'],
+ tempo:'3-5 s de contracción por repetición',
+ errs:[['Encoger los hombros','Las escápulas van atrás y <b>abajo</b>, no arriba.'],['Arquear la lumbar','El movimiento es de escápulas, no de espalda baja.']],
+ reg:'Menos tiempo de contracción.',
+ pro:'Añadir banda elástica (SUP-09), o pasar a remo (SUP-07).',
+ nota:'Es la única opción de tracción sin material alguno, y es <b>isométrica</b>: no sustituye a la tracción cargada. En escenarios sin material, ese patrón queda parcialmente cubierto y el plan debe declararlo.'},
+
+{id:'PLI-01',n:'Salto con contramovimiento (CMJ)',pat:'Potencia vertical',mat:'SUELO-DURO',
+ pri:['cuad','glut','gem'],sec:['isq','erec','abdo'],
+ poses:[[6,0,0,0],[30,-44,54,-58],[2,6,-6,-150],[6,-2,2,-30],[26,-38,46,-20],[6,0,0,0]],
+ air:[0,0,-42,-10,0,0],dur:2.4,
+ setup:['De pie, pies a la anchura de los hombros.','Brazos libres: el balanceo forma parte del salto.'],
+ exec:['<strong>Baja rápido</strong> flexionando cadera y rodillas (el contramovimiento).','<strong>Salta inmediatamente</strong>, sin pausa abajo: la transición rápida es el estímulo.','Acompaña con los brazos hacia arriba.','<strong>Aterriza suave</strong>, absorbiendo con cadera y rodillas, rodillas alineadas con los pies.'],
+ tempo:'Máxima intención en cada repetición. Descanso completo entre series.',
+ errs:[['Pausa abajo antes de saltar','Sin transición rápida deja de ser contramovimiento. Si quieres esa variante, es el salto en sentadilla (PLI-02).'],['Aterrizaje rígido','Absorbe flexionando. El aterrizaje duro es lo que carga rodilla y tobillo.'],['Rodillas hacia dentro al caer','Patrón de valgo. Para la serie y trabaja PREV-06 antes de seguir.'],['Hacer muchas repeticiones seguidas','La pliometría se entrena con calidad, no con fatiga.']],
+ reg:'Saltos pequeños en el sitio (PLI-03), o solo el aterrizaje (PLI-10).',
+ pro:'Salto al cajón (PLI-04), o salto de profundidad (PLI-05) solo con base de fuerza previa.',
+ nota:'Es el bloque con <b>mejor evidencia del proyecto</b>: metaanálisis de 32 estudios y 818 jugadores de baloncesto. Efecto mayor en mayores de 16,3 años. <b>No mejora el esprint lineal</b>: para eso hay que correr.'},
+
+{id:'PLI-03',n:'Saltos repetidos en el sitio',pat:'Potencia vertical',mat:'SUELO-DURO',
+ pri:['gem','cuad'],sec:['glut','isq','tib'],
+ poses:[[4,0,0,-10],[10,-16,20,-26],[2,4,-4,-52],[10,-16,20,-26]],
+ air:[0,0,-20,0],dur:1.1,
+ setup:['De pie, pies a la anchura de la cadera.','Contacto con el suelo por el metatarso, talón sin llegar a apoyar del todo.'],
+ exec:['<strong>Salta y rebota</strong> minimizando el tiempo en el suelo.','Rodillas ligeramente flexionadas, tobillo rígido: el rebote nace ahí.','Mantén el tronco erguido y el ritmo constante.'],
+ tempo:'Contactos rápidos. Prioriza el ritmo, no la altura.',
+ errs:[['Buscar altura máxima','Este ejercicio entrena rigidez y reactividad, no altura. Para altura, PLI-01.'],['Aterrizar de talón','Rompe el ciclo elástico y aumenta el impacto.'],['Dolor en el tendón rotuliano','Para. Es el ejercicio que más lo carga de este bloque.']],
+ reg:'Menos repeticiones por serie, o saltos más pequeños.',
+ pro:'Saltos sobre vallas (PLI-09), o más contactos por serie.'},
+
+{id:'PLI-07',n:'Salto lateral',pat:'Potencia frontal',mat:'ESP-MIN',
+ pri:['glut','abd','cuad'],sec:['gem','obli','aduc'],
+ poses:[[6,-6,6,-18],[16,-30,34,-40],[4,8,-8,-96],[16,-30,34,-40],[6,-6,6,-18]],
+ air:[0,0,-26,0,0],dur:1.9,
+ setup:['De pie sobre una pierna o con ambos pies juntos, según la variante.'],
+ exec:['<strong>Salta lateralmente</strong> desplazando el peso al lado contrario.','<strong>Aterriza absorbiendo</strong>, con la rodilla alineada sobre el pie.','Estabiliza un instante antes del siguiente salto.'],
+ tempo:'Pausa breve para estabilizar entre saltos',
+ errs:[['Rodilla hacia dentro al caer','Es el patrón de valgo en el plano frontal, el mismo del mecanismo de LCA documentado. Prioridad absoluta corregirlo.'],['Encadenar sin estabilizar','Si no controlas el aterrizaje, reduce la distancia.'],['Inestabilidad de tobillo','Con historial de esguinces, trabaja PREV-01 antes.']],
+ reg:'Saltos laterales cortos con los dos pies.',
+ pro:'Mayor distancia, o versión unipodal con estabilización.'},
+
+{id:'PLI-10',n:'Salto y aterrizaje con congelación',pat:'Mecánica de aterrizaje',mat:'SUELO-DURO',
+ pri:['cuad','glut'],sec:['isq','gem','abdo','abd'],
+ poses:[[6,0,0,-8],[4,4,-4,-118],[24,-40,48,-34],[24,-42,50,-34],[6,0,0,-8]],
+ air:[0,-30,0,0,0],dur:3.2,
+ setup:['De pie, en un espacio con suelo firme.'],
+ exec:['<strong>Salta</strong> hacia arriba o hacia delante, sin buscar el máximo.','<strong>Aterriza y congela</strong> la posición 2-3 segundos: cadera atrás, rodillas flexionadas y alineadas sobre los pies.','Comprueba tu posición antes de la siguiente repetición.'],
+ tempo:'Congelar 2-3 s en cada aterrizaje',
+ errs:[['Aterrizar y rebotar','La congelación es el ejercicio. Sin ella, es otro salto.'],['Rodillas hacia dentro','Es justo lo que este ejercicio existe para corregir. Reduce la altura hasta poder aterrizar alineado.'],['Aterrizaje ruidoso','El ruido indica que estás absorbiendo poco.']],
+ reg:'Saltar desde menos altura, o solo caer desde un escalón bajo.',
+ pro:'Aterrizaje a una pierna (PREV-07), o desde mayor altura con supervisión.',
+ nota:'Es la base de todo el bloque pliométrico. Antes de añadir volumen o altura, el aterrizaje tiene que estar limpio.'},
+
+{id:'PREV-01',n:'Equilibrio monopodal',pat:'Propiocepción',mat:false,
+ pri:['gem','tib'],sec:['glut','abd','cuad','abdo'],
+ poses:[[4,-4,4,-14],[7,-6,6,-11],[3,-3,3,-16],[6,-5,5,-12]],dur:4,
+ setup:['De pie sobre una pierna, la otra flexionada sin tocar la de apoyo.','Mirada a un punto fijo al principio.'],
+ exec:['<strong>Mantén el equilibrio</strong> permitiendo pequeños ajustes del tobillo: son el entrenamiento.','Cadera nivelada, sin dejar caer el lado libre.','Cuando lo domines, <strong>cierra los ojos</strong>: quitar la vista es la progresión más eficaz sin material.'],
+ tempo:'30 s por pierna, 3 series',
+ errs:[['Agarrarse constantemente','Un apoyo puntual está bien; si es continuo, no estás entrenando.'],['Cadera caída hacia el lado libre','Activa el glúteo medio de la pierna de apoyo.'],['Bloquear la rodilla de apoyo','Mantenla ligeramente flexionada.']],
+ reg:'Tocar la pared con un dedo, o menos tiempo.',
+ pro:'Ojos cerrados, superficie inestable, o perturbación externa (PREV-02).',
+ nota:'Forma parte del bloque preventivo, que necesita <b>2-3 sesiones semanales</b> para el efecto documentado. Una sola sesión por semana es dosis insuficiente, no una versión reducida equivalente.'},
+
+{id:'PREV-03',n:'Elevación de talones',pat:'Fuerza de tríceps sural',mat:false,
+ pri:['gem'],sec:['tib','cuad'],
+ poses:[[3,0,0,-6],[3,-2,2,-6],[3,0,0,-6]],dur:2.6,
+ setup:['De pie, pies a la anchura de la cadera.','Puedes apoyar los dedos en una pared para el equilibrio.'],
+ exec:['<strong>Sube</strong> elevando los talones todo lo que puedas.','Mantén 1 segundo arriba.','<strong>Baja lento</strong>: la fase de bajada es donde está buena parte del trabajo.'],
+ tempo:'1 s subiendo · 1 s arriba · 3 s bajando',
+ errs:[['Rebotar','Sin control no hay estímulo. Baja lento.'],['Rango corto','Sube hasta el final del recorrido.'],['Dolor en el tendón de Aquiles','Para y consulta antes de seguir.']],
+ reg:'Con apoyo de manos, o menos repeticiones.',
+ pro:'A una pierna, o con el antepié en un escalón para ganar rango.'},
+
+{id:'PREV-05',n:'Almeja / abducción en decúbito lateral',pat:'Control de valgo',mat:false,
+ pri:['abd','glut'],sec:['obli'],
+ poses:[[92,-88,80,4],[92,-72,64,4],[92,-88,80,4]],dur:2.8,
+ setup:['Tumbado de lado, rodillas flexionadas y caderas apiladas una sobre otra.','Cabeza apoyada en el brazo.'],
+ exec:['<strong>Abre la rodilla de arriba</strong> manteniendo los pies juntos.','<strong>La pelvis no rota:</strong> si el tronco se va hacia atrás, has abierto de más.','Baja con control.'],
+ tempo:'1 s abriendo · 2 s bajando',
+ errs:[['Rotar la pelvis hacia atrás','Es el error más común: parece que abres más, pero dejas de trabajar el glúteo medio.'],['Ir rápido','El músculo es pequeño; el control importa más que el rango.']],
+ reg:'Menor rango de apertura.',
+ pro:'Añadir banda elástica (PREV-04), o pausa de 2 s arriba.',
+ nota:'Trabaja el control del valgo de rodilla, el patrón implicado en el mecanismo de lesión de LCA documentado en jugadoras profesionales.'},
+
+{id:'PREV-06',n:'Aterrizaje bipodal con corrección de valgo',pat:'Mecánica de aterrizaje',mat:'SUELO-DURO',
+ pri:['glut','cuad','abd'],sec:['isq','gem','abdo'],
+ poses:[[6,0,0,-10],[6,2,-2,-104],[26,-42,50,-30],[26,-44,52,-30],[6,0,0,-10]],
+ air:[0,-24,0,0,0],dur:3,
+ setup:['De pie frente a un espejo o con alguien mirando desde el frente.'],
+ exec:['<strong>Salta y aterriza</strong> con los dos pies a la vez.','<strong>Comprueba la alineación:</strong> rótula sobre el segundo dedo del pie.','Absorbe con cadera y rodillas, no solo con rodillas.','Corrige activamente si notas que las rodillas se van hacia dentro.'],
+ tempo:'Calidad sobre cantidad: pocas repeticiones bien hechas',
+ errs:[['No mirar la alineación','El ejercicio existe para corregir; sin feedback no corrige nada.'],['Absorber solo con la rodilla','La cadera tiene que participar: manda el glúteo atrás.']],
+ reg:'Caer desde un escalón bajo en vez de saltar.',
+ pro:'Aterrizaje a una pierna (PREV-07).'},
+
+{id:'PREV-08',n:'Movilidad de tobillo en flexión dorsal',pat:'Movilidad',mat:'PARED',
+ pri:['gem'],sec:['tib'],
+ poses:[[8,-16,18,-40],[16,-30,32,-40],[8,-16,18,-40]],dur:3,
+ setup:['De pie frente a una pared, un pie adelantado a unos 10 cm de ella.'],
+ exec:['<strong>Lleva la rodilla hacia la pared</strong> sin despegar el talón del suelo.','Si el talón se levanta, acerca el pie a la pared.','Si llegas fácil, aleja el pie y repite.'],
+ tempo:'Mantener 2-3 s por repetición',
+ errs:[['Despegar el talón','Es la única regla del ejercicio. Sin talón apoyado, no mide ni entrena nada.'],['Dejar caer el arco del pie','Mantén el pie alineado, sin colapsar hacia dentro.']],
+ reg:'Pie más cerca de la pared.',
+ pro:'Pie más alejado, o antepié sobre un pequeño alza.',
+ nota:'Es prerrequisito de una sentadilla profunda y del aterrizaje. Si el talón se despega en ROD-01, este es el ejercicio que hay que hacer antes.'},
+
+{id:'CORE-01',n:'Plancha frontal',pat:'Antiextensión',mat:false,
+ pri:['abdo'],sec:['obli','glut','delt','erec'],
+ poses:[[88,-92,92,-72],[89,-92,92,-72],[88,-92,92,-72]],dur:3,
+ setup:['Apoyo en antebrazos y puntas de los pies.','Codos bajo los hombros.'],
+ exec:['<strong>Cuerpo en línea recta</strong> de la cabeza a los talones.','<strong>Aprieta glúteo y abdomen</strong>: la plancha es una contracción activa, no una postura pasiva.','Respira con normalidad durante toda la serie.'],
+ tempo:'30-45 s de contracción activa',
+ errs:[['Cadera hundida','Carga la lumbar. Aprieta glúteo o acorta la serie.'],['Cadera muy alta','Descarga el abdomen. Baja hasta la línea.'],['Aguantar mucho tiempo con mala posición','30 s bien valen más que 2 minutos mal.']],
+ reg:'Apoyar las rodillas, o acortar la palanca.',
+ pro:'Elevar un pie, o pasar a rueda abdominal (CORE-07).'},
+
+{id:'CORE-02',n:'Plancha lateral',pat:'Antiflexión lateral',mat:false,
+ pri:['obli'],sec:['abdo','abd','delt','glut'],
+ poses:[[88,-90,90,-96],[89,-90,90,-96],[88,-90,90,-96]],dur:3,
+ setup:['Tumbado de lado, apoyo en un antebrazo, codo bajo el hombro.','Pies apilados o escalonados.'],
+ exec:['<strong>Eleva la cadera</strong> hasta alinear tobillo, cadera y hombro.','No dejes que la cadera caiga ni que el tronco rote.','Mantén el cuello alineado con la columna.'],
+ tempo:'20-30 s por lado',
+ errs:[['Cadera que cae','Acorta la serie o apoya la rodilla.'],['Rotar el tronco','Mantén los hombros apilados en el plano.'],['Dolor en el hombro de apoyo','Revisa que el codo esté bajo el hombro; si sigue, para.']],
+ reg:'Rodilla inferior apoyada.',
+ pro:'Pierna superior elevada, o con pausa y rotación controlada.'},
+
+{id:'ACO-02',n:'Carrera en el sitio a alta frecuencia',pat:'Estímulo metabólico',mat:'ESP-MIN',
+ pri:['cuad','gem'],sec:['isq','glut','tib','abdo'],
+ poses:[[6,-40,44,-40],[6,10,-10,20],[6,-40,44,-40]],dur:.5,
+ setup:['De pie, en un espacio mínimo.'],
+ exec:['<strong>Eleva las rodillas</strong> alternando con la máxima frecuencia que puedas sostener.','Contacto por el metatarso, apoyo breve.','Tronco erguido, brazos acompañando el ritmo.'],
+ tempo:'15-30 s por intervalo, con descanso entre series',
+ errs:[['Inclinar el tronco hacia atrás','Mantente erguido, la cadera bajo el tronco.'],['Bajar la frecuencia al fatigarte','Si no puedes sostener el ritmo, acorta el intervalo.']],
+ reg:'Intervalos más cortos, o menor frecuencia.',
+ pro:'Intervalos más largos, o pasar a esprints reales si tienes espacio.',
+ nota:'En escenarios sin espacio es la <b>aproximación</b> al bloque de RSA, no un equivalente. La evidencia de repetición de esprints se obtuvo corriendo distancias reales (formato 20×15 m).'}
+];
+
+const PATS=[...new Set(EX.map(e=>e.pat))];
+let filt='all', cur=EX[0].id;
+const $=i=>document.getElementById(i);
+
+// ---------- Mapa muscular ----------
+function bodySVG(pri,sec){
+  const on=id=>pri.includes(id)?'var(--accent)':(sec.includes(id)?'var(--sec)':'var(--body)');
+  const P=(d,id)=>`<path d="${d}" fill="${on(id)}"><title>${M[id]}</title></path>`;
+  return `<svg class="viz" viewBox="0 0 260 200" role="img" aria-label="Grupos musculares implicados">
+  <text x="62" y="13" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="var(--muted)">FRENTE</text>
+  <text x="196" y="13" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="var(--muted)">ESPALDA</text>
+  <g transform="translate(0,4)">
+  <!-- FRENTE -->
+  <circle cx="62" cy="30" r="10" fill="var(--body)"/>
+  ${P('M50 44h24v9H50z','trap')}
+  ${P('M44 53c-5 1-7 6-7 12l9 2 3-14z','delt')}${P('M80 53c5 1 7 6 7 12l-9 2-3-14z','delt')}
+  ${P('M50 54h24c2 8 1 15-3 18H53c-4-3-5-10-3-18z','pect')}
+  ${P('M36 66l8 2c1 8 0 14-2 19l-8-3c1-7 1-13 2-18z','bic')}${P('M88 66l-8 2c-1 8 0 14 2 19l8-3c-1-7-1-13-2-18z','bic')}
+  ${P('M34 87l8 3c0 6-1 11-3 15l-7-3c1-5 2-10 2-15z','antebr')}${P('M90 87l-8 3c0 6 1 11 3 15l7-3c-1-5-2-10-2-15z','antebr')}
+  ${P('M53 73h18v27H53z','abdo')}
+  ${P('M47 74h5v25h-6c-1-9-1-18 1-25z','obli')}${P('M77 74h-5v25h6c1-9 1-18-1-25z','obli')}
+  ${P('M50 101h24v10c0 4-3 6-12 6s-12-2-12-6z','aduc')}
+  ${P('M49 118c-2 15-2 27 1 38l10-1c1-13 1-26-1-37z','cuad')}${P('M75 118c2 15 2 27-1 38l-10-1c-1-13-1-26 1-37z','cuad')}
+  ${P('M51 160c-1 10-1 17 1 23l8-1c1-8 1-15 0-22z','tib')}${P('M73 160c1 10 1 17-1 23l-8-1c-1-8-1-15 0-22z','tib')}
+  <!-- ESPALDA -->
+  <circle cx="196" cy="30" r="10" fill="var(--body)"/>
+  ${P('M182 44h28c-1 7-4 11-14 11s-13-4-14-11z','trap')}
+  ${P('M177 54c-5 1-7 6-7 12l9 2 3-14z','delt')}${P('M215 54c5 1 7 6 7 12l-9 2-3-14z','delt')}
+  ${P('M183 56h26c3 12 1 24-4 30h-18c-5-6-7-18-4-30z','dors')}
+  ${P('M169 67l8 2c1 8 0 14-2 19l-8-3c1-7 1-13 2-18z','tric')}${P('M223 67l-8 2c-1 8 0 14 2 19l8-3c-1-7-1-13-2-18z','tric')}
+  ${P('M167 88l8 3c0 6-1 11-3 15l-7-3c1-5 2-10 2-15z','antebr')}${P('M225 88l-8 3c0 6 1 11 3 15l7-3c-1-5-2-10-2-15z','antebr')}
+  ${P('M190 86h12v14h-12z','erec')}
+  ${P('M182 101h28v16c0 5-5 8-14 8s-14-3-14-8z','glut')}
+  ${P('M180 103c-3 5-3 12-1 17l5-2v-15z','abd')}${P('M212 103c3 5 3 12 1 17l-5-2v-15z','abd')}
+  ${P('M184 126c-2 14-2 25 1 34l10-1c1-12 1-24-1-33z','isq')}${P('M208 126c2 14 2 25-1 34l-10-1c-1-12-1-24 1-33z','isq')}
+  ${P('M186 162c-2 9-2 16 0 22l9-1c1-8 1-15 0-21z','gem')}${P('M206 162c2 9 2 16 0 22l-9-1c-1-8-1-15 0-21z','gem')}
+  </g></svg>`;
+}
+
+// ---------- Figura animada ----------
+const L={thigh:34,shin:32,torso:42,arm:30,head:7};
+function fk(p){ // devuelve desplazamiento vertical para que el pie toque el suelo
+  const r=(a,l)=>({x:-l*Math.sin(a*Math.PI/180), y:l*Math.cos(a*Math.PI/180)});
+  const k=r(p[1],L.thigh), a=r(p[1]+p[2],L.shin);
+  return k.y+a.y;
+}
+function figSVG(ex){
+  const poses=ex.poses, air=ex.air||poses.map(()=>0);
+  const GROUND=132, HX=92;
+  const ys=poses.map((p,i)=>GROUND-fk(p)+(air[i]||0));
+  const kf=(sel,idx)=>poses.map((p,i)=>`${Math.round(i/(poses.length-1)*100)}%{transform:rotate(${p[idx]}deg)}`).join('');
+  const bob=poses.map((p,i)=>`${Math.round(i/(poses.length-1)*100)}%{transform:translate(${HX}px,${ys[i]}px)}`).join('');
+  const st=`<style>
+  @keyframes bobA{${bob}} @keyframes toA{${kf(0,0)}} @keyframes thA{${kf(0,1)}} @keyframes shA{${kf(0,2)}} @keyframes arA{${kf(0,3)}}
+  #root{animation:bobA ${ex.dur}s cubic-bezier(.42,0,.4,1) infinite}
+  #torso{animation:toA ${ex.dur}s cubic-bezier(.42,0,.4,1) infinite}
+  #thigh{animation:thA ${ex.dur}s cubic-bezier(.42,0,.4,1) infinite}
+  #shin{animation:shA ${ex.dur}s cubic-bezier(.42,0,.4,1) infinite}
+  #arm{animation:arA ${ex.dur}s cubic-bezier(.42,0,.4,1) infinite}
+  .paused #root,.paused #torso,.paused #thigh,.paused #shin,.paused #arm{animation-play-state:paused}
+  </style>`;
+  const S='stroke="var(--figure)" stroke-width="7" stroke-linecap="round" fill="none"';
+  return `<svg class="viz fig" viewBox="0 0 190 160" role="img" aria-label="Animación del movimiento: ${ex.n}">
+  ${st}
+  <line x1="14" y1="${GROUND}" x2="176" y2="${GROUND}" stroke="var(--line-2)" stroke-width="2"/>
+  <g id="root" class="j">
+    <g id="torso" class="j">
+      <line x1="0" y1="0" x2="0" y2="-${L.torso}" ${S}/>
+      <circle cx="0" cy="-${L.torso+L.head+2}" r="${L.head}" fill="var(--figure)"/>
+      <g transform="translate(0,-${L.torso-4})"><g id="arm" class="j">
+        <line x1="0" y1="0" x2="0" y2="${L.arm}" ${S} stroke-width="5.5"/></g></g>
+    </g>
+    <g id="thigh" class="j">
+      <line x1="0" y1="0" x2="0" y2="${L.thigh}" ${S}/>
+      <g transform="translate(0,${L.thigh})"><g id="shin" class="j">
+        <line x1="0" y1="0" x2="0" y2="${L.shin}" ${S}/>
+        <line x1="0" y1="${L.shin}" x2="13" y2="${L.shin}" ${S} stroke-width="5.5"/>
+      </g></g>
+    </g>
+  </g></svg>`;
+}
+
+// ---------- Render ----------
+function renderFilters(){
+  $('filters').innerHTML=['all',...PATS].map(p=>
+    `<button class="chip" role="button" aria-pressed="${filt===p}" data-p="${p}">${p==='all'?'Todos':p}</button>`).join('');
+  $('filters').querySelectorAll('.chip').forEach(b=>b.onclick=()=>{filt=b.dataset.p;renderFilters();renderList();});
+}
+function renderList(){
+  const items=EX.filter(e=>filt==='all'||e.pat===filt);
+  $('list').innerHTML=items.map(e=>
+    `<button class="li" aria-current="${e.id===cur}" data-id="${e.id}"><span class="id">${e.id}</span><span>${e.n}</span></button>`).join('');
+  $('list').querySelectorAll('.li').forEach(b=>b.onclick=()=>{cur=b.dataset.id;renderList();renderDetail();});
+}
+function renderDetail(){
+  const e=EX.find(x=>x.id===cur)||EX[0];
+  $('detail').innerHTML=`
+  <div class="card"><div class="hero">
+    <div class="name">${e.n}</div>
+    <div class="meta">
+      <span class="tag acc">${e.id}</span>
+      <span class="tag">${e.pat}</span>
+      ${e.mat?`<span class="tag">Requiere: ${e.mat}</span>`:'<span class="tag no">Sin material</span>'}
+    </div>
+    <div class="visuals">
+      <div class="panel"><h3>Movimiento</h3><div id="figbox">${figSVG(e)}</div>
+        <div class="ctrl"><button id="pp">Pausar</button><span style="font-size:11.5px;color:var(--muted)">Vista lateral esquemática</span></div></div>
+      <div class="panel"><h3>Musculatura implicada</h3>${bodySVG(e.pri,e.sec)}
+        <div class="legend">
+          <span><i class="sw" style="background:var(--accent)"></i>Principal</span>
+          <span><i class="sw" style="background:var(--sec)"></i>Secundaria</span>
+        </div>
+        <div style="font-size:12px;color:var(--ink-2);margin-top:7px">
+          <b>Principal:</b> ${e.pri.map(k=>M[k]).join(', ')}.<br>
+          <b>Secundaria:</b> ${e.sec.map(k=>M[k]).join(', ')}.</div>
+      </div>
+    </div>
+  </div></div>
+
+  ${e.nota?`<div class="alert"><b>Nota sobre la evidencia</b>${e.nota}</div>`:''}
+
+  <div class="card"><h2>Cómo se hace</h2><div class="body">
+    <div style="font-size:12px;font-family:'IBM Plex Mono',monospace;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:7px">Colocación</div>
+    <ol class="cues">${e.setup.map(s=>`<li>${s}</li>`).join('')}</ol>
+    <div style="font-size:12px;font-family:'IBM Plex Mono',monospace;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin:15px 0 7px">Ejecución</div>
+    <ol class="cues">${e.exec.map(s=>`<li>${s}</li>`).join('')}</ol>
+    <div class="prog" style="margin-top:15px"><div><div class="k">Tempo</div><div class="t">${e.tempo}</div></div></div>
+  </div></div>
+
+  <div class="card"><h2>Errores frecuentes</h2><div class="body">
+    <ul class="errs">${e.errs.map(([t,d])=>`<li><span class="x">✕</span><span><b>${t}.</b> ${d}</span></li>`).join('')}</ul>
+  </div></div>
+
+  <div class="card"><h2>Si es demasiado, o demasiado poco</h2><div class="body">
+    <div class="prog">
+      <div><div class="k">Regresión</div><div class="t">${e.reg}</div></div>
+      <div><div class="k">Progresión</div><div class="t">${e.pro}</div></div>
+    </div>
+  </div></div>
+
+  <div class="alert crit"><b>Cuándo parar</b>Dolor agudo durante la ejecución, dolor que persiste más de 24 h tras la sesión, o rodilla que se va hacia dentro y no puedes corregirla. En cualquiera de esos casos, para el ejercicio y consulta a un profesional. Esta guía no diagnostica.</div>`;
+
+  const box=$('figbox'), pp=$('pp');
+  pp.onclick=()=>{const p=box.classList.toggle('paused'); pp.textContent=p?'Reanudar':'Pausar';};
+}
+
+$('theme').onclick=()=>{
+  const c=document.documentElement.getAttribute('data-theme');
+  const dark=c?c==='dark':matchMedia('(prefers-color-scheme:dark)').matches;
+  document.documentElement.setAttribute('data-theme',dark?'light':'dark');
+};
+renderFilters(); renderList(); renderDetail();
+</script>

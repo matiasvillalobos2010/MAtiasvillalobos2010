@@ -63,6 +63,16 @@ Detalle en [`02-agente/recomendador-por-objetivo.md`](02-agente/recomendador-por
 
 ---
 
+## Guía de ejecución
+
+[`06-app/guia-ejecucion.html`](06-app/guia-ejecucion.html) — cómo se hace cada ejercicio. Para cada uno: **animación del movimiento**, **mapa muscular** con grupos principales y secundarios, colocación paso a paso, tempo, **errores frecuentes** y qué hacer si es demasiado o demasiado poco.
+
+**No hay vídeos externos, y es deliberado.** Este proyecto se construyó sin acceso de red: no se pudo abrir ni comprobar ningún enlace de vídeo, y enlazar material no visto es el mismo fallo que citar un estudio no leído — con el agravante de que un identificador equivocado no da error, da otro vídeo. Las animaciones y los mapas musculares están dibujados en el propio código: originales, sin licencia que resolver y funcionan sin conexión.
+
+Las fuentes externas de licencia libre que sí existen están documentadas, con su licencia declarada y sin verificar, en [`03-datos/fuentes-multimedia.md`](03-datos/fuentes-multimedia.md).
+
+---
+
 ## App de seguimiento
 
 [`06-app/seguimiento.html`](06-app/seguimiento.html) — se abre en el navegador y guarda los datos en él. Registra sesiones (carga = esfuerzo percibido × minutos), la métrica que fijaste con el agente, y activa logros solo.
@@ -90,7 +100,7 @@ El orden importa: **primero la investigación, después el agente.** El agente n
 | [`03-datos/`](03-datos/) | Catálogo de implementos, 73 ejercicios, 8 escenarios, fórmulas nutricionales |
 | [`04-plantillas/`](04-plantillas/) | Formatos de salida: entrenamiento, nutrición, informe de progreso |
 | [`05-salidas/`](05-salidas/) | Planes generados |
-| [`06-app/`](06-app/) | **App de seguimiento de progreso** (HTML, funciona en el navegador) |
+| [`06-app/`](06-app/) | **Guía de ejecución** y **app de seguimiento** (HTML, funcionan en el navegador) |
 
 [`PLAN-DE-TRABAJO.md`](PLAN-DE-TRABAJO.md) documenta las fases, dependencias, riesgos y estado.
 
