@@ -1,5 +1,7 @@
 # Fuentes multimedia para ejercicios
 
+> **Revisión completa de las cuatro bases evaluadas en [`revision-bases-de-datos.md`](revision-bases-de-datos.md).** Dos integradas (`free-exercise-db`, `RepDB`), dos descartadas por licencia.
+
 > **Actualizado 2026-08-26.** Se descubrió que **GitHub sí es alcanzable** desde este entorno a través del proxy git de la sesión, aunque las fuentes científicas siguen bloqueadas. Eso permitió **descargar, verificar e integrar** `free-exercise-db`. El resto de fuentes de esta página siguen sin verificar.
 
 ## 0. Integración realizada: free-exercise-db
