@@ -126,8 +126,13 @@ footer{margin-top:32px;padding-top:20px;border-top:1px solid var(--line);font-si
 footer p{margin:0 0 9px}
 footer strong{color:var(--ink-2)}
 
-@media (prefers-reduced-motion:reduce){.fig *{animation:none !important}}
-.j{transform-box:view-box;transform-origin:0 0}
+@media (prefers-reduced-motion:reduce){.fig animate,.fig animateTransform{display:none}}
+.viewtabs{display:flex;gap:6px;margin-bottom:8px}
+.viewtabs button{flex:1;font-family:"IBM Plex Mono",monospace;font-size:11.5px;background:var(--surface);border:1px solid var(--line-2);color:var(--muted);border-radius:6px;padding:5px 8px;cursor:pointer}
+.viewtabs button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+:root[data-theme="dark"] .viewtabs button[aria-pressed="true"],
+:root:not([data-theme="light"]) .viewtabs button[aria-pressed="true"]{color:#08201F}
+.fig.paused animate,.fig.paused animateTransform{display:none}
 </style>
 
 <div class="wrap">
@@ -423,79 +428,133 @@ const $=i=>document.getElementById(i);
 // ---------- Mapa muscular ----------
 function bodySVG(pri,sec){
   const on=id=>pri.includes(id)?'var(--accent)':(sec.includes(id)?'var(--sec)':'var(--body)');
+  const R=(x,y,w,h,r,id)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}" fill="${on(id)}"><title>${M[id]}</title></rect>`;
   const P=(d,id)=>`<path d="${d}" fill="${on(id)}"><title>${M[id]}</title></path>`;
-  return `<svg class="viz" viewBox="0 0 260 200" role="img" aria-label="Grupos musculares implicados">
-  <text x="62" y="13" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="var(--muted)">FRENTE</text>
-  <text x="196" y="13" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="var(--muted)">ESPALDA</text>
-  <g transform="translate(0,4)">
-  <!-- FRENTE -->
-  <circle cx="62" cy="30" r="10" fill="var(--body)"/>
-  ${P('M50 44h24v9H50z','trap')}
-  ${P('M44 53c-5 1-7 6-7 12l9 2 3-14z','delt')}${P('M80 53c5 1 7 6 7 12l-9 2-3-14z','delt')}
-  ${P('M50 54h24c2 8 1 15-3 18H53c-4-3-5-10-3-18z','pect')}
-  ${P('M36 66l8 2c1 8 0 14-2 19l-8-3c1-7 1-13 2-18z','bic')}${P('M88 66l-8 2c-1 8 0 14 2 19l8-3c-1-7-1-13-2-18z','bic')}
-  ${P('M34 87l8 3c0 6-1 11-3 15l-7-3c1-5 2-10 2-15z','antebr')}${P('M90 87l-8 3c0 6 1 11 3 15l7-3c-1-5-2-10-2-15z','antebr')}
-  ${P('M53 73h18v27H53z','abdo')}
-  ${P('M47 74h5v25h-6c-1-9-1-18 1-25z','obli')}${P('M77 74h-5v25h6c1-9 1-18-1-25z','obli')}
-  ${P('M50 101h24v10c0 4-3 6-12 6s-12-2-12-6z','aduc')}
-  ${P('M49 118c-2 15-2 27 1 38l10-1c1-13 1-26-1-37z','cuad')}${P('M75 118c2 15 2 27-1 38l-10-1c-1-13-1-26 1-37z','cuad')}
-  ${P('M51 160c-1 10-1 17 1 23l8-1c1-8 1-15 0-22z','tib')}${P('M73 160c1 10 1 17-1 23l-8-1c-1-8-1-15 0-22z','tib')}
-  <!-- ESPALDA -->
-  <circle cx="196" cy="30" r="10" fill="var(--body)"/>
-  ${P('M182 44h28c-1 7-4 11-14 11s-13-4-14-11z','trap')}
-  ${P('M177 54c-5 1-7 6-7 12l9 2 3-14z','delt')}${P('M215 54c5 1 7 6 7 12l-9 2-3-14z','delt')}
-  ${P('M183 56h26c3 12 1 24-4 30h-18c-5-6-7-18-4-30z','dors')}
-  ${P('M169 67l8 2c1 8 0 14-2 19l-8-3c1-7 1-13 2-18z','tric')}${P('M223 67l-8 2c-1 8 0 14 2 19l8-3c-1-7-1-13-2-18z','tric')}
-  ${P('M167 88l8 3c0 6-1 11-3 15l-7-3c1-5 2-10 2-15z','antebr')}${P('M225 88l-8 3c0 6 1 11 3 15l7-3c-1-5-2-10-2-15z','antebr')}
-  ${P('M190 86h12v14h-12z','erec')}
-  ${P('M182 101h28v16c0 5-5 8-14 8s-14-3-14-8z','glut')}
-  ${P('M180 103c-3 5-3 12-1 17l5-2v-15z','abd')}${P('M212 103c3 5 3 12 1 17l-5-2v-15z','abd')}
-  ${P('M184 126c-2 14-2 25 1 34l10-1c1-12 1-24-1-33z','isq')}${P('M208 126c2 14 2 25-1 34l-10-1c-1-12-1-24 1-33z','isq')}
-  ${P('M186 162c-2 9-2 16 0 22l9-1c1-8 1-15 0-21z','gem')}${P('M206 162c2 9 2 16 0 22l-9-1c-1-8-1-15 0-21z','gem')}
-  </g></svg>`;
+  const cuerpo=(ox,back)=>`
+    <ellipse cx="${ox}" cy="30" rx="10" ry="11.5" fill="var(--body)"/>
+    <rect x="${ox-4}" y="41" width="8" height="5" fill="var(--body)"/>
+    ${back
+      ? R(ox-15,45,30,10,4,'trap')
+      : R(ox-13,45,26,7,3,'trap')}
+    ${P(`M${ox-15} 53c-6 1-9 7-9 14l10 2 4-16z`,'delt')}
+    ${P(`M${ox+15} 53c6 1 9 7 9 14l-10 2-4-16z`,'delt')}
+    ${back
+      ? P(`M${ox-14} 56h28c4 13 1 26-4 32h-20c-5-6-8-19-4-32z`,'dors')
+      : P(`M${ox-13} 53h26c3 9 1 17-4 20h-18c-5-3-7-11-4-20z`,'pect')}
+    ${P(`M${ox-24} 68l10 2c1 9 0 16-2 21l-10-3c1-8 1-14 2-20z`,back?'tric':'bic')}
+    ${P(`M${ox+24} 68l-10 2c-1 9 0 16 2 21l10-3c-1-8-1-14-2-20z`,back?'tric':'bic')}
+    ${P(`M${ox-25} 90l9 3c0 7-1 12-3 17l-8-3c1-6 2-11 2-17z`,'antebr')}
+    ${P(`M${ox+25} 90l-9 3c0 7 1 12 3 17l8-3c-1-6-2-11-2-17z`,'antebr')}
+    ${back
+      ? R(ox-6,86,12,16,4,'erec')
+      : R(ox-9,74,18,27,5,'abdo')}
+    ${back ? '' : P(`M${ox-14} 74h5v26h-6c-2-10-1-19 1-26z`,'obli')+P(`M${ox+14} 74h-5v26h6c2-10 1-19-1-26z`,'obli')}
+    ${back
+      ? P(`M${ox-15} 101h30v17c0 6-6 9-15 9s-15-3-15-9z`,'glut')
+      : P(`M${ox-13} 101h26v11c0 5-4 7-13 7s-13-2-13-7z`,'aduc')}
+    ${back ? P(`M${ox-17} 103c-4 6-4 13-2 18l6-2v-16z`,'abd')+P(`M${ox+17} 103c4 6 4 13 2 18l-6-2v-16z`,'abd') : ''}
+    ${back
+      ? P(`M${ox-14} 127c-3 15-2 27 1 36l11-1c2-13 1-26-1-35z`,'isq')+P(`M${ox+14} 127c3 15 2 27-1 36l-11-1c-2-13-1-26 1-35z`,'isq')
+      : P(`M${ox-13} 119c-3 16-2 29 1 40l11-1c2-14 1-28-1-39z`,'cuad')+P(`M${ox+13} 119c3 16 2 29-1 40l-11-1c-2-14-1-28 1-39z`,'cuad')}
+    ${back
+      ? P(`M${ox-12} 164c-2 10-2 17 0 23l10-1c1-8 1-16 0-22z`,'gem')+P(`M${ox+12} 164c2 10 2 17 0 23l-10-1c-1-8-1-16 0-22z`,'gem')
+      : P(`M${ox-11} 161c-2 10-1 18 1 24l9-1c1-9 1-16 0-23z`,'tib')+P(`M${ox+11} 161c2 10 1 18-1 24l-9-1c-1-9-1-16 0-23z`,'tib')}
+    <rect x="${ox-13}" y="188" width="10" height="5" rx="2.5" fill="var(--body)"/>
+    <rect x="${ox+3}" y="188" width="10" height="5" rx="2.5" fill="var(--body)"/>`;
+  return `<svg class="viz" viewBox="0 0 260 210" role="img" aria-label="Grupos musculares implicados">
+  <text x="62" y="12" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="var(--muted)">FRENTE</text>
+  <text x="196" y="12" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="var(--muted)">ESPALDA</text>
+  <g transform="translate(0,5)">${cuerpo(62,false)}${cuerpo(196,true)}</g></svg>`;
 }
 
-// ---------- Figura animada ----------
-const L={thigh:34,shin:32,torso:42,arm:30,head:7};
-function fk(p){ // devuelve desplazamiento vertical para que el pie toque el suelo
-  const r=(a,l)=>({x:-l*Math.sin(a*Math.PI/180), y:l*Math.cos(a*Math.PI/180)});
-  const k=r(p[1],L.thigh), a=r(p[1]+p[2],L.shin);
-  return k.y+a.y;
+// ---------- Figura animada: posiciones calculadas, animadas con SMIL ----------
+const L={thigh:36,shin:34,torso:44,arm:32,head:8,foot:13};
+const GROUND=138, HX=95, CX=95;
+const rd=a=>a*Math.PI/180;
+// extremo de un segmento que sale hacia ABAJO desde p con angulo a (0 = vertical)
+const down=(p,a,l)=>({x:p.x-l*Math.sin(rd(a)), y:p.y+l*Math.cos(rd(a))});
+// ...hacia ARRIBA
+const up=(p,a,l)=>({x:p.x+l*Math.sin(rd(a)), y:p.y-l*Math.cos(rd(a))});
+
+function skeleton(pose,airY){
+  const [to,th,sh,ar]=pose;
+  // altura de cadera para que el pie toque el suelo
+  const k0=down({x:0,y:0},th,L.thigh), a0=down(k0,th+sh,L.shin);
+  const hip={x:HX, y:GROUND-a0.y+(airY||0)};
+  const knee=down(hip,th,L.thigh);
+  const ankle=down(knee,th+sh,L.shin);
+  const toe={x:ankle.x+L.foot, y:ankle.y};
+  const shoulder=up(hip,to,L.torso);
+  const head=up(hip,to,L.torso+L.head+5);
+  const hand=down(shoulder,ar,L.arm);
+  return {hip,knee,ankle,toe,shoulder,head,hand};
 }
-function figSVG(ex){
+
+function frontal(pose,airY){
+  const [,th,sh]=pose;
+  const k0=down({x:0,y:0},th,L.thigh), a0=down(k0,th+sh,L.shin);
+  const hipY=GROUND-a0.y+(airY||0);
+  const drop=(GROUND-hipY);                  // cuanto queda de altura de pierna
+  const full=L.thigh+L.shin;
+  const flex=1-Math.min(1,drop/full);        // 0 = de pie, 1 = maxima flexion
+  const stance=15+flex*5;                    // los pies se abren un poco al bajar
+  const kneeY=hipY+drop*0.52;
+  const kneeX=stance*(1+flex*0.22);          // rodilla sigue la linea del pie
+  const shY=hipY-L.torso, shX=14;
+  return {hipY,stance,kneeY,kneeX,shX,shY,
+          headY:shY-L.head-4, flex,
+          handY:shY+L.arm*(1-flex*0.35)};
+}
+
+function figSVG(ex,view){
   const poses=ex.poses, air=ex.air||poses.map(()=>0);
-  const GROUND=132, HX=92;
-  const ys=poses.map((p,i)=>GROUND-fk(p)+(air[i]||0));
-  const kf=(sel,idx)=>poses.map((p,i)=>`${Math.round(i/(poses.length-1)*100)}%{transform:rotate(${p[idx]}deg)}`).join('');
-  const bob=poses.map((p,i)=>`${Math.round(i/(poses.length-1)*100)}%{transform:translate(${HX}px,${ys[i]}px)}`).join('');
-  const st=`<style>
-  @keyframes bobA{${bob}} @keyframes toA{${kf(0,0)}} @keyframes thA{${kf(0,1)}} @keyframes shA{${kf(0,2)}} @keyframes arA{${kf(0,3)}}
-  #root{animation:bobA ${ex.dur}s cubic-bezier(.42,0,.4,1) infinite}
-  #torso{animation:toA ${ex.dur}s cubic-bezier(.42,0,.4,1) infinite}
-  #thigh{animation:thA ${ex.dur}s cubic-bezier(.42,0,.4,1) infinite}
-  #shin{animation:shA ${ex.dur}s cubic-bezier(.42,0,.4,1) infinite}
-  #arm{animation:arA ${ex.dur}s cubic-bezier(.42,0,.4,1) infinite}
-  .paused #root,.paused #torso,.paused #thigh,.paused #shin,.paused #arm{animation-play-state:paused}
-  </style>`;
-  const S='stroke="var(--figure)" stroke-width="7" stroke-linecap="round" fill="none"';
-  return `<svg class="viz fig" viewBox="0 0 190 160" role="img" aria-label="Animación del movimiento: ${ex.n}">
-  ${st}
-  <line x1="14" y1="${GROUND}" x2="176" y2="${GROUND}" stroke="var(--line-2)" stroke-width="2"/>
-  <g id="root" class="j">
-    <g id="torso" class="j">
-      <line x1="0" y1="0" x2="0" y2="-${L.torso}" ${S}/>
-      <circle cx="0" cy="-${L.torso+L.head+2}" r="${L.head}" fill="var(--figure)"/>
-      <g transform="translate(0,-${L.torso-4})"><g id="arm" class="j">
-        <line x1="0" y1="0" x2="0" y2="${L.arm}" ${S} stroke-width="5.5"/></g></g>
-    </g>
-    <g id="thigh" class="j">
-      <line x1="0" y1="0" x2="0" y2="${L.thigh}" ${S}/>
-      <g transform="translate(0,${L.thigh})"><g id="shin" class="j">
-        <line x1="0" y1="0" x2="0" y2="${L.shin}" ${S}/>
-        <line x1="0" y1="${L.shin}" x2="13" y2="${L.shin}" ${S} stroke-width="5.5"/>
-      </g></g>
-    </g>
-  </g></svg>`;
+  const n=poses.length;
+  const kt=poses.map((_,i)=>(i/(n-1)).toFixed(4)).join(';');
+  const dur=ex.dur+'s';
+  const A=(attr,vals)=>`<animate attributeName="${attr}" values="${vals.join(';')}" keyTimes="${kt}" dur="${dur}" repeatCount="indefinite" calcMode="spline" keySplines="${Array(n-1).fill('.42 0 .4 1').join(';')}"/>`;
+  const S='stroke="var(--figure)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none"';
+  const S2='stroke="var(--figure)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" fill="none"';
+  const P=o=>`${o.x.toFixed(1)},${o.y.toFixed(1)}`;
+
+  if(view==='front'){
+    const F=poses.map((p,i)=>frontal(p,air[i]));
+    const rel=/rodilla|aterrizaje|valgo|frontal|Propiocepción/i.test(ex.pat);
+    const leg=sg=>F.map(f=>`${CX+sg*f.shX*0.55},${f.hipY} ${CX+sg*f.kneeX},${f.kneeY} ${CX+sg*f.stance},${GROUND}`);
+    const arm=sg=>F.map(f=>`${CX+sg*f.shX},${f.shY+4} ${CX+sg*(f.shX+7)},${f.handY}`);
+    const kn=sg=>({x:F.map(f=>(CX+sg*f.kneeX).toFixed(1)),y:F.map(f=>f.kneeY.toFixed(1))});
+    const st=F[0].stance;
+    return `<svg class="viz fig" viewBox="0 0 190 178" role="img" aria-label="Vista frontal: ${ex.n}">
+      ${rel?`<line x1="${CX-st}" y1="8" x2="${CX-st}" y2="${GROUND}" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="4 5" opacity=".65"/>
+      <line x1="${CX+st}" y1="8" x2="${CX+st}" y2="${GROUND}" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="4 5" opacity=".65"/>`:''}
+      <line x1="16" y1="${GROUND}" x2="174" y2="${GROUND}" stroke="var(--line-2)" stroke-width="2"/>
+      <polyline ${S} points="${leg(-1)[0]}">${A('points',leg(-1))}</polyline>
+      <polyline ${S} points="${leg(1)[0]}">${A('points',leg(1))}</polyline>
+      <polyline ${S} points="${F.map(f=>`${CX},${f.hipY} ${CX},${f.shY}`)[0]}">${A('points',F.map(f=>`${CX},${f.hipY} ${CX},${f.shY}`))}</polyline>
+      <polyline ${S} points="${F.map(f=>`${CX-f.shX},${f.shY} ${CX+f.shX},${f.shY}`)[0]}">${A('points',F.map(f=>`${CX-f.shX},${f.shY} ${CX+f.shX},${f.shY}`))}</polyline>
+      <polyline ${S2} points="${arm(-1)[0]}">${A('points',arm(-1))}</polyline>
+      <polyline ${S2} points="${arm(1)[0]}">${A('points',arm(1))}</polyline>
+      ${rel?[-1,1].map(sg=>{const k=kn(sg);return `<circle r="5" fill="var(--accent)" stroke="var(--surface-2)" stroke-width="2" cx="${k.x[0]}" cy="${k.y[0]}">${A('cx',k.x)}${A('cy',k.y)}</circle>`;}).join(''):''}
+      <circle r="${L.head}" fill="var(--figure)" cx="${CX}" cy="${F[0].headY}">${A('cy',F.map(f=>f.headY.toFixed(1)))}</circle>
+      ${rel?`<text x="${CX}" y="156" text-anchor="middle" font-family="IBM Plex Mono" font-size="8.5" fill="var(--accent-ink)">LA RODILLA SIGUE LA LÍNEA DEL PIE</text>
+      <text x="${CX}" y="169" text-anchor="middle" font-family="IBM Plex Mono" font-size="8.5" fill="var(--muted)">SI SE VA HACIA DENTRO, PARA LA SERIE</text>`:''}
+    </svg>`;
+  }
+
+  const K=poses.map((p,i)=>skeleton(p,air[i]));
+  const legPts=K.map(k=>`${P(k.hip)} ${P(k.knee)} ${P(k.ankle)} ${P(k.toe)}`);
+  const torPts=K.map(k=>`${P(k.hip)} ${P(k.shoulder)}`);
+  const armPts=K.map(k=>`${P(k.shoulder)} ${P(k.hand)}`);
+  const far=K.map(k=>`${(k.hip.x-5).toFixed(1)},${k.hip.y.toFixed(1)} ${(k.knee.x-7).toFixed(1)},${k.knee.y.toFixed(1)} ${(k.ankle.x-6).toFixed(1)},${k.ankle.y.toFixed(1)} ${(k.toe.x-6).toFixed(1)},${k.toe.y.toFixed(1)}`);
+  const SF='stroke="var(--figure)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity=".28"';
+  return `<svg class="viz fig" viewBox="0 0 190 178" role="img" aria-label="Vista lateral: ${ex.n}">
+    <line x1="16" y1="${GROUND}" x2="174" y2="${GROUND}" stroke="var(--line-2)" stroke-width="2"/>
+    <polyline ${SF} points="${far[0]}">${A('points',far)}</polyline>
+    <polyline ${S} points="${legPts[0]}">${A('points',legPts)}</polyline>
+    <polyline ${S} points="${torPts[0]}">${A('points',torPts)}</polyline>
+    <polyline ${S2} points="${armPts[0]}">${A('points',armPts)}</polyline>
+    <circle r="${L.head}" fill="var(--figure)" cx="${K[0].head.x.toFixed(1)}" cy="${K[0].head.y.toFixed(1)}">
+      ${A('cx',K.map(k=>k.head.x.toFixed(1)))}${A('cy',K.map(k=>k.head.y.toFixed(1)))}</circle>
+  </svg>`;
 }
 
 // ---------- Render ----------
@@ -524,12 +583,18 @@ function renderDetail(){
     <div class="visuals${F?' three':''}">
       ${F?`<div class="panel"><h3>Demostración</h3>
         <div class="ph" id="phbox">${F.imgs.map((u,i)=>`<img src="${u}" alt="${F.name} — fase ${i+1}">`).join('')}</div>
-        <div class="ctrl"><button id="phpp">Pausar</button><span style="font-size:11.5px;color:var(--muted)">Inicio y final</span></div>
+        <div class="ctrl"><button id="phpp">Pausar</button><span style="font-size:11.5px;color:var(--muted)">Inicio y final · un solo ángulo</span></div>
         <div class="src">Fotos de <b>free-exercise-db</b> (${F.src}), dominio público.
-        ${F.nota==='exacta'?'Correspondencia exacta con nuestro ejercicio.':'<b>Ojo:</b> '+F.nota}</div>
+        ${F.nota==='exacta'?'Correspondencia exacta con nuestro ejercicio.':'<b>Ojo:</b> '+F.nota}
+        La foto viene con un único ángulo; para ver el movimiento de frente <b>y</b> de lado, usa el esquema de al lado.</div>
       </div>`:''}
-      <div class="panel"><h3>Movimiento esquemático</h3><div id="figbox">${figSVG(e)}</div>
-        <div class="ctrl"><button id="pp">Pausar</button><span style="font-size:11.5px;color:var(--muted)">Vista lateral esquemática</span></div></div>
+      <div class="panel"><h3>Movimiento esquemático</h3>
+        <div class="viewtabs">
+          <button id="vLat" aria-pressed="true">Lateral</button>
+          <button id="vFro" aria-pressed="false">Frontal</button>
+        </div>
+        <div id="figbox">${figSVG(e,'side')}</div>
+        <div class="ctrl"><button id="pp">Pausar</button><span id="vhint" style="font-size:11.5px;color:var(--muted)">Patrón de movimiento</span></div></div>
       <div class="panel"><h3>Musculatura implicada</h3>${bodySVG(e.pri,e.sec)}
         <div class="legend">
           <span><i class="sw" style="background:var(--accent)"></i>Principal</span>
@@ -565,8 +630,22 @@ function renderDetail(){
 
   <div class="alert crit"><b>Cuándo parar</b>Dolor agudo durante la ejecución, dolor que persiste más de 24 h tras la sesión, o rodilla que se va hacia dentro y no puedes corregirla. En cualquiera de esos casos, para el ejercicio y consulta a un profesional. Esta guía no diagnostica.</div>`;
 
+  let view='side';
   const box=$('figbox'), pp=$('pp');
-  pp.onclick=()=>{const p=box.classList.toggle('paused'); pp.textContent=p?'Reanudar':'Pausar';};
+  const setView=v=>{
+    view=v; box.innerHTML=figSVG(e,v);
+    $('vLat').setAttribute('aria-pressed',v==='side');
+    $('vFro').setAttribute('aria-pressed',v==='front');
+    $('vhint').textContent = v==='side' ? 'Patrón de movimiento' : 'Alineación de rodilla y pie';
+    pp.textContent='Pausar';
+  };
+  $('vLat').onclick=()=>setView('side');
+  $('vFro').onclick=()=>setView('front');
+  pp.onclick=()=>{
+    const f=box.querySelector('svg'); const p=f.classList.toggle('paused');
+    pp.textContent=p?'Reanudar':'Pausar';
+    if(p){f.pauseAnimations&&f.pauseAnimations();}else{f.unpauseAnimations&&f.unpauseAnimations();}
+  };
   const ph=$('phbox'), php=$('phpp');
   if(ph&&php) php.onclick=()=>{const p=ph.classList.toggle('paused'); php.textContent=p?'Reanudar':'Pausar';};
 }
