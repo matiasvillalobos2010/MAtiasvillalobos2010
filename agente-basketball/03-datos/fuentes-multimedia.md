@@ -81,6 +81,14 @@ Localizadas por búsqueda; **licencia según lo que declara cada fuente, sin com
 | [wger](https://github.com/nopinter/wger) | Base de ejercicios con API REST | Código abierto | Imágenes estáticas, sin animaciones según lo recuperado |
 | [AnatomyTOOL](https://anatomytool.org/anatomy-learning-resources-which-are-open) | Índice de recursos anatómicos abiertos | Variable por recurso | Es un directorio, hay que evaluar recurso a recurso |
 
+### Revisada y descartada: hasaneyldrm/exercises-dataset
+
+1.324 ejercicios con **GIF animados** y instrucciones en 10 idiomas incluido español. Revisión completa en [`revision-exercises-dataset.md`](revision-exercises-dataset.md).
+
+**Los datos son MIT; los medios no.** Su `LICENSE` incluye una *Media Exception* y un `NOTICE.md`: las imágenes y los GIF son © Gym visual, incluidos con permiso escrito **para ese repositorio**, y dice literalmente que *clonar el repositorio no otorga ninguna licencia sobre los medios*. No se usan.
+
+Sirve, eso sí, como hoja de ruta si algún día se licencia ese material directamente con Gym visual: cada registro trae el `media_id` que mapea a su catálogo.
+
 ### Descartadas para incrustar
 
 **ExerciseDB** y **WorkoutX** ofrecen catálogos grandes de GIF animados con planes gratuitos, pero **su licencia de redistribución no está clara** en lo recuperado. Un plan gratuito de API no equivale a permiso para incrustar el material en un producto propio. No se usan sin leer sus términos.
