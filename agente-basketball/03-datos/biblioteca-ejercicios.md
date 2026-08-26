@@ -56,6 +56,8 @@ CONTRA: contraindicaciones
 | `ROD-02` | Sentadilla búlgara | `[MOBILIARIO]` | Fuerza unilateral · 3×8-12/pierna | P9 | → `ROD-01` a una pierna, apoyo trasero en el suelo | Inestabilidad de tobillo no controlada |
 | `ROD-03` | Sentadilla con barra trasera | `BARRA`,`DISCOS`,`RACK` | Fuerza máxima · 4×3-6 | P9 | → `ROD-01` en tempo lento (3-1-3) | Sin competencia técnica: no prescribir |
 | `ROD-04` | Sentadilla goblet | `MANCUERNA-LIG` o `KETTLEBELL` | Fuerza general · 3×8-12 | P9 | → `ROD-01` con pausa isométrica de 3 s | Dolor lumbar en flexión cargada |
+
+> **Nota sobre la imagen de `ROD-04`:** la ilustración de RepDB muestra una **pesa rusa**, no una mancuerna. El ejercicio es el mismo con cualquiera de las dos; con mancuerna se sujeta por un extremo contra el pecho. Se declara en el pie de foto para que nadie asuma que hace falta pesa rusa.
 | `ROD-05` | Zancada estática | `[]` | Fuerza unilateral · 3×10/pierna | P6, P9 | — | Dolor femoropatelar |
 | `ROD-06` | Zancada caminando | `ESP-MED` | Fuerza unilateral con desplazamiento · 3×12 pasos | P6 | → `ROD-05` | Espacio insuficiente |
 | `ROD-07` | Subida al escalón | `ESCALON` | Fuerza unilateral · 3×10/pierna | P6, P9 | → `ROD-05` | Escalón inestable |
