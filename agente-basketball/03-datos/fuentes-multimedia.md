@@ -1,6 +1,58 @@
 # Fuentes multimedia para ejercicios
 
-> **Estado: candidatas, NO verificadas.** No se pudo abrir ninguna de estas fuentes — el entorno bloquea todo acceso de red. Se documentan por nombre y licencia declarada para que alguien con conexión las evalúe, **no para enlazarlas a ciegas**.
+> **Actualizado 2026-08-26.** Se descubrió que **GitHub sí es alcanzable** desde este entorno a través del proxy git de la sesión, aunque las fuentes científicas siguen bloqueadas. Eso permitió **descargar, verificar e integrar** `free-exercise-db`. El resto de fuentes de esta página siguen sin verificar.
+
+## 0. Integración realizada: free-exercise-db
+
+**Licencia comprobada leyendo `LICENSE.md` del propio repositorio:** Unlicense — dominio público, uso libre incluido comercial.
+
+**Contenido real del conjunto de datos**, no el declarado por un buscador:
+
+| | |
+|---|---|
+| Ejercicios | 873 |
+| Imágenes | 2 por ejercicio (posición inicial y final) |
+| Peso medio por imagen | ~38 KB |
+| Campos | nombre, equipo, nivel, mecánica, categoría, músculos primarios y secundarios, instrucciones paso a paso |
+| Vocabulario de equipo | body only, barbell, dumbbell, machine, cable, bands, kettlebells, medicine ball, exercise ball, foam roll, e-z curl bar, other |
+| Categorías | strength (581), stretching (123), plyometrics (61), powerlifting (38), olympic weightlifting (35), strongman (21), cardio (14) |
+
+### Correspondencias integradas — 13 de nuestros 24 ejercicios
+
+| Nuestro | free-exercise-db | Correspondencia |
+|---|---|---|
+| `ROD-01` Sentadilla peso corporal | `Bodyweight_Squat` | Exacta |
+| `ROD-06` Zancada caminando | `Bodyweight_Walking_Lunge` | Exacta |
+| `ROD-07` Subida al escalón | `Step-up_with_Knee_Raise` | ⚠ La foto muestra la variante con elevación de rodilla |
+| `CAD-01` Puente de glúteo | `Butt_Lift_Bridge` | Exacta |
+| `CAD-02` Puente a una pierna | `Single_Leg_Glute_Bridge` | Exacta |
+| `CAD-06` Curl nórdico asistido | `Floor_Glute-Ham_Raise` | Exacta |
+| `SUP-01` Flexión de brazos | `Pushups` | Exacta |
+| `SUP-07` Remo invertido | `Inverted_Row` | ⚠ La foto usa barra en rack; nuestra versión usa mesa |
+| `CORE-01` Plancha frontal | `Plank` | Exacta |
+| `CORE-02` Plancha lateral | `Side_Bridge` | Exacta |
+| `PLI-01` Salto con contramovimiento | `Rocket_Jump` | Exacta |
+| `PLI-06` Salto horizontal | `Standing_Long_Jump` | Exacta |
+| `PLI-07` Salto lateral | `Lateral_Bound` | Exacta |
+
+### Cuatro candidatos descartados tras leer sus instrucciones
+
+**Este es el paso que evita mostrar el ejercicio equivocado.** Los cuatro coincidían por nombre y ninguno era el mismo movimiento:
+
+| Candidato | Para | Por qué se descartó |
+|---|---|---|
+| `Split_Squats` | `ROD-05` Zancada estática | **No es estática.** Sus instrucciones describen saltos alternando piernas en el aire |
+| `Standing_Calf_Raises` | `PREV-03` Elevación de talones | **Requiere máquina.** Nuestra versión es sin material |
+| `Rope_Jumping` | `PLI-03` Saltos repetidos | **Requiere cuerda**, y está catalogado como cardio, no pliometría |
+| `Lateral_Cone_Hops` | `PLI-07` Salto lateral | **Requiere conos.** Mostrarlo violaría nuestra propia regla de no enseñar material que el escenario no incluye. Sustituido por `Lateral_Bound`, que es sin material |
+
+### El hallazgo que conviene retener
+
+**La base cubre bien el gimnasio clásico y casi nada del trabajo preventivo, de aterrizaje y de propiocepción.** Sin correspondencia adecuada quedaron, entre otros: sentadilla isométrica en pared, bisagra de cadera sin carga, deslizamiento de talón, tracción isométrica de escápulas, aterrizaje con congelación, aterrizaje con corrección de valgo, equilibrio monopodal, almeja, movilidad de tobillo y carrera en el sitio.
+
+Es decir: **justo la parte con mejor evidencia para baloncesto es la que las bases de datos genéricas de fitness no cubren.** Para esos once ejercicios se conserva únicamente la animación esquemática propia.
+
+---
 
 ---
 

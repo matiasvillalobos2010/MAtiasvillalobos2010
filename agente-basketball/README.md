@@ -67,6 +67,10 @@ Detalle en [`02-agente/recomendador-por-objetivo.md`](02-agente/recomendador-por
 
 [`06-app/guia-ejecucion.html`](06-app/guia-ejecucion.html) — cómo se hace cada ejercicio. Para cada uno: **animación del movimiento**, **mapa muscular** con grupos principales y secundarios, colocación paso a paso, tempo, **errores frecuentes** y qué hacer si es demasiado o demasiado poco.
 
+Trece de los veinticuatro llevan además **fotos de demostración reales**, integradas desde `free-exercise-db` — un conjunto de datos en **dominio público** que sí se pudo descargar y verificar. Cada correspondencia se comprobó leyendo las instrucciones del ejercicio de origen, no solo su nombre: **cuatro candidatos se descartaron por no ser el mismo movimiento**.
+
+Los once restantes conservan solo la animación esquemática, y el motivo es interesante: esa base cubre bien el entrenamiento de gimnasio clásico y **casi nada del trabajo preventivo, de aterrizaje y de propiocepción** — justo la parte con mejor evidencia para baloncesto.
+
 **No hay vídeos externos, y es deliberado.** Este proyecto se construyó sin acceso de red: no se pudo abrir ni comprobar ningún enlace de vídeo, y enlazar material no visto es el mismo fallo que citar un estudio no leído — con el agravante de que un identificador equivocado no da error, da otro vídeo. Las animaciones y los mapas musculares están dibujados en el propio código: originales, sin licencia que resolver y funcionan sin conexión.
 
 Las fuentes externas de licencia libre que sí existen están documentadas, con su licencia declarada y sin verificar, en [`03-datos/fuentes-multimedia.md`](03-datos/fuentes-multimedia.md).
