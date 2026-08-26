@@ -1,6 +1,6 @@
 # Biblioteca de ejercicios
 
-**73 ejercicios.** Todos con al menos una alternativa ejecutable sin material.
+**77 ejercicios.** Todos con al menos una alternativa ejecutable sin material.
 
 ---
 
@@ -10,7 +10,7 @@
 
 Cada ejercicio cita el **principio** del que deriva (`P1`–`P9`), definido y respaldado en [`../01-investigacion/03-entrenamiento-fuerza-y-potencia.md`](../01-investigacion/03-entrenamiento-fuerza-y-potencia.md) §6.
 
-**Esta es una decisión deliberada**, explicada en [`../PLAN-DE-TRABAJO.md`](../PLAN-DE-TRABAJO.md) §6 riesgo nº 2: citar un estudio distinto por cada uno de 73 ejercicios es la vía más rápida a inventar respaldos a mitad de la lista. Citando principios, la trazabilidad es real y verificable en dos saltos, y **no hay ni una sola cita fabricada**.
+**Esta es una decisión deliberada**, explicada en [`../PLAN-DE-TRABAJO.md`](../PLAN-DE-TRABAJO.md) §6 riesgo nº 2: citar un estudio distinto por cada uno de 77 ejercicios es la vía más rápida a inventar respaldos a mitad de la lista. Citando principios, la trazabilidad es real y verificable en dos saltos, y **no hay ni una sola cita fabricada**.
 
 Recordatorio de los principios:
 
@@ -62,6 +62,7 @@ CONTRA: contraindicaciones
 | `ROD-08` | Sentadilla isométrica en pared | `PARED` | Resistencia isométrica · 3×30-45 s | P9 | → `ROD-01` con pausa larga en el fondo | Dolor anterior de rodilla |
 | `ROD-09` | Prensa de piernas | `MAQUINA-SEL` | Fuerza general · 3×10-12 | P9 | → `ROD-01` | — |
 | `ROD-10` | Sentadilla a una pierna (pistol) asistida | `[]` | Fuerza unilateral avanzada · 3×5-8/pierna | P9 | — | Movilidad de tobillo insuficiente |
+| `ROD-11` | Zancada con mancuernas | `MANCUERNA-LIG` | Fuerza unilateral cargada · 3×10/pierna | P6, P9 | → `ROD-05` | Paso corto sobrecarga la rodilla |
 
 ---
 
@@ -121,7 +122,10 @@ Es el bloque con mejor evidencia del proyecto (`P1`). También el que exige más
 | `SUP-07` | Remo invertido bajo mesa | `MOBILIARIO` | Tracción horizontal · 3×8-12 | P9 | → `SUP-08` | Mesa inestable |
 | `SUP-08` | Tracción isométrica de escápulas | `[]` | Activación escapular · 3×15 | P9 | — | — |
 | `SUP-09` | Remo con banda | `BANDA-LARGA` | Tracción horizontal · 3×12-15 | P9 | → `SUP-08` | — |
-| `SUP-10` | Remo con mancuerna | `MANCUERNA-LIG` | Tracción horizontal unilateral · 3×10/lado | P9 | → `SUP-07` | Dolor lumbar |
+| `SUP-10` | Remo con mancuernas | `MANCUERNA-LIG` | Tracción horizontal · 3×10 | P9 | → `SUP-07` | Dolor lumbar |
+| `SUP-11` | Press de suelo con mancuernas | `MANCUERNA-LIG` | Empuje horizontal · 3×8-12 | P9 | → `SUP-01` | Dolor de hombro |
+| `SUP-12` | Elevación lateral con mancuernas | `MANCUERNA-LIG` | Deltoides · 3×12-15 | P9 | → `SUP-08` | Dolor de hombro en elevación |
+| `SUP-13` | Curl de bíceps con mancuernas | `MANCUERNA-LIG` | Accesorio de bíceps · 3×10-12 | — | → `SUP-08` | — |
 
 ---
 
@@ -201,15 +205,15 @@ Es el bloque con mejor evidencia del proyecto (`P1`). También el que exige más
 
 | Bloque | Ejercicios | Con `REQUIERE: []` propio | Resto: con alternativa sin material | ✔ |
 |---|---|---|---|---|
-| Dominante de rodilla | 10 | 3 (`ROD-01`,`ROD-05`,`ROD-10`) | 7 | ✅ |
+| Dominante de rodilla | 11 | 3 (`ROD-01`,`ROD-05`,`ROD-10`) | 7 | ✅ |
 | Dominante de cadera | 9 | 3 (`CAD-01`,`CAD-02`,`CAD-05`) | 6 | ✅ |
 | Pliometría | 12 | 0* | 12 | ✅ |
-| Tren superior | 10 | 3 (`SUP-01`,`SUP-05`,`SUP-08`) | 7 | ✅ |
+| Tren superior | 13 | 3 (`SUP-01`,`SUP-05`,`SUP-08`) | 7 | ✅ |
 | Core | 7 | 2 (`CORE-01`,`CORE-02`) | 5 | ✅ |
 | Prevención | 9 | 3 (`PREV-01`,`PREV-03`,`PREV-05`) | 6 | ✅ |
 | Acondicionamiento | 10 | 0** | 10 | ✅ |
 | Con balón | 6 | 0 | 6 | ✅ |
-| **Total** | **73** | **14** | **59** | **✅** |
+| **Total** | **77** | **14** | **63** | **✅** |
 
 \* La pliometría requiere `SUELO-DURO`, que es una condición del entorno, no un implemento que haya que poseer. Se considera cubierto en cualquier escenario con suelo firme, incluido el escenario 1.
 
@@ -232,3 +236,12 @@ Aplican a toda la biblioteca y están replicadas en [`../02-agente/reglas-de-seg
 - **Menor de edad sin supervisión** → no se prescribe carga externa ni pliometría de alta demanda (`PLI-05`).
 - **Dolor anterior de rodilla previo** → factor de riesgo documentado de tendinopatía rotuliana ([`../01-investigacion/02-evidencia-clinica-lesiones-y-prevencion.md`](../01-investigacion/02-evidencia-clinica-lesiones-y-prevencion.md) §3). Precaución con el bloque pliométrico.
 - **Sin competencia técnica** en levantamientos con barra (`ROD-03`, `CAD-03`, `SUP-03`) → no prescribir aunque el material esté disponible.
+
+
+---
+
+## 12. Nota sobre `SUP-13` (curl de bíceps)
+
+Es el único ejercicio de la biblioteca **sin principio asignado**. No deriva de ningún hallazgo del proyecto y no se localizó evidencia de que mejore el rendimiento en baloncesto.
+
+Se incluye porque se pidió trabajo de tren superior con mancuernas, y está marcado como **accesorio** en su ficha para que nadie lo confunda con los bloques que sí tienen justificación. Lo mismo aplicaría a cualquier ejercicio que se añada por preferencia y no por análisis: se añade, y se dice lo que es.
