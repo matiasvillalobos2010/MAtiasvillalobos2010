@@ -65,17 +65,63 @@ Detalle en [`02-agente/recomendador-por-objetivo.md`](02-agente/recomendador-por
 
 ## La app
 
-[`06-app/app.html`](06-app/app.html) — un solo archivo, sin dependencias, que funciona en **móvil, tablet y navegador**. Tres secciones:
+[`06-app/app.html`](06-app/app.html) — un solo archivo, sin dependencias, que funciona en **móvil, tablet y navegador**. Cuatro secciones:
 
 | Sección | Qué hace |
 |---|---|
+| **Perfil** | Cuestionario de iniciación, lista de deportistas y copia de seguridad |
 | **Hoy** | Tu objetivo, el reparto de bloques que le corresponde, y —siempre— **lo que ese plan no va a conseguir** |
-| **Ejercicios** | 24 fichas con imagen, esquema lateral y frontal, mapa muscular, errores frecuentes y progresiones |
+| **Ejercicios** | 32 fichas con animación de demostración, mapa muscular, errores frecuentes y progresiones |
 | **Progreso** | Sesiones, carga semanal, métrica del objetivo y logros |
 
-Navegación inferior en móvil, en cabecera desde tablet. Los datos se guardan en el navegador.
+Navegación inferior en móvil, en cabecera desde tablet.
 
 Las dos apps originales siguen en la carpeta por separado: [`guia-ejecucion.html`](06-app/guia-ejecucion.html) y [`seguimiento.html`](06-app/seguimiento.html).
+
+---
+
+## Módulo de iniciación
+
+El cuestionario que se aplica antes de generar nada. Seis pasos, y el orden importa:
+
+| Paso | Qué recoge | Por qué ahí |
+|---|---|---|
+| 1. **Salud** | 4 condiciones de parada + 4 de historial | Va primero a propósito: si algo sale que sí, no tiene sentido pedir treinta datos más para acabar derivando |
+| 2. **Perfil** | Nombre, edad, sexo, peso, posición, nivel, **experiencia en fuerza** | La experiencia en fuerza es lo que impide prescribir una sentadilla con barra por el mero hecho de tener rack |
+| 3. **Material** | 32 implementos del catálogo | Determina el escenario 1-8 por contención de conjuntos, no por declaración en prosa |
+| 4. **Disponibilidad** | Días, minutos, partidos, horas totales | Con menos de 2 días avisa de que **el bloque preventivo queda infradosificado** |
+| 5. **Objetivo** | Uno de los 6 del recomendador, fase, métrica | Arrastra su propia advertencia de lo que no va a conseguir |
+| 6. **Resumen** | Escenario asignado y cuántos ejercicios quedan ejecutables | Antes de guardar, para poder corregir |
+
+Las cuatro condiciones de parada (dolor agudo, lesión activa, patología diagnosticada, embarazo o posparto) **detienen el cuestionario y no generan plan**. La pantalla lo dice explícitamente y no ofrece "algo ligero mientras tanto" — ese ofrecimiento es la forma habitual en que una regla de seguridad deja de servir para nada. Replica [`02-agente/reglas-de-seguridad.md`](02-agente/reglas-de-seguridad.md) §2.
+
+Las cuatro de historial (esguinces, dolor anterior de rodilla, LCA con alta, lumbalgia) no bloquean: generan **precauciones declaradas** que quedan guardadas en el perfil.
+
+---
+
+## Base de datos de progreso
+
+**IndexedDB, dentro del navegador**, con cuatro almacenes: `usuarios`, `sesiones`, `mediciones` y `ajustes`. Varios deportistas en el mismo dispositivo, cada uno con su cuestionario, su escenario y su historial; se cambia de perfil activo desde la sección Perfil.
+
+No hay servidor de datos y es una decisión, no una carencia disimulada: una base con usuarios remotos exigiría backend, hosting y autenticación, y rompería la propiedad de que la app es un archivo que abres y funciona.
+
+El precio, dicho antes de meter tres meses de entrenamientos: **los datos viven por navegador y por dirección**. `http://localhost:8080` y `http://192.168.1.34:8080` son orígenes distintos, con bases distintas. Lo que registres en el móvil no aparece en el ordenador. La salida es **Perfil → Copia de seguridad → Exportar todo**, que vuelca todos los perfiles a texto e importa en el otro dispositivo.
+
+---
+
+## Servidor local
+
+[`06-app/servidor/`](06-app/servidor/) — para abrir la app desde el móvil o la tablet en tu propia wifi.
+
+```bash
+cd 06-app/servidor
+./iniciar.sh          # macOS y Linux
+iniciar.bat           # Windows
+```
+
+Sin dependencias: usa Node si está instalado y, si no, Python 3. Al arrancar imprime la dirección `192.168.x.x` a la que conectarse desde el teléfono. Escucha solo en la red local — no abre nada a internet ni toca el router.
+
+Instrucciones completas, cortafuegos y solución de problemas en [`06-app/servidor/LEEME.md`](06-app/servidor/LEEME.md).
 
 ---
 
@@ -120,7 +166,7 @@ El orden importa: **primero la investigación, después el agente.** El agente n
 | [`03-datos/`](03-datos/) | Catálogo de implementos, 73 ejercicios, 8 escenarios, fórmulas nutricionales |
 | [`04-plantillas/`](04-plantillas/) | Formatos de salida: entrenamiento, nutrición, informe de progreso |
 | [`05-salidas/`](05-salidas/) | Planes generados |
-| [`06-app/`](06-app/) | **App unificada** (`app.html`) más las dos apps originales por separado |
+| [`06-app/`](06-app/) | **App unificada** (`app.html`), las dos apps originales por separado, y `servidor/` para servirla en la red local |
 
 [`PLAN-DE-TRABAJO.md`](PLAN-DE-TRABAJO.md) documenta las fases, dependencias, riesgos y estado.
 

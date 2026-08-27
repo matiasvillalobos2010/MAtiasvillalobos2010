@@ -1,3 +1,4 @@
+<meta charset="utf-8">
 <title>Cuaderno de Baloncesto</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -253,6 +254,35 @@ textarea{width:100%;min-height:100px;font-family:"IBM Plex Mono",monospace;font-
 footer{margin-top:26px;padding-top:18px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted);max-width:78ch}
 footer p{margin:0 0 9px}footer strong{color:var(--ink-2)}
 @media (prefers-reduced-motion:reduce){.mediabox img{animation:none}}
+
+/* ---- Iniciación / perfiles ---- */
+.wizhead{margin-bottom:16px}
+.wizhead .obj{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.wizhead h1{font-size:23px;font-weight:600;letter-spacing:-.02em;margin:4px 0 0}
+.wizhead p{font-size:13.5px;color:var(--muted);margin:7px 0 0;max-width:66ch;line-height:1.55}
+.wiznav{display:flex;gap:10px;margin-top:16px}
+.wiznav button{flex:1;font-family:inherit;font-size:14.5px;font-weight:600;padding:13px 14px;border-radius:12px;cursor:pointer;border:1px solid var(--line-2)}
+.wiznav button.primary{margin-top:0;background:var(--accent);color:var(--on-accent);border-color:transparent}
+.wiznav button.ghost,button.ghost{background:var(--surface-2);color:var(--ink-2);border:1px solid var(--line-2)}
+.wiznav button:disabled{opacity:.45;cursor:not-allowed}
+button.ghost{font-family:inherit;font-size:13.5px;font-weight:600;padding:9px 14px;border-radius:11px;cursor:pointer}
+.wgrid{display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
+@media (min-width:560px){.wgrid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+.implgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.impl{display:flex;gap:9px;align-items:flex-start;background:var(--surface-2);border:1px solid transparent;
+  border-radius:11px;padding:10px 11px;font-size:13px;color:var(--ink-2);cursor:pointer;line-height:1.35}
+.impl input{margin-top:1px;accent-color:var(--accent);width:17px;height:17px;flex:none}
+.impl:has(input:checked){border-color:var(--accent);background:var(--accent-soft);color:var(--accent-ink)}
+.pasos{display:flex;gap:5px;margin-top:14px}
+.pasos i{flex:1;height:4px;border-radius:999px;background:var(--surface-2)}
+.pasos i.on{background:var(--accent)}
+.omit{margin-top:9px;font-size:11.5px;line-height:1.55;color:var(--warn);background:var(--warn-soft);
+  border-radius:9px;padding:8px 10px}
+.omit b{display:block;margin-bottom:2px}
+.omit span{font-family:"IBM Plex Mono",monospace;font-size:10px;opacity:.85}
+.chip.mio[aria-pressed=true]{background:var(--accent);color:var(--on-accent);border-color:transparent}
+#dumpdb{width:100%;min-height:104px;font-family:"IBM Plex Mono",monospace;font-size:11px;line-height:1.5;
+  background:var(--surface-2);color:var(--ink-2);border:1px solid var(--line-2);border-radius:11px;padding:11px;resize:vertical}
 </style>
 
 <div class="app">
@@ -265,6 +295,7 @@ footer p{margin:0 0 9px}footer strong{color:var(--ink-2)}
     </svg></button>
 </header>
 <main><div class="wrap">
+  <section class="view" id="v-perfil"></section>
   <section class="view on" id="v-hoy"></section>
   <section class="view" id="v-ejercicios"></section>
   <section class="view" id="v-progreso"></section>
@@ -833,8 +864,325 @@ function render(){
 }
 
 
+/* ═══════════════════ BASE DE DATOS (IndexedDB) ═══════════════════
+   Almacenes:
+     usuarios   {id, nombre, creado, perfil, salud, implementos[], escenario,
+                 disponibilidad, objetivo, fase, metrica, estado, motivo}
+     sesiones   {id, userId, d, m, r, t, p, a}      índice: userId
+     mediciones {id, userId, d, v}                  índice: userId
+     ajustes    {k, v}                              (k='activo' -> userId)
+   Todo local al navegador. Sin servidor, sin red.
+=================================================================== */
+const DB={
+  name:'cuaderno-baloncesto', ver:1, _db:null,
+  async open(){
+    if(this._db) return this._db;
+    return this._db = await new Promise((res,rej)=>{
+      const r=indexedDB.open(this.name,this.ver);
+      r.onupgradeneeded=ev=>{
+        const d=ev.target.result;
+        if(!d.objectStoreNames.contains('usuarios')) d.createObjectStore('usuarios',{keyPath:'id'});
+        if(!d.objectStoreNames.contains('sesiones')){
+          const s=d.createObjectStore('sesiones',{keyPath:'id'}); s.createIndex('userId','userId');}
+        if(!d.objectStoreNames.contains('mediciones')){
+          const m=d.createObjectStore('mediciones',{keyPath:'id'}); m.createIndex('userId','userId');}
+        if(!d.objectStoreNames.contains('ajustes')) d.createObjectStore('ajustes',{keyPath:'k'});
+      };
+      r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error);
+    });
+  },
+  async _tx(store,mode,fn){
+    const d=await this.open();
+    return new Promise((res,rej)=>{
+      const t=d.transaction(store,mode), s=t.objectStore(store);
+      const q=fn(s); t.oncomplete=()=>res(q&&q.result); t.onerror=()=>rej(t.error);
+    });
+  },
+  put(store,obj){ return this._tx(store,'readwrite',s=>s.put(obj)); },
+  get(store,key){ return this._tx(store,'readonly',s=>s.get(key)); },
+  del(store,key){ return this._tx(store,'readwrite',s=>s.delete(key)); },
+  all(store){ return this._tx(store,'readonly',s=>s.getAll()); },
+  byUser(store,uid){ return this._tx(store,'readonly',s=>s.index('userId').getAll(uid)); },
+  async delUser(uid){
+    for(const st of ['sesiones','mediciones']){
+      const rows=await this.byUser(st,uid);
+      for(const r of rows) await this.del(st,r.id);
+    }
+    await this.del('usuarios',uid);
+  },
+  async activo(){ const a=await this.get('ajustes','activo'); return a?a.v:null; },
+  setActivo(id){ return this.put('ajustes',{k:'activo',v:id}); },
+  async exportar(){
+    return JSON.stringify({v:1, exportado:new Date().toISOString(),
+      usuarios:await this.all('usuarios'), sesiones:await this.all('sesiones'),
+      mediciones:await this.all('mediciones')},null,1);
+  },
+  async importar(txt){
+    const d=JSON.parse(txt);
+    if(!d.usuarios) throw new Error('El archivo no tiene usuarios.');
+    for(const u of d.usuarios) await this.put('usuarios',u);
+    for(const s of (d.sesiones||[])) await this.put('sesiones',s);
+    for(const m of (d.mediciones||[])) await this.put('mediciones',m);
+    return d.usuarios.length;
+  }
+};
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+
+/* ═══════════════════ MÓDULO DE INICIACIÓN ═══════════════════
+   Cuestionario que aplica protocolo-de-evaluacion-inicial.md.
+   Orden deliberado: SALUD PRIMERO. Si dispara una condición de parada,
+   no se piden treinta datos más para acabar derivando.
+============================================================== */
+const IMPL=[
+ ['ESPACIO',[['ESP-MIN','Habitación (~2×2 m)'],['ESP-MED','Espacio medio (~5×5 m)'],['ESP-CANCHA','Cancha'],
+   ['PARED','Pared libre'],['MOBILIARIO','Mobiliario estable'],['ESCALON','Escalón o banco fijo'],['SUELO-DURO','Suelo firme']]],
+ ['BALONCESTO',[['BALON','Balón'],['CANASTA','Canasta'],['CONOS','Conos']]],
+ ['CASERO',[['ESTERILLA','Esterilla'],['BANDA-LIGERA','Banda ligera'],['BANDA-LARGA','Banda larga'],
+   ['MANCUERNA-LIG','Mancuernas ligeras'],['KETTLEBELL','Pesa rusa'],['BALON-MED','Balón medicinal']]],
+ ['GIMNASIO',[['MANCUERNA-VAR','Mancuernas variables'],['BARRA','Barra'],['DISCOS','Discos'],['BANCO','Banco'],
+   ['MAQUINA-POLEA','Poleas'],['MAQUINA-SEL','Máquinas'],['BARRA-DOMINADAS','Barra de dominadas'],['CARDIO','Cardio']]],
+ ['ALTO RENDIMIENTO',[['RACK','Rack'],['PLATAFORMA','Plataforma'],['CAJON-PLIO','Cajones pliométricos'],
+   ['TRINEO','Trineo'],['VALLAS','Vallas'],['GPS','GPS o acelerómetro']]],
+ ['PERSONAS',[['COMPANERO','Compañero de entrenamiento'],['SUPERVISION-PRO','Supervisión de un profesional']]]
+];
+
+/* Condiciones de parada — reglas-de-seguridad.md §2 */
+const PARADAS=[
+ ['b1','¿Tienes dolor agudo ahora, en reposo o al moverte?','Profesional sanitario',
+  'El dolor agudo necesita valoración antes de cualquier plan de entrenamiento.'],
+ ['b2','¿Tienes una lesión activa, o te estás recuperando de una sin alta deportiva?','Fisioterapeuta o médico deportivo',
+  'Sin alta deportiva no se prescribe carga: el retorno lo decide quien te trata.'],
+ ['b3','¿Tienes alguna patología diagnosticada (cardiovascular, metabólica, respiratoria o musculoesquelética)?','Médico',
+  'Una patología diagnosticada cambia lo que es seguro entrenar, y eso no se decide desde una app.'],
+ ['b7','¿Estás embarazada o en posparto?','Médico',
+  'No se localizó evidencia en este proyecto para prescribir en esta situación.']
+];
+/* Precauciones — generan plan con restricción declarada */
+const PRECAUS=[
+ ['p1','¿Has tenido esguinces de tobillo?','Bloque preventivo obligatorio y progresión pliométrica conservadora.'],
+ ['p2','¿Tienes o has tenido dolor en la parte anterior de la rodilla, aunque no te impida jugar?',
+  'Sin saltos de profundidad y con volumen pliométrico reducido.'],
+ ['p3','¿Has tenido lesión de ligamento cruzado anterior, ya con alta deportiva?',
+  'Énfasis obligatorio en mecánica de aterrizaje y control de valgo.'],
+ ['p7','¿Tienes lumbalgia o dolor lumbar recurrente?','Precaución en los patrones de bisagra de cadera.']
+];
+
+/* Admisibilidad — biblioteca-ejercicios.md: REQUIERE ⊆ DISPONIBLE.
+   `mat` es false (nada), un id, o dos ids alternativos ("A o B"). */
+function reqDe(e){ return e.mat ? e.mat.split(/\s+o\s+/).map(x=>x.trim()) : []; }
+function admisible(e, impl){
+  const r=reqDe(e); if(!r.length) return true;
+  const lista = impl || (typeof USER!=='undefined'&&USER ? USER.impl : null);
+  if(!lista) return true;                 // sin perfil no se filtra nada
+  return r.some(m=>lista.includes(m));
+}
+function faltaDe(e){ return reqDe(e).join(' o '); }
+
+let W={paso:0, d:{salud:{},perfil:{},impl:[],disp:{},ctx:{}}, parado:null};
+
+function escenarioDe(impl){
+  const s=new Set(impl);
+  if(s.has('SUPERVISION-PRO')&&W.d.ctx.objetivo==='OBJ-RETORNO') return [8,'Retorno progresivo tras lesión'];
+  if(s.has('RACK')||s.has('PLATAFORMA')||s.has('TRINEO')||s.has('GPS')) return [6,'Centro de alto rendimiento'];
+  if(s.has('BARRA')||s.has('MAQUINA-SEL')||s.has('MAQUINA-POLEA')) return [5,'Gimnasio comercial'];
+  if(s.has('MANCUERNA-LIG')||s.has('BANDA-LARGA')||s.has('BANDA-LIGERA')||s.has('KETTLEBELL')) return [4,'Material casero básico'];
+  if(s.has('ESP-CANCHA')) return [3,'Cancha sin material de fuerza'];
+  if(s.has('MOBILIARIO')&&!s.has('ESP-MED')) return [7,'Viaje / hotel'];
+  if(s.has('BALON')) return [2,'Balón y una pared'];
+  return [1,'Habitación, sin implementos'];
+}
+
+const PASOS=['Salud','Perfil','Material','Disponibilidad','Objetivo','Resumen'];
+
+function renderWizard(){
+  const v=$('v-perfil');
+  if(W.parado) return pantallaParada(v);
+  const P=W.paso;
+  v.innerHTML=`
+  <div class="wizhead">
+    <div class="obj">Módulo de iniciación · paso ${P+1} de ${PASOS.length}</div>
+    <h2>${PASOS[P]}</h2>
+    <div class="bar"><i style="width:${(P)/(PASOS.length-1)*100}%"></i></div>
+  </div>
+  <div class="card" style="margin-top:14px"><div class="body" id="wizbody"></div></div>
+  <div class="wiznav">
+    ${P>0?'<button class="ghost" id="wprev">← Atrás</button>':'<button class="ghost" id="wsalir">Cancelar</button>'}
+    <button class="primary" id="wnext" style="margin:0;width:auto;padding:12px 22px">${P===PASOS.length-1?'Crear deportista':'Continuar'}</button>
+  </div>`;
+  const b=$('wizbody');
+  if(P===0) pasoSalud(b); else if(P===1) pasoPerfil(b); else if(P===2) pasoMaterial(b);
+  else if(P===3) pasoDisp(b); else if(P===4) pasoObjetivo(b); else pasoResumen(b);
+  if($('wprev')) $('wprev').onclick=()=>{W.paso--;renderWizard();};
+  if($('wsalir')) $('wsalir').onclick=()=>{modoWizard=false;renderPerfil();};
+  $('wnext').onclick=()=>siguiente();
+}
+
+function pasoSalud(b){
+  b.innerHTML=`<p class="hint" style="padding:0 0 12px">Va primero a propósito: si algo de esto sale que sí, no tiene sentido pedirte treinta datos más para acabar derivándote.</p>
+  <div style="font-size:10.5px;font-family:'IBM Plex Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--crit);margin-bottom:8px">Condiciones de parada</div>
+  ${PARADAS.map(([k,q])=>`<label class="check"><input type="checkbox" data-b="${k}" ${W.d.salud[k]?'checked':''}> ${q}</label>`).join('')}
+  <div style="font-size:10.5px;font-family:'IBM Plex Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--warn);margin:20px 0 8px">Historial · genera precauciones, no bloqueo</div>
+  ${PRECAUS.map(([k,q])=>`<label class="check"><input type="checkbox" data-p="${k}" ${W.d.salud[k]?'checked':''}> ${q}</label>`).join('')}
+  <div class="alert" style="margin-top:16px"><b>Por qué se pregunta el dolor de rodilla así</b>
+  Preguntar solo "¿tienes alguna lesión?" no captura el dolor anterior de rodilla, porque si te deja jugar no lo consideras lesión. Y es un factor de riesgo documentado de tendinopatía rotuliana.</div>`;
+  b.querySelectorAll('input').forEach(i=>i.onchange=()=>{
+    W.d.salud[i.dataset.b||i.dataset.p]=i.checked;});
+}
+function pasoPerfil(b){
+  const p=W.d.perfil;
+  b.innerHTML=`<div class="wgrid">
+    <div class="field"><label>Nombre o alias</label><input type="text" id="w_nombre" value="${p.nombre||''}" placeholder="Cómo te llamamos"></div>
+    <div class="field"><label>Edad</label><input type="number" id="w_edad" min="8" max="90" value="${p.edad||''}"></div>
+    <div class="field"><label>Sexo</label><select id="w_sexo">
+      <option value="">—</option><option ${p.sexo==='M'?'selected':''}>M</option><option ${p.sexo==='F'?'selected':''}>F</option><option ${p.sexo==='Otro'?'selected':''}>Otro</option></select></div>
+    <div class="field"><label>Peso (kg)</label><input type="number" id="w_peso" min="25" max="200" step="0.5" value="${p.peso||''}"></div>
+    <div class="field"><label>Posición</label><select id="w_pos">
+      ${['','Base','Alero','Pívot'].map(o=>`<option ${p.pos===o?'selected':''}>${o||'—'}</option>`).join('')}</select></div>
+    <div class="field"><label>Nivel</label><select id="w_niv">
+      ${['','Amateur','Federado','Semiprofesional','Profesional'].map(o=>`<option ${p.niv===o?'selected':''}>${o||'—'}</option>`).join('')}</select></div>
+    <div class="field"><label>Años jugando</label><input type="number" id="w_anios" min="0" max="50" value="${p.anios||''}"></div>
+    <div class="field"><label>Experiencia en fuerza</label><select id="w_fza">
+      ${['','Ninguna','Menos de 1 año','1-3 años','Más de 3 años'].map(o=>`<option ${p.fza===o?'selected':''}>${o||'—'}</option>`).join('')}</select></div>
+  </div>
+  <div class="alert" style="margin-top:16px"><b>La experiencia en fuerza no es un dato de relleno</b>
+  Es lo que impide que te prescriba una sentadilla con barra por tener un rack disponible. Tener el material y saber usarlo son cosas distintas.</div>`;
+}
+function pasoMaterial(b){
+  b.innerHTML=`<p class="hint" style="padding:0 0 12px"><b>Marca solo lo que tienes seguro.</b> Si dudas de algo, no lo marques: prefiero darte un plan que puedas ejecutar entero a uno que asuma material que no tienes.</p>
+  ${IMPL.map(([g,items])=>`
+    <div style="font-size:10.5px;font-family:'IBM Plex Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:16px 0 8px">${g}</div>
+    <div class="implgrid">${items.map(([id,nm])=>
+      `<label class="impl"><input type="checkbox" value="${id}" ${W.d.impl.includes(id)?'checked':''}><span>${nm}</span></label>`).join('')}</div>`).join('')}`;
+  b.querySelectorAll('input').forEach(i=>i.onchange=()=>{
+    W.d.impl=[...b.querySelectorAll('input:checked')].map(x=>x.value);});
+}
+function pasoDisp(b){
+  const d=W.d.disp;
+  b.innerHTML=`<div class="wgrid">
+    <div class="field"><label>Días por semana</label><input type="number" id="w_dias" min="1" max="7" value="${d.dias||3}"></div>
+    <div class="field"><label>Minutos por sesión</label><input type="number" id="w_min" min="15" max="180" step="5" value="${d.min||45}"></div>
+    <div class="field"><label>Partidos por semana</label><select id="w_part">
+      ${['0','1','2','3 o más'].map(o=>`<option ${d.part===o?'selected':''}>${o}</option>`).join('')}</select></div>
+    <div class="field"><label>Horas totales de entrenamiento/semana</label><input type="number" id="w_horas" min="1" max="30" value="${d.horas||6}"></div>
+  </div>
+  <div class="alert" id="doseWarn" style="margin-top:16px;display:none"></div>`;
+  const chk=()=>{const n=+$('w_dias').value, w=$('doseWarn');
+    if(n<2){w.style.display='block';w.innerHTML='<b>Con menos de 2 días el bloque preventivo queda infradosificado</b>El efecto documentado necesita 2-3 sesiones por semana. Con una, la reducción de riesgo es sustancialmente menor. No es una versión reducida equivalente: es una dosis insuficiente.';}
+    else w.style.display='none';};
+  $('w_dias').oninput=chk; chk();
+}
+function pasoObjetivo(b){
+  const c=W.d.ctx;
+  b.innerHTML=`<div class="field" style="margin-bottom:14px"><label>¿Qué quieres conseguir?</label>
+    <select id="w_obj">${Object.entries(OBJ).map(([k,v])=>`<option value="${k}" ${c.objetivo===k?'selected':''}>${v.n}</option>`).join('')}</select></div>
+  <div class="wgrid">
+    <div class="field"><label>Momento de temporada</label><select id="w_fase">
+      ${['Pretemporada','Temporada','Playoffs','Off-season'].map(o=>`<option ${c.fase===o?'selected':''}>${o}</option>`).join('')}</select></div>
+    <div class="field"><label>Métrica de seguimiento</label><input type="text" id="w_met" value="${c.met||''}" placeholder="CMJ, dominadas, kg…"></div>
+    <div class="field"><label>Unidad</label><input type="text" id="w_uni" value="${c.uni||''}" placeholder="cm"></div>
+    <div class="field"><label>Meta (opcional)</label><input type="number" id="w_meta" step="0.1" value="${c.meta||''}"></div>
+  </div>
+  <div id="objInfo" style="margin-top:16px"></div>`;
+  const upd=()=>{const o=OBJ[$('w_obj').value];
+    $('objInfo').innerHTML=`<div class="alert"><b>Lo que este plan no va a conseguir</b>${o.no}</div>`;};
+  $('w_obj').onchange=upd; upd();
+}
+function pasoResumen(b){
+  const p=W.d.perfil, d=W.d.disp, c=W.d.ctx;
+  const [n,nom]=escenarioDe(W.d.impl);
+  const prec=PRECAUS.filter(([k])=>W.d.salud[k]);
+  const cubre=EX.filter(e=>admisible(e,W.d.impl)).length;
+  b.innerHTML=`
+  <div class="kv" style="grid-template-columns:1fr 1fr">
+    <div><div class="k">Deportista</div><div class="t">${p.nombre||'—'} · ${p.edad||'?'} años · ${p.peso||'?'} kg</div></div>
+    <div><div class="k">Perfil</div><div class="t">${p.pos||'—'} · ${p.niv||'—'}</div></div>
+    <div><div class="k">Escenario asignado</div><div class="t"><b>${n}</b> — ${nom}</div></div>
+    <div><div class="k">Disponibilidad</div><div class="t">${d.dias||3} días × ${d.min||45} min · ${d.part||'0'} partidos</div></div>
+    <div><div class="k">Objetivo</div><div class="t">${OBJ[c.objetivo||'OBJ-EQUIL'].n}</div></div>
+    <div><div class="k">Métrica</div><div class="t">${c.met||'sin definir'} ${c.uni||''}</div></div>
+  </div>
+  <div style="margin-top:14px" class="chipset">${W.d.impl.length?W.d.impl.map(i=>`<span class="tag">${i}</span>`).join(''):'<span class="tag wr">Sin material declarado</span>'}</div>
+  ${prec.length?`<div class="alert" style="margin-top:14px"><b>Precauciones activadas</b>${prec.map(([,q,r])=>'· '+r).join('<br>')}</div>`:''}
+  <div class="alert" style="margin-top:14px;background:var(--accent-soft);color:var(--accent-ink)">
+    <b>Qué va a poder prescribirte</b>Con lo que has declarado, ${cubre} de los ${EX.length} ejercicios de la biblioteca son ejecutables. El resto se omitirá y se te dirá por qué, en vez de prescribirte material que no tienes.</div>`;
+}
+function pantallaParada(v){
+  const [k,q,quien,por]=W.parado;
+  v.innerHTML=`<div class="card"><div class="body" style="padding:22px">
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--crit)">Parada de seguridad · ${k.toUpperCase()}</div>
+    <h2 style="font-size:22px;margin-top:8px">No voy a generar un plan en este caso</h2>
+    <p style="color:var(--ink-2);margin:12px 0 0"><b>Motivo:</b> ${q.replace('¿','').replace('?','')}</p>
+    <p style="color:var(--ink-2);margin:8px 0 0"><b>Por qué:</b> ${por}</p>
+    <p style="color:var(--ink-2);margin:8px 0 0"><b>Qué hacer:</b> acude a ${quien}.</p>
+    <div class="alert crit" style="margin-top:16px"><b>No hay versión suave de esto</b>
+      No te voy a ofrecer "algo ligero mientras tanto". Ese ofrecimiento es la forma habitual en que una regla de seguridad deja de servir para nada.</div>
+    <button class="ghost" id="volverwiz" style="margin-top:16px">← Corregir mis respuestas</button>
+  </div></div>`;
+  $('volverwiz').onclick=()=>{W.parado=null;W.paso=0;renderWizard();};
+}
+
+function siguiente(){
+  const P=W.paso;
+  if(P===0){
+    const hit=PARADAS.find(([k])=>W.d.salud[k]);
+    if(hit){W.parado=hit;renderWizard();return;}
+  }
+  if(P===1){
+    W.d.perfil={nombre:$('w_nombre').value.trim(),edad:+$('w_edad').value||null,sexo:$('w_sexo').value,
+      peso:+$('w_peso').value||null,pos:$('w_pos').value,niv:$('w_niv').value,
+      anios:+$('w_anios').value||null,fza:$('w_fza').value};
+    if(!W.d.perfil.nombre){alert('Pon un nombre o alias para poder guardar el perfil.');return;}
+    const e=W.d.perfil.edad;
+    if(e&&e<18&&!W.d.impl.includes('SUPERVISION-PRO')){
+      W.d.salud.menor=true;
+    }
+  }
+  if(P===3) W.d.disp={dias:+$('w_dias').value,min:+$('w_min').value,part:$('w_part').value,horas:+$('w_horas').value};
+  if(P===4) W.d.ctx={objetivo:$('w_obj').value,fase:$('w_fase').value,met:$('w_met').value,
+      uni:$('w_uni').value,meta:$('w_meta').value};
+  if(P===PASOS.length-1){ crearUsuario(); return; }
+  W.paso++; renderWizard();
+}
+
+async function crearUsuario(){
+  const [n,nom]=escenarioDe(W.d.impl);
+  const menor=W.d.perfil.edad&&W.d.perfil.edad<18;
+  const u={id:uid(), nombre:W.d.perfil.nombre, creado:new Date().toISOString(),
+    perfil:W.d.perfil, salud:W.d.salud, impl:W.d.impl, escenario:n, escenarioNombre:nom,
+    disp:W.d.disp, objetivo:W.d.ctx.objetivo||'OBJ-EQUIL', fase:W.d.ctx.fase,
+    metrica:{n:W.d.ctx.met,u:W.d.ctx.uni,meta:W.d.ctx.meta},
+    precauciones:PRECAUS.filter(([k])=>W.d.salud[k]).map(([k,,r])=>({k,r})),
+    menorSinSupervision: menor&&!W.d.impl.includes('SUPERVISION-PRO')};
+  await DB.put('usuarios',u); await DB.setActivo(u.id);
+  W={paso:0,d:{salud:{},perfil:{},impl:[],disp:{},ctx:{}},parado:null};
+  modoWizard=false;
+  await cargarUsuario(u.id);
+  go('hoy');
+}
+
 const PATS=[...new Set(EX.map(e=>e.pat))];
 
+
+/* ============ USUARIO ACTIVO ============ */
+let USER=null;
+async function cargarUsuario(id){
+  const u=await DB.get('usuarios',id); if(!u) return;
+  USER=u;
+  D={obj:u.objetivo, mname:u.metrica.n||'', munit:u.metrica.u||'', mgoal:u.metrica.meta||'',
+     ses:(await DB.byUser('sesiones',id)).map(x=>({id:x.id,d:x.d,m:x.m,r:x.r,t:x.t,p:x.p,a:x.a})),
+     med:(await DB.byUser('mediciones',id)).map(x=>({d:x.d,v:x.v,id:x.id}))};
+}
+/* save() del tracker se redirige a la base de datos del usuario activo */
+save=function(){
+  if(!USER) return;
+  USER.objetivo=D.obj; USER.metrica={n:D.mname,u:D.munit,meta:D.mgoal};
+  DB.put('usuarios',USER);
+  const prev=new Set();
+  D.ses.forEach(x=>{prev.add(x.id); DB.put('sesiones',{...x,userId:USER.id});});
+  D.med.forEach(x=>{if(!x.id)x.id=uid(); DB.put('mediciones',{...x,userId:USER.id});});
+  DB.byUser('sesiones',USER.id).then(rows=>rows.forEach(r=>{if(!prev.has(r.id))DB.del('sesiones',r.id);}));
+};
+load=function(){};
 
 /* ============ MEDIOS ============ */
 const MED=id=>(window.MEDIA||{})[id];
@@ -897,9 +1245,16 @@ const OBJ={
 
 /* ============ VISTA: HOY ============ */
 function renderHoy(){
+  if(!USER){ $('v-hoy').innerHTML=`<div class="wizhead"><div class="obj">Antes de empezar</div>
+    <h2>Necesito conocerte primero</h2>
+    <p style="color:var(--ink-2);font-size:14px;margin:8px 0 0;max-width:58ch">
+    No puedo darte una rutina sin saber tu estado de salud, qué material tienes y de cuánto tiempo dispones.
+    El cuestionario son cinco pasos y empieza por salud, a propósito.</p>
+    <button class="primary" id="irwiz" style="width:auto;padding:12px 20px;margin-top:14px">Empezar cuestionario</button></div>`;
+    $('irwiz').onclick=()=>{modoWizard=true;go('perfil');}; return; }
   const o=OBJ[D.obj]||OBJ['OBJ-EQUIL'];
   const w=thisWeek();
-  const av=EX.filter(e=>!e.mat||e.mat==='SUELO-DURO'||e.mat==='ESP-MIN').map(e=>e.id);
+  const omitidos=new Map();   // id -> material que falta
   $('v-hoy').innerHTML=`
   <div class="hoy-head">
     <div class="obj">Tu objetivo</div>
@@ -910,8 +1265,14 @@ function renderHoy(){
   <div class="blocks">
     ${o.b.map(([n,pc,ids])=>`<div class="blk">
       <div class="pc">${pc}%</div><div class="nm">${n}</div>
-      <div class="ex">${ids.map(id=>{const e=EX.find(x=>x.id===id);
-        return e?`<button data-go="${id}">${thumb(id)}<span>${e.n.length>24?e.n.slice(0,23)+'…':e.n}</span></button>`:'';}).join('')}</div>
+      <div class="ex">${ids.map(id=>{const e=EX.find(x=>x.id===id); if(!e) return '';
+        if(!admisible(e)){ omitidos.set(id,faltaDe(e)); return ''; }
+        return `<button data-go="${id}">${thumb(id)}<span>${e.n.length>24?e.n.slice(0,23)+'…':e.n}</span></button>`;}).join('')}</div>
+      ${(()=>{const om=ids.filter(i=>omitidos.has(i)); if(!om.length) return '';
+        const vivos=ids.length-om.length;
+        return `<div class="omit">${vivos?'':'<b>Este bloque se queda sin ejercicios con tu material.</b> '}
+          ${vivos?'Omitido':'Falta'} por material: ${om.map(i=>{const e=EX.find(x=>x.id===i);
+          return `${e.n} <span>(${omitidos.get(i)})</span>`;}).join(' · ')}</div>`;})()}
     </div>`).join('')}
   </div>
   <div class="tiles">
@@ -928,19 +1289,22 @@ function renderHoy(){
 }
 
 /* ============ VISTA: EJERCICIOS ============ */
-let filt='all', cur=EX[0].id, mobDetail=false;
+let filt='all', cur=EX[0].id, mobDetail=false, soloMio=false;
 function renderEj(){
-  const items=EX.filter(e=>filt==='all'||e.pat===filt);
+  const items=EX.filter(e=>(filt==='all'||e.pat===filt)&&(!soloMio||admisible(e)));
+  if(!items.some(x=>x.id===cur)&&items.length) cur=items[0].id;
   const e=EX.find(x=>x.id===cur)||EX[0];
   const m=MED(e.id);
   $('v-ejercicios').innerHTML=`
   <div class="exlayout${mobDetail?' showdet':''}">
     <div>
       <div class="filters">${['all',...PATS].map(p=>
-        `<button class="chip" aria-pressed="${filt===p}" data-p="${p}">${p==='all'?'Todos':p}</button>`).join('')}</div>
+        `<button class="chip" aria-pressed="${filt===p}" data-p="${p}">${p==='all'?'Todos':p}</button>`).join('')}
+        ${USER?`<button class="chip mio" aria-pressed="${soloMio}" id="fmio">Con mi material</button>`:''}</div>
       <div class="list">${items.map(x=>`<button class="li" aria-current="${x.id===cur}" data-id="${x.id}">
         ${thumb(x.id)}<span class="tx"><span class="nm">${x.n}</span>
-        <span class="sb">${x.id} · ${x.mat?x.mat.replace(/-LIG| o KETTLEBELL/g,''):'sin material'}</span></span></button>`).join('')}</div>
+        <span class="sb">${x.id} · ${x.mat?x.mat.replace(/-LIG| o KETTLEBELL/g,''):'sin material'}${admisible(x)?'':' · no declarado'}</span></span></button>`).join('')}</div>
+      ${items.length?'':'<p class="hint" style="padding:14px 2px">Ningún ejercicio de este patrón es ejecutable con el material que declaraste.</p>'}
     </div>
     <div class="detailcol">
       <button class="backbtn" id="back">← Volver a la lista</button>
@@ -985,7 +1349,9 @@ function renderEj(){
       </div>
     </div>
   </div>`;
-  $('v-ejercicios').querySelectorAll('.chip').forEach(b=>b.onclick=()=>{filt=b.dataset.p;renderEj();});
+  $('v-ejercicios').querySelectorAll('.chip').forEach(b=>b.onclick=()=>{
+    if(b.id==='fmio'){soloMio=!soloMio;} else {filt=b.dataset.p;}
+    renderEj();});
   $('v-ejercicios').querySelectorAll('.li').forEach(b=>b.onclick=()=>{cur=b.dataset.id;mobDetail=true;renderEj();scrollTo({top:0,behavior:'smooth'});});
   const bk=$('back'); if(bk) bk.onclick=()=>{mobDetail=false;renderEj();};
 }
@@ -1046,8 +1412,59 @@ function renderProgreso(){
   render();
 }
 
+/* ============ VISTA: PERFIL / DEPORTISTAS ============ */
+let modoWizard=false;
+async function renderPerfil(){
+  if(modoWizard){ renderWizard(); return; }
+  const us=await DB.all('usuarios'); const act=await DB.activo();
+  const v=$('v-perfil');
+  v.innerHTML=`
+  <div class="wizhead">
+    <div class="obj">Deportistas</div>
+    <h2>${us.length?us.length+(us.length===1?' perfil guardado':' perfiles guardados'):'Ningún perfil todavía'}</h2>
+    <p style="color:var(--ink-2);font-size:14px;margin:8px 0 0;max-width:60ch">
+      Cada deportista tiene su propio cuestionario, su escenario y su historial. Los datos viven en la base de datos de este navegador.</p>
+    <button class="primary" id="nuevo" style="width:auto;padding:12px 20px;margin-top:14px">+ Nuevo deportista</button>
+  </div>
+  ${us.length?`<div class="list" style="margin-top:14px">${us.map(u=>`
+    <div class="li" style="cursor:default;align-items:flex-start">
+      <span class="th" style="background:var(--accent-soft);color:var(--accent-ink);font-family:Archivo;font-weight:700;font-size:17px">${(u.nombre||'?')[0].toUpperCase()}</span>
+      <span class="tx">
+        <span class="nm">${u.nombre}${u.id===act?' <span class="tag no" style="margin-left:6px">activo</span>':''}</span>
+        <span class="sb">Escenario ${u.escenario} · ${u.perfil.pos||'—'} · ${OBJ[u.objetivo]?OBJ[u.objetivo].n:u.objetivo}</span>
+        ${u.menorSinSupervision?'<span class="tag wr" style="margin-top:6px;display:inline-block">Menor sin supervisión declarada</span>':''}
+        ${u.precauciones&&u.precauciones.length?`<span class="sb" style="color:var(--warn)">${u.precauciones.length} precaución(es) activas</span>`:''}
+      </span>
+      <span style="display:flex;gap:6px;flex:none">
+        ${u.id!==act?`<button class="ghost" data-act="${u.id}" style="padding:6px 11px;font-size:12.5px">Usar</button>`:''}
+        <button class="ghost" data-del="${u.id}" style="padding:6px 10px;font-size:12.5px;color:var(--crit)">Borrar</button>
+      </span>
+    </div>`).join('')}</div>`:''}
+  <div class="card" style="margin-top:14px"><h2>Copia de seguridad</h2>
+    <p class="hint">Exporta para llevarte los perfiles a otro dispositivo o guardarlos.</p>
+    <div class="body">
+      <div style="display:flex;gap:9px;flex-wrap:wrap">
+        <button class="ghost" id="exp">Exportar todo</button>
+        <button class="ghost" id="imp">Importar desde texto</button>
+      </div>
+      <textarea id="dumpdb" placeholder="Aquí aparece la exportación. Para importar, pega aquí un archivo exportado y pulsa Importar." style="margin-top:11px"></textarea>
+    </div></div>`;
+  $('nuevo').onclick=()=>{modoWizard=true;W={paso:0,d:{salud:{},perfil:{},impl:[],disp:{},ctx:{}},parado:null};renderWizard();};
+  v.querySelectorAll('[data-act]').forEach(b=>b.onclick=async()=>{
+    await DB.setActivo(b.dataset.act); await cargarUsuario(b.dataset.act); renderPerfil();});
+  v.querySelectorAll('[data-del]').forEach(b=>b.onclick=async()=>{
+    if(!confirm('Se borrará el perfil y todo su historial. ¿Seguro?'))return;
+    await DB.delUser(b.dataset.del);
+    if(b.dataset.del===act){USER=null;D={obj:'OBJ-EQUIL',mname:'',munit:'',mgoal:'',ses:[],med:[]};}
+    renderPerfil();});
+  $('exp').onclick=async()=>{$('dumpdb').value=await DB.exportar();};
+  $('imp').onclick=async()=>{try{const n=await DB.importar($('dumpdb').value);
+    alert(n+' perfil(es) importados.'); renderPerfil();}catch(e){alert('No se pudo importar: '+e.message);}};
+}
+
 /* ============ NAVEGACIÓN ============ */
 const VIEWS=[
+ ['perfil','Perfil','<circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c.6-4 3.6-6 7.5-6s6.9 2 7.5 6"/>'],
  ['hoy','Hoy','<path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/>'],
  ['ejercicios','Ejercicios','<path d="M5 9v6M19 9v6M8 7v10M16 7v10M8 12h8"/>'],
  ['progreso','Progreso','<path d="M3 18l5-6 4 4 7-9"/><path d="M3 21h18"/>']
@@ -1055,11 +1472,12 @@ const VIEWS=[
 function go(v){
   VIEWS.forEach(([k])=>{$('v-'+k).classList.toggle('on',k===v);
     document.querySelector(`[data-v="${k}"]`).setAttribute('aria-current',k===v?'page':'false');});
-  if(v==='hoy')renderHoy(); if(v==='ejercicios')renderEj(); if(v==='progreso')renderProgreso();
+  if(v==='perfil')renderPerfil(); if(v==='hoy')renderHoy();
+  if(v==='ejercicios')renderEj(); if(v==='progreso')renderProgreso();
   try{localStorage.setItem('bkb-view',v)}catch(e){}
 }
 $('nav').innerHTML=VIEWS.map(([k,n,ic])=>
-  `<button data-v="${k}" aria-current="${k==='hoy'?'page':'false'}"><svg viewBox="0 0 24 24">${ic}</svg>${n}</button>`).join('');
+  `<button data-v="${k}" aria-current="false"><svg viewBox="0 0 24 24">${ic}</svg>${n}</button>`).join('');
 $('nav').querySelectorAll('button').forEach(b=>b.onclick=()=>go(b.dataset.v));
 
 $('foot').innerHTML=`
@@ -1079,8 +1497,12 @@ $('theme').onclick=()=>{
 };
 try{const th=localStorage.getItem('bkb-theme'); if(th)document.documentElement.setAttribute('data-theme',th);}catch(e){}
 
-load();
-let start='hoy'; try{start=localStorage.getItem('bkb-view')||'hoy'}catch(e){}
-go(VIEWS.some(v=>v[0]===start)?start:'hoy');
+(async()=>{
+  const a=await DB.activo();
+  if(a) await cargarUsuario(a);
+  let start = USER ? 'hoy' : 'perfil';
+  try{const s=localStorage.getItem('bkb-view'); if(s&&USER&&VIEWS.some(v=>v[0]===s)) start=s;}catch(e){}
+  go(start);
+})();
 
 </script>
