@@ -1104,7 +1104,7 @@ function pasoResumen(b){
   <div style="margin-top:14px" class="chipset">${W.d.impl.length?W.d.impl.map(i=>`<span class="tag">${i}</span>`).join(''):'<span class="tag wr">Sin material declarado</span>'}</div>
   ${prec.length?`<div class="alert" style="margin-top:14px"><b>Precauciones activadas</b>${prec.map(([,q,r])=>'· '+r).join('<br>')}</div>`:''}
   <div class="alert" style="margin-top:14px;background:var(--accent-soft);color:var(--accent-ink)">
-    <b>Qué va a poder prescribirte</b>Con lo que has declarado, ${cubre} de los ${EX.length} ejercicios de la biblioteca son ejecutables. El resto se omitirá y se te dirá por qué, en vez de prescribirte material que no tienes.</div>`;
+    <b>Qué va a poder prescribirte</b>Con lo que has declarado, ${cubre} de los ${EX.length} ejercicios de la app son ejecutables. El resto se omitirá y se te dirá por qué, en vez de prescribirte material que no tienes.</div>`;
 }
 function pantallaParada(v){
   const [k,q,quien,por]=W.parado;

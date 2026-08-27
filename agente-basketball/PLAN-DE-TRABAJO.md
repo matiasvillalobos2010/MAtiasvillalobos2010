@@ -351,7 +351,7 @@ La restricción de red descrita en §2 obliga a elegir cómo se procede. Las tre
 | 2 — Metodologías | ✅ Cerrada (vacío documental declarado) | 2026-08-24 |
 | 3 — Nutrición | ✅ Cerrada | 2026-08-24 |
 | 3.5 — Bibliografía y verificación | ✅ Cerrada (57 fuentes, todas V2) | 2026-08-24 |
-| 4a — Datos | ✅ Cerrada (73 ejercicios, 8 escenarios) | 2026-08-24 |
+| 4a — Datos | ✅ Cerrada (77 ejercicios, 8 escenarios) | 2026-08-24 |
 | 4b — Agente | ✅ Cerrada | 2026-08-24 |
 | 4c — Plantillas | ✅ Cerrada | 2026-08-24 |
 | 5 — Verificación final | ✅ Cerrada — 3 bugs detectados y corregidos | 2026-08-24 |

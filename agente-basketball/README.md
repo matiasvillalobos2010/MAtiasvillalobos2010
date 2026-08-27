@@ -27,7 +27,7 @@ Detalle completo en [`01-investigacion/00-metodologia-y-fuentes.md`](01-investig
 ## Cómo usar el agente
 
 1. **Abre [`02-agente/SYSTEM-PROMPT.md`](02-agente/SYSTEM-PROMPT.md)** y carga su contenido como instrucción de sistema en el LLM que prefieras. Es autosuficiente: reglas de seguridad, principios de evidencia y motor de sustitución están dentro.
-2. **Opcional pero recomendado:** adjunta como contexto los archivos de [`03-datos/`](03-datos/) — biblioteca de 73 ejercicios, catálogo de implementos, 8 escenarios y tablas nutricionales.
+2. **Opcional pero recomendado:** adjunta como contexto los archivos de [`03-datos/`](03-datos/) — biblioteca de 77 ejercicios, catálogo de implementos, 8 escenarios y tablas nutricionales.
 3. **Pídele un plan.** Ejemplos:
 
 ```
@@ -71,12 +71,12 @@ Detalle en [`02-agente/recomendador-por-objetivo.md`](02-agente/recomendador-por
 |---|---|
 | **Perfil** | Cuestionario de iniciación, lista de deportistas y copia de seguridad |
 | **Hoy** | Tu objetivo, el reparto de bloques que le corresponde, y —siempre— **lo que ese plan no va a conseguir** |
-| **Ejercicios** | 32 fichas con animación de demostración, mapa muscular, errores frecuentes y progresiones |
+| **Ejercicios** | 32 fichas con animación de demostración, mapa muscular, errores frecuentes y progresiones — de los 77 de la biblioteca, [las que tienen ficha visual completa](03-datos/biblioteca-ejercicios.md) |
 | **Progreso** | Sesiones, carga semanal, métrica del objetivo y logros |
 
 Navegación inferior en móvil, en cabecera desde tablet.
 
-Las dos apps originales siguen en la carpeta por separado: [`guia-ejecucion.html`](06-app/guia-ejecucion.html) y [`seguimiento.html`](06-app/seguimiento.html).
+Las dos apps originales siguen en la carpeta, pero **están superadas por `app.html`** y se conservan solo como histórico: [`guia-ejecucion.html`](06-app/guia-ejecucion.html) y [`seguimiento.html`](06-app/seguimiento.html). Ver más abajo por qué no conviene usarlas.
 
 ---
 
@@ -125,27 +125,24 @@ Instrucciones completas, cortafuegos y solución de problemas en [`06-app/servid
 
 ---
 
-## Guía de ejecución
+## Las dos apps antiguas
 
-[`06-app/guia-ejecucion.html`](06-app/guia-ejecucion.html) — cómo se hace cada ejercicio. Para cada uno: **animación del movimiento**, **mapa muscular** con grupos principales y secundarios, colocación paso a paso, tempo, **errores frecuentes** y qué hacer si es demasiado o demasiado poco.
+`app.html` sustituye a las dos apps con las que empezó el proyecto. Se conservan en la carpeta como histórico, pero **no conviene usarlas**, y por razones concretas:
 
-Trece de los veinticuatro llevan además **fotos de demostración reales**, integradas desde `free-exercise-db` — un conjunto de datos en **dominio público** que sí se pudo descargar y verificar. Cada correspondencia se comprobó leyendo las instrucciones del ejercicio de origen, no solo su nombre: **cuatro candidatos se descartaron por no ser el mismo movimiento**.
+| Archivo | Qué tiene | Por qué está superada |
+|---|---|---|
+| [`guia-ejecucion.html`](06-app/guia-ejecucion.html) | 23 ejercicios, fichas de ejecución | Sigue llevando la **animación esquemática** que se retiró de la app por representar mal el movimiento. Tiene 23 ejercicios frente a los 32 de la app, y ninguna de las animaciones GIF |
+| [`seguimiento.html`](06-app/seguimiento.html) | Registro de sesiones y métricas | Guarda en `localStorage`, con **un solo deportista y sin cuestionario**. La app usa IndexedDB con varios perfiles |
 
-Los once restantes conservan solo la animación esquemática, y el motivo es interesante: esa base cubre bien el entrenamiento de gimnasio clásico y **casi nada del trabajo preventivo, de aterrizaje y de propiocepción** — justo la parte con mejor evidencia para baloncesto.
+Nada de lo que hacen falta que no haga ya `app.html`. Si en algún momento quieres borrarlas, no se pierde nada.
 
-**No hay vídeos externos, y es deliberado.** Este proyecto se construyó sin acceso de red: no se pudo abrir ni comprobar ningún enlace de vídeo, y enlazar material no visto es el mismo fallo que citar un estudio no leído — con el agravante de que un identificador equivocado no da error, da otro vídeo. Las animaciones y los mapas musculares están dibujados en el propio código: originales, sin licencia que resolver y funcionan sin conexión.
+### Sobre los medios de demostración
 
-Las fuentes externas de licencia libre que sí existen están documentadas, con su licencia declarada y sin verificar, en [`03-datos/fuentes-multimedia.md`](03-datos/fuentes-multimedia.md).
+**No hay vídeos externos, y es deliberado.** Este proyecto se construyó sin acceso de red: no se pudo abrir ni comprobar ningún enlace de vídeo, y enlazar material no visto es el mismo fallo que citar un estudio no leído — con el agravante de que un identificador equivocado no da error, da otro vídeo.
 
----
+De los 32 ejercicios de la app, **27 tienen animación o fotografías** y **5 no tienen ninguna**: bisagra de cadera (`CAD-05`), flexión en pica (`SUP-05`), saltos repetidos (`PLI-03`), equilibrio monopodal (`PREV-01`) y movilidad de tobillo (`PREV-08`). No es descuido: se revisaron cuatro bases de datos de ejercicios y **ninguna cubre el trabajo preventivo, de aterrizaje y de propiocepción** — justo el bloque con mejor evidencia para baloncesto. Los mapas musculares están dibujados en el propio código, así que esos sí los tienen los 32.
 
-## App de seguimiento
-
-[`06-app/seguimiento.html`](06-app/seguimiento.html) — se abre en el navegador y guarda los datos en él. Registra sesiones (carga = esfuerzo percibido × minutos), la métrica que fijaste con el agente, y activa logros solo.
-
-Lo que **no** hace, por coherencia con la investigación: no calcula ACWR ni "zonas seguras" de carga, no te compara con baremos normativos, y no interpreta señales de dolor — si marcas una, te dice que consultes.
-
-Lo que sí vigila es la única dosis con evidencia real del proyecto: **2-3 sesiones semanales de bloque preventivo**. Por debajo de eso, avisa.
+Licencias y procedencia de cada medio en [`03-datos/fuentes-multimedia.md`](03-datos/fuentes-multimedia.md); la comparativa de las cuatro bases, en [`03-datos/revision-bases-de-datos.md`](03-datos/revision-bases-de-datos.md).
 
 ---
 
@@ -163,7 +160,7 @@ El orden importa: **primero la investigación, después el agente.** El agente n
 |---|---|
 | [`01-investigacion/`](01-investigacion/) | Fisiología y demandas, lesiones y prevención, fuerza y potencia, carga, metodologías de liga, nutrición, **casos de éxito y benchmarks**, bibliografía |
 | [`02-agente/`](02-agente/) | System prompt, protocolo de evaluación, **recomendador por objetivo**, motor de sustitución, reglas de seguridad |
-| [`03-datos/`](03-datos/) | Catálogo de implementos, 73 ejercicios, 8 escenarios, fórmulas nutricionales |
+| [`03-datos/`](03-datos/) | Catálogo de implementos, 77 ejercicios, 8 escenarios, fórmulas nutricionales |
 | [`04-plantillas/`](04-plantillas/) | Formatos de salida: entrenamiento, nutrición, informe de progreso |
 | [`05-salidas/`](05-salidas/) | Planes generados |
 | [`06-app/`](06-app/) | **App unificada** (`app.html`), las dos apps originales por separado, y `servidor/` para servirla en la red local |

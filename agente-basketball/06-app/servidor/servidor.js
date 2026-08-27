@@ -37,6 +37,12 @@ function direcciones() {
 }
 
 const server = http.createServer((req, res) => {
+  // Solo lectura: este servidor entrega archivos, no recibe nada.
+  if (req.method !== 'GET' && req.method !== 'HEAD') {
+    res.writeHead(405, {'Content-Type':'text/plain; charset=utf-8', 'Allow':'GET, HEAD'});
+    return res.end('Solo se admiten GET y HEAD');
+  }
+
   let ruta;
   try { ruta = decodeURIComponent(new URL(req.url, 'http://x').pathname); }
   catch { res.writeHead(400); return res.end('Petición mal formada'); }

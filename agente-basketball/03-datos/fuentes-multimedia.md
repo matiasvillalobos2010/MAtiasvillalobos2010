@@ -19,7 +19,9 @@
 | Vocabulario de equipo | body only, barbell, dumbbell, machine, cable, bands, kettlebells, medicine ball, exercise ball, foam roll, e-z curl bar, other |
 | Categorías | strength (581), stretching (123), plyometrics (61), powerlifting (38), olympic weightlifting (35), strongman (21), cardio (14) |
 
-### Correspondencias integradas — 13 de nuestros 24 ejercicios
+### Correspondencias integradas — 13 correspondencias fotográficas
+
+> Estas 13 se integraron cuando la app tenía 24 ejercicios. La app actual tiene 32 y usa además animaciones GIF; el recuento vigente (27 con medios, 5 sin ninguno) está en el [`README`](../README.md) §Las dos apps antiguas.
 
 | Nuestro | free-exercise-db | Correspondencia |
 |---|---|---|
@@ -85,7 +87,7 @@ Localizadas por búsqueda; **licencia según lo que declara cada fuente, sin com
 
 ### Revisada y descartada: hasaneyldrm/exercises-dataset
 
-1.324 ejercicios con **GIF animados** y instrucciones en 10 idiomas incluido español. Revisión completa en [`revision-exercises-dataset.md`](revision-exercises-dataset.md).
+1.324 ejercicios con **GIF animados** y instrucciones en 10 idiomas incluido español. Revisión completa en [`revision-bases-de-datos.md`](revision-bases-de-datos.md).
 
 **Los datos son MIT; los medios no.** Su `LICENSE` incluye una *Media Exception* y un `NOTICE.md`: las imágenes y los GIF son © Gym visual, incluidos con permiso escrito **para ese repositorio**, y dice literalmente que *clonar el repositorio no otorga ninguna licencia sobre los medios*. No se usan.
 

@@ -2,6 +2,12 @@
 
 **77 ejercicios.** Todos con al menos una alternativa ejecutable sin material.
 
+> **La app implementa 32 de estos 77, no los 77.** Conviene decirlo aquí y no dejar que se descubra contando. La app ([`../06-app/app.html`](../06-app/app.html)) solo incluye los ejercicios para los que existe **ficha completa**: animación de demostración o fotografías, mapa muscular, colocación paso a paso, tempo, errores frecuentes, regresión y progresión. Prescribir en una app un ejercicio del que solo se tiene el nombre y la dosis es exactamente el fallo que este proyecto intenta no cometer.
+>
+> El reparto de los 32: 6 dominantes de rodilla, 5 de cadera, 9 de tren superior, 4 pliométricos, 5 preventivos, 2 de core y 1 de acondicionamiento. **Ninguno de los `BAL-`** (habilidad con balón): quedan fuera a propósito, porque no derivan de ningún principio de este proyecto y su alcance es preparación física.
+>
+> Este documento sigue siendo la referencia completa: los 45 restantes están aquí, con su principio y su dosificación, para prescripción manual o para el agente. Lo que no tienen todavía es ficha visual.
+
 ---
 
 ## 1. Cómo leer esta biblioteca
