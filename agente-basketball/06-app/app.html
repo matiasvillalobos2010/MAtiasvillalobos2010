@@ -281,6 +281,11 @@ button.ghost{font-family:inherit;font-size:13.5px;font-weight:600;padding:9px 14
 .omit b{display:block;margin-bottom:2px}
 .omit span{font-family:"IBM Plex Mono",monospace;font-size:10px;opacity:.85}
 .chip.mio[aria-pressed=true]{background:var(--accent);color:var(--on-accent);border-color:transparent}
+.loginwrap{max-width:400px;margin:6vh auto 0}
+.loginwrap .obj{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.loginwrap input{font-size:16px}
+body.bloqueado #nav,body.bloqueado .bottom{display:none}
+body.bloqueado .top{justify-content:center}
 #dumpdb{width:100%;min-height:104px;font-family:"IBM Plex Mono",monospace;font-size:11px;line-height:1.5;
   background:var(--surface-2);color:var(--ink-2);border:1px solid var(--line-2);border-radius:11px;padding:11px;resize:vertical}
 </style>
@@ -295,6 +300,7 @@ button.ghost{font-family:inherit;font-size:13.5px;font-weight:600;padding:9px 14
     </svg></button>
 </header>
 <main><div class="wrap">
+  <section class="view" id="v-login"></section>
   <section class="view" id="v-perfil"></section>
   <section class="view on" id="v-hoy"></section>
   <section class="view" id="v-ejercicios"></section>
@@ -864,17 +870,155 @@ function render(){
 }
 
 
+/* ═══════════════════ CUENTAS Y CIFRADO ═══════════════════
+   WebCrypto del navegador. Sin librerías externas.
+
+   Contraseña -> PBKDF2-HMAC-SHA256 (210.000 iteraciones, sal de 16 bytes
+   aleatorios por cuenta) -> clave AES-GCM de 256 bits.
+
+   Lo que se guarda de la cuenta: usuario, sal, iteraciones y un
+   VERIFICADOR (un texto conocido cifrado con la clave). Comprobar la
+   contraseña = descifrar el verificador. La contraseña no se guarda, ni
+   en claro ni en hash reversible: no está en ninguna parte.
+
+   Con esa misma clave se cifra el CONTENIDO de perfiles, sesiones y
+   mediciones antes de escribirlos en IndexedDB. Quien abra la base de
+   datos del navegador ve ciphertext, no tus datos.
+
+   Consecuencia que no se puede esquivar: si olvidas la contraseña, los
+   datos no se recuperan. No hay puerta trasera porque tenerla anularía
+   el cifrado.
+========================================================================= */
+const ITER = 210000;                       // OWASP para PBKDF2-HMAC-SHA256
+const VERIF = 'cuaderno-baloncesto-v1';    // texto conocido del verificador
+
+const CRIPTO = {
+  clave: null,          // CryptoKey de la sesión abierta. Nunca se persiste.
+  cuenta: null,         // {id, usuario, ...} de la cuenta abierta
+
+  _b(a){ return Array.from(new Uint8Array(a)); },
+  _u(a){ return new Uint8Array(a); },
+
+  async derivar(pass, sal, iter){
+    const base = await crypto.subtle.importKey(
+      'raw', new TextEncoder().encode(pass), 'PBKDF2', false, ['deriveKey']);
+    return crypto.subtle.deriveKey(
+      {name:'PBKDF2', salt:this._u(sal), iterations:iter, hash:'SHA-256'},
+      base, {name:'AES-GCM', length:256}, false, ['encrypt','decrypt']);
+  },
+
+  async cifrar(obj, clave){
+    const iv = crypto.getRandomValues(new Uint8Array(12));
+    const ct = await crypto.subtle.encrypt({name:'AES-GCM', iv},
+      clave||this.clave, new TextEncoder().encode(JSON.stringify(obj)));
+    return {iv:this._b(iv), ct:this._b(ct)};
+  },
+
+  async descifrar(e, clave){
+    const pt = await crypto.subtle.decrypt({name:'AES-GCM', iv:this._u(e.iv)},
+      clave||this.clave, this._u(e.ct));
+    return JSON.parse(new TextDecoder().decode(pt));
+  },
+
+  /* ---------- alta ---------- */
+  async crear(usuario, pass){
+    usuario = usuario.trim().toLowerCase();
+    if(usuario.length < 3) throw new Error('El usuario necesita al menos 3 caracteres.');
+    if(pass.length < 8)    throw new Error('La contraseña necesita al menos 8 caracteres.');
+    const ya = (await DB.all('cuentas')).find(c=>c.usuario===usuario);
+    if(ya) throw new Error('Ya existe una cuenta con ese usuario en este navegador.');
+
+    const sal = this._b(crypto.getRandomValues(new Uint8Array(16)));
+    const k   = await this.derivar(pass, sal, ITER);
+    const c   = {id:uid(), usuario, sal, iter:ITER,
+                 ver:await this.cifrar(VERIF, k), creado:new Date().toISOString()};
+    await DB.put('cuentas', c);
+    this.clave = k; this.cuenta = c;
+    return c;
+  },
+
+  /* ---------- entrada ---------- */
+  async entrar(usuario, pass){
+    usuario = usuario.trim().toLowerCase();
+    const c = (await DB.all('cuentas')).find(x=>x.usuario===usuario);
+    // Mensaje único a propósito: distinguir "no existe" de "clave mala"
+    // le diría a cualquiera qué usuarios hay en este navegador.
+    const fallo = new Error('Usuario o contraseña incorrectos.');
+    if(!c) { await this.derivar(pass, [0], 1000); throw fallo; }  // mismo coste aprox.
+    const k = await this.derivar(pass, c.sal, c.iter);
+    try { if(await this.descifrar(c.ver, k) !== VERIF) throw fallo; }
+    catch(e){ throw fallo; }
+    this.clave = k; this.cuenta = c;
+    return c;
+  },
+
+  salir(){ this.clave = null; this.cuenta = null; },
+
+  abierta(){ return !!this.clave; },
+
+  /* ---------- cambio de contraseña ----------
+     Re-cifra todo: los datos viejos están bajo la clave vieja. */
+  async cambiar(actual, nueva){
+    if(!this.cuenta) throw new Error('No hay ninguna sesión abierta.');
+    if(nueva.length < 8) throw new Error('La contraseña nueva necesita al menos 8 caracteres.');
+    const vieja = await this.derivar(actual, this.cuenta.sal, this.cuenta.iter);
+    try { if(await this.descifrar(this.cuenta.ver, vieja) !== VERIF) throw 0; }
+    catch(e){ throw new Error('La contraseña actual no es correcta.'); }
+
+    // 1. Leer todo en claro con la clave vieja.
+    const claro = {};
+    for(const st of DB.PROTEGIDOS) claro[st] = await DB.all(st);
+
+    // 2. Derivar la nueva con sal nueva.
+    const sal = this._b(crypto.getRandomValues(new Uint8Array(16)));
+    const k   = await this.derivar(nueva, sal, ITER);
+
+    // 3. Reescribir todo con la clave nueva antes de tocar la cuenta,
+    //    para que un fallo a mitad no deje datos ilegibles.
+    const anterior = this.clave;
+    this.clave = k;
+    try{
+      for(const st of DB.PROTEGIDOS) for(const row of claro[st]) await DB.put(st, row);
+    }catch(e){ this.clave = anterior; throw new Error('No se pudo re-cifrar: '+e.message); }
+
+    // 4. Ahora sí, la cuenta.
+    const c = {...this.cuenta, sal, iter:ITER, ver:await this.cifrar(VERIF, k)};
+    await DB.put('cuentas', c);
+    this.cuenta = c;
+  },
+
+  /* ---------- borrado de cuenta ---------- */
+  async borrarCuenta(){
+    if(!this.cuenta) return;
+    for(const st of DB.PROTEGIDOS){
+      for(const row of await DB.all(st)) await DB.del(st, row.id);
+    }
+    await DB.del('cuentas', this.cuenta.id);
+    await DB.del('ajustes', 'activo');
+    this.salir();
+  }
+};
+
 /* ═══════════════════ BASE DE DATOS (IndexedDB) ═══════════════════
    Almacenes:
-     usuarios   {id, nombre, creado, perfil, salud, implementos[], escenario,
-                 disponibilidad, objetivo, fase, metrica, estado, motivo}
-     sesiones   {id, userId, d, m, r, t, p, a}      índice: userId
-     mediciones {id, userId, d, v}                  índice: userId
-     ajustes    {k, v}                              (k='activo' -> userId)
+     cuentas    {id, usuario, sal, iter, ver, creado}   ← no se cifra:
+                 es justo lo que permite comprobar la contraseña
+     usuarios   {id, cuentaId, _e:{iv,ct}}   contenido cifrado
+     sesiones   {id, userId, _e:{iv,ct}}     contenido cifrado
+     mediciones {id, userId, _e:{iv,ct}}     contenido cifrado
+     ajustes    {k, v}                       (k='activo' -> userId)
+
+   En los almacenes protegidos quedan en claro solo `id` y `userId`,
+   porque IndexedDB los necesita como clave y como índice. Son
+   identificadores aleatorios y no dicen nada de ti. El resto va cifrado.
+
    Todo local al navegador. Sin servidor, sin red.
 =================================================================== */
 const DB={
-  name:'cuaderno-baloncesto', ver:1, _db:null,
+  name:'cuaderno-baloncesto', ver:2, _db:null,
+  PROTEGIDOS:['usuarios','sesiones','mediciones'],
+  CLAVES_CLARAS:['id','userId','cuentaId'],
+
   async open(){
     if(this._db) return this._db;
     return this._db = await new Promise((res,rej)=>{
@@ -887,10 +1031,12 @@ const DB={
         if(!d.objectStoreNames.contains('mediciones')){
           const m=d.createObjectStore('mediciones',{keyPath:'id'}); m.createIndex('userId','userId');}
         if(!d.objectStoreNames.contains('ajustes')) d.createObjectStore('ajustes',{keyPath:'k'});
+        if(!d.objectStoreNames.contains('cuentas')) d.createObjectStore('cuentas',{keyPath:'id'});
       };
       r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error);
     });
   },
+
   async _tx(store,mode,fn){
     const d=await this.open();
     return new Promise((res,rej)=>{
@@ -898,22 +1044,62 @@ const DB={
       const q=fn(s); t.oncomplete=()=>res(q&&q.result); t.onerror=()=>rej(t.error);
     });
   },
-  put(store,obj){ return this._tx(store,'readwrite',s=>s.put(obj)); },
-  get(store,key){ return this._tx(store,'readonly',s=>s.get(key)); },
+
+  /* ---------- cifrado transparente ---------- */
+  async _envolver(store,obj){
+    if(!this.PROTEGIDOS.includes(store) || !CRIPTO.abierta()) return obj;
+    const fuera={}, dentro={};
+    for(const [k,v] of Object.entries(obj)){
+      (this.CLAVES_CLARAS.includes(k) ? fuera : dentro)[k]=v;
+    }
+    fuera._e = await CRIPTO.cifrar(dentro);
+    return fuera;
+  },
+  async _abrir(row){
+    if(!row || !row._e) return row;              // registro antiguo, sin cifrar
+    if(!CRIPTO.abierta()) return null;           // sin clave no se puede leer
+    try{
+      const {_e,...resto}=row;
+      return {...resto, ...await CRIPTO.descifrar(_e)};
+    }catch(e){ return null; }                    // cifrado con otra clave
+  },
+  async _abrirLista(rows){
+    const out=[];
+    for(const r of rows||[]){ const o=await this._abrir(r); if(o) out.push(o); }
+    return out;
+  },
+
+  /* ---------- API ---------- */
+  async put(store,obj){ const w=await this._envolver(store,obj);
+    return this._tx(store,'readwrite',s=>s.put(w)); },
+  async get(store,key){ return this._abrir(await this._tx(store,'readonly',s=>s.get(key))); },
   del(store,key){ return this._tx(store,'readwrite',s=>s.delete(key)); },
-  all(store){ return this._tx(store,'readonly',s=>s.getAll()); },
-  byUser(store,uid){ return this._tx(store,'readonly',s=>s.index('userId').getAll(uid)); },
+  async all(store){
+    const rows=await this._tx(store,'readonly',s=>s.getAll());
+    return this.PROTEGIDOS.includes(store) ? this._abrirLista(rows) : rows;
+  },
+  async byUser(store,uid){
+    return this._abrirLista(await this._tx(store,'readonly',s=>s.index('userId').getAll(uid)));
+  },
+
   async delUser(uid){
     for(const st of ['sesiones','mediciones']){
-      const rows=await this.byUser(st,uid);
+      const rows=await this._tx(st,'readonly',s=>s.index('userId').getAll(uid));
       for(const r of rows) await this.del(st,r.id);
     }
     await this.del('usuarios',uid);
   },
+
   async activo(){ const a=await this.get('ajustes','activo'); return a?a.v:null; },
   setActivo(id){ return this.put('ajustes',{k:'activo',v:id}); },
+
+  /* ---------- copia de seguridad ----------
+     Sale EN CLARO, a propósito: tiene que poder importarse en otro
+     dispositivo con otra contraseña. Es un documento privado y la app te
+     lo advierte en pantalla antes de mostrarlo. */
   async exportar(){
-    return JSON.stringify({v:1, exportado:new Date().toISOString(),
+    return JSON.stringify({v:2, exportado:new Date().toISOString(),
+      cuenta: CRIPTO.cuenta ? CRIPTO.cuenta.usuario : null,
       usuarios:await this.all('usuarios'), sesiones:await this.all('sesiones'),
       mediciones:await this.all('mediciones')},null,1);
   },
@@ -1158,6 +1344,90 @@ async function crearUsuario(){
   modoWizard=false;
   await cargarUsuario(u.id);
   go('hoy');
+}
+
+/* ═══════════════════ PANTALLA DE ACCESO ═══════════════════ */
+let modoAlta = false;
+
+function renderLogin(msg){
+  const alta = modoAlta;
+  $('v-login').innerHTML = `
+  <div class="loginwrap">
+    <div class="card">
+      <div class="body" style="padding:24px">
+        <div class="obj">Cuaderno de baloncesto</div>
+        <h2 style="font-size:23px;margin-top:6px">${alta?'Crear una cuenta':'Entrar'}</h2>
+        <p class="hint" style="padding:8px 0 0">${alta
+          ? 'Tus datos se cifran con esta contraseña antes de guardarse. Elige una que puedas recordar.'
+          : 'Introduce tus datos para descifrar tu historial.'}</p>
+
+        <div class="wgrid" style="margin-top:18px;grid-template-columns:minmax(0,1fr)">
+          <div class="field"><label for="l_user">Usuario</label>
+            <input type="text" id="l_user" autocomplete="username" autocapitalize="none" spellcheck="false"></div>
+          <div class="field"><label for="l_pass">Contraseña</label>
+            <input type="password" id="l_pass" autocomplete="${alta?'new-password':'current-password'}"></div>
+          ${alta?`<div class="field"><label for="l_pass2">Repite la contraseña</label>
+            <input type="password" id="l_pass2" autocomplete="new-password"></div>`:''}
+        </div>
+
+        ${alta?`<div class="alert crit" style="margin-top:16px"><b>No hay forma de recuperarla</b>
+          El cifrado es real: la contraseña no se guarda en ninguna parte, así que nadie —tampoco esta app— puede
+          devolverte los datos si la olvidas. Es el precio de que estén cifrados de verdad. Anótala donde guardes
+          las que te importan, y usa la copia de seguridad.</div>`:''}
+
+        <div id="l_err" class="alert crit" style="margin-top:14px;display:none"></div>
+
+        <button class="primary" id="l_go">${alta?'Crear cuenta y entrar':'Entrar'}</button>
+        <button class="ghost" id="l_alt" style="margin-top:10px;width:100%">${
+          alta?'Ya tengo cuenta':'Crear una cuenta nueva'}</button>
+      </div>
+    </div>
+
+    <p class="hint" style="text-align:center;max-width:46ch;margin:16px auto 0">
+      La cuenta y los datos viven <b>solo en este navegador</b>. No se envía nada a ningún servidor,
+      y no existen en otros dispositivos hasta que los lleves con la copia de seguridad.</p>
+  </div>`;
+
+  if(msg) { $('l_err').style.display='block'; $('l_err').textContent=msg; }
+
+  const ir = async ()=>{
+    const u=$('l_user').value, p=$('l_pass').value;
+    const err=t=>{ $('l_err').style.display='block'; $('l_err').textContent=t; };
+    $('l_err').style.display='none';
+    if(alta && p !== $('l_pass2').value) return err('Las dos contraseñas no coinciden.');
+    $('l_go').disabled=true; $('l_go').textContent='Un momento…';
+    try{
+      if(alta) await CRIPTO.crear(u,p); else await CRIPTO.entrar(u,p);
+      await trasEntrar();
+    }catch(e){
+      $('l_go').disabled=false; $('l_go').textContent=alta?'Crear cuenta y entrar':'Entrar';
+      err(e.message);
+    }
+  };
+  $('l_go').onclick=ir;
+  $('l_alt').onclick=()=>{ modoAlta=!modoAlta; renderLogin(); };
+  for(const id of ['l_user','l_pass','l_pass2']){
+    const el=$(id); if(el) el.onkeydown=e=>{ if(e.key==='Enter') ir(); };
+  }
+  $('l_user').focus();
+}
+
+/* Se llama cuando la clave ya está en memoria. */
+async function trasEntrar(){
+  document.body.classList.remove('bloqueado');
+  const a=await DB.activo();
+  if(a) await cargarUsuario(a);
+  go(USER ? 'hoy' : 'perfil');
+  pintarNav();
+}
+
+function salirSesion(){
+  CRIPTO.salir();
+  USER=null;
+  D={obj:'OBJ-EQUIL',mname:'',munit:'',mgoal:'',ses:[],med:[]};
+  modoWizard=false; modoAlta=false;
+  document.body.classList.add('bloqueado');
+  go('login'); renderLogin();
 }
 
 const PATS=[...new Set(EX.map(e=>e.pat))];
@@ -1423,9 +1693,18 @@ async function renderPerfil(){
     <div class="obj">Deportistas</div>
     <h2>${us.length?us.length+(us.length===1?' perfil guardado':' perfiles guardados'):'Ningún perfil todavía'}</h2>
     <p style="color:var(--ink-2);font-size:14px;margin:8px 0 0;max-width:60ch">
-      Cada deportista tiene su propio cuestionario, su escenario y su historial. Los datos viven en la base de datos de este navegador.</p>
+      Cada deportista tiene su propio cuestionario, su escenario y su historial. Los datos están cifrados en la base de datos de este navegador.</p>
     <button class="primary" id="nuevo" style="width:auto;padding:12px 20px;margin-top:14px">+ Nuevo deportista</button>
   </div>
+  <div class="card" style="margin-top:14px"><div class="body" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+    <span class="th" style="width:38px;height:38px;background:var(--accent-soft);color:var(--accent-ink);font-family:Archivo;font-weight:700;border-radius:10px;display:grid;place-items:center;flex:none">${(CRIPTO.cuenta?CRIPTO.cuenta.usuario:'?')[0].toUpperCase()}</span>
+    <span style="flex:1;min-width:0">
+      <span class="nm" style="display:block;font-weight:600">${CRIPTO.cuenta?CRIPTO.cuenta.usuario:'—'}</span>
+      <span class="sb" style="display:block;font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--muted)">Sesión abierta · datos cifrados con AES-GCM</span>
+    </span>
+    <button class="ghost" id="cambiarpass" style="padding:7px 12px;font-size:12.5px">Cambiar contraseña</button>
+    <button class="ghost" id="salir" style="padding:7px 12px;font-size:12.5px">Salir</button>
+  </div></div>
   ${us.length?`<div class="list" style="margin-top:14px">${us.map(u=>`
     <div class="li" style="cursor:default;align-items:flex-start">
       <span class="th" style="background:var(--accent-soft);color:var(--accent-ink);font-family:Archivo;font-weight:700;font-size:17px">${(u.nombre||'?')[0].toUpperCase()}</span>
@@ -1442,6 +1721,9 @@ async function renderPerfil(){
     </div>`).join('')}</div>`:''}
   <div class="card" style="margin-top:14px"><h2>Copia de seguridad</h2>
     <p class="hint">Exporta para llevarte los perfiles a otro dispositivo o guardarlos.</p>
+    <div class="body" style="padding-bottom:0"><div class="alert"><b>La exportación sale sin cifrar</b>
+      Tiene que salir así para poder importarse en otro dispositivo, donde tu contraseña será otra. Trátala como un
+      documento privado: quien tenga ese texto tiene tu historial, sin necesidad de contraseña.</div></div>
     <div class="body">
       <div style="display:flex;gap:9px;flex-wrap:wrap">
         <button class="ghost" id="exp">Exportar todo</button>
@@ -1457,6 +1739,14 @@ async function renderPerfil(){
     await DB.delUser(b.dataset.del);
     if(b.dataset.del===act){USER=null;D={obj:'OBJ-EQUIL',mname:'',munit:'',mgoal:'',ses:[],med:[]};}
     renderPerfil();});
+  $('salir').onclick=()=>{ if(confirm('Se cerrará la sesión. Tendrás que volver a introducir la contraseña.')) salirSesion(); };
+  $('cambiarpass').onclick=async()=>{
+    const a=prompt('Contraseña actual:'); if(a===null) return;
+    const n=prompt('Contraseña nueva (mínimo 8 caracteres):'); if(n===null) return;
+    if(n!==prompt('Repite la contraseña nueva:')) return alert('Las dos contraseñas nuevas no coinciden.');
+    try{ await CRIPTO.cambiar(a,n); alert('Contraseña cambiada. Todos tus datos se han vuelto a cifrar con ella.'); }
+    catch(e){ alert(e.message); }
+  };
   $('exp').onclick=async()=>{$('dumpdb').value=await DB.exportar();};
   $('imp').onclick=async()=>{try{const n=await DB.importar($('dumpdb').value);
     alert(n+' perfil(es) importados.'); renderPerfil();}catch(e){alert('No se pudo importar: '+e.message);}};
@@ -1464,6 +1754,7 @@ async function renderPerfil(){
 
 /* ============ NAVEGACIÓN ============ */
 const VIEWS=[
+ ['login','Acceso',''],
  ['perfil','Perfil','<circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c.6-4 3.6-6 7.5-6s6.9 2 7.5 6"/>'],
  ['hoy','Hoy','<path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/>'],
  ['ejercicios','Ejercicios','<path d="M5 9v6M19 9v6M8 7v10M16 7v10M8 12h8"/>'],
@@ -1471,14 +1762,19 @@ const VIEWS=[
 ];
 function go(v){
   VIEWS.forEach(([k])=>{$('v-'+k).classList.toggle('on',k===v);
-    document.querySelector(`[data-v="${k}"]`).setAttribute('aria-current',k===v?'page':'false');});
-  if(v==='perfil')renderPerfil(); if(v==='hoy')renderHoy();
+    const b=document.querySelector(`[data-v="${k}"]`);
+    if(b) b.setAttribute('aria-current',k===v?'page':'false');});
+  if(v==='login')  { renderLogin(); return; }
+  if(v==='perfil') renderPerfil(); if(v==='hoy')renderHoy();
   if(v==='ejercicios')renderEj(); if(v==='progreso')renderProgreso();
   try{localStorage.setItem('bkb-view',v)}catch(e){}
 }
-$('nav').innerHTML=VIEWS.map(([k,n,ic])=>
-  `<button data-v="${k}" aria-current="false"><svg viewBox="0 0 24 24">${ic}</svg>${n}</button>`).join('');
-$('nav').querySelectorAll('button').forEach(b=>b.onclick=()=>go(b.dataset.v));
+function pintarNav(){
+  $('nav').innerHTML=VIEWS.filter(([k])=>k!=='login').map(([k,n,ic])=>
+    `<button data-v="${k}" aria-current="false"><svg viewBox="0 0 24 24">${ic}</svg>${n}</button>`).join('');
+  $('nav').querySelectorAll('button').forEach(b=>b.onclick=()=>go(b.dataset.v));
+}
+pintarNav();
 
 $('foot').innerHTML=`
   <p><strong>Créditos.</strong> Animaciones © <b>Gym visual</b> — <a href="https://gymvisual.com/" target="_blank" rel="noopener">gymvisual.com</a>. Ilustraciones y textos de <b>RepDB</b> — <a href="https://repdb.co" target="_blank" rel="noopener">repdb.co</a>. Fotografías de <b>free-exercise-db</b> (dominio público). Mapas musculares dibujados en el propio código.</p>
@@ -1498,11 +1794,12 @@ $('theme').onclick=()=>{
 try{const th=localStorage.getItem('bkb-theme'); if(th)document.documentElement.setAttribute('data-theme',th);}catch(e){}
 
 (async()=>{
-  const a=await DB.activo();
-  if(a) await cargarUsuario(a);
-  let start = USER ? 'hoy' : 'perfil';
-  try{const s=localStorage.getItem('bkb-view'); if(s&&USER&&VIEWS.some(v=>v[0]===s)) start=s;}catch(e){}
-  go(start);
+  // La clave vive solo en memoria: recargar la pagina obliga a entrar
+  // otra vez. Es lo que hace que el cifrado sirva de algo.
+  document.body.classList.add('bloqueado');
+  await DB.open();
+  modoAlta = (await DB.all('cuentas')).length === 0;   // primera vez -> alta
+  go('login');
 })();
 
 </script>
