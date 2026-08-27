@@ -63,7 +63,20 @@ una app más.
 
 Para parar el servidor: `Ctrl+C` en la ventana donde está corriendo.
 
-## 3. Si el móvil no conecta
+## 3. Si el navegador dice que no puede conectar
+
+Antes de mirar nada más, distingue los dos errores:
+
+| Lo que ves | Qué significa |
+|---|---|
+| `ERR_CONNECTION_REFUSED` en **localhost** | El servidor **no está corriendo** en este equipo. No es un problema de red: no llegó a arrancar, o la ventana se cerró |
+| `ERR_CONNECTION_TIMED_OUT` en una **IP 192.168.x.x** | Esa dirección no es la tuya, o el cortafuegos bloquea el puerto |
+
+Un aviso sobre la IP: `192.168.1.34` es solo un **ejemplo** de este documento. La tuya la imprime el servidor al arrancar y casi seguro es distinta.
+
+Si la ventana negra se cierra sola, ábrela desde una consola para poder leer el error: pulsa `Win+R`, escribe `cmd`, y ahí dentro arrastra `iniciar.bat` a la ventana y pulsa Enter.
+
+## 4. Si el móvil no conecta
 
 Por orden de probabilidad:
 
@@ -82,7 +95,7 @@ Por orden de probabilidad:
 4. **La IP cambió.** El router reparte IPs por DHCP y pueden cambiar al
    reiniciar. Vuelve a mirar lo que imprime el servidor al arrancar.
 
-## 4. Sin Node y sin Python
+## 5. Sin Node y sin Python
 
 `app.html` es un archivo autocontenido: **ábrelo directamente** con doble clic
 en el navegador y funciona igual, con la base de datos y todo.
@@ -90,7 +103,7 @@ en el navegador y funciona igual, con la base de datos y todo.
 Lo único que pierdes es el acceso desde el móvil, que es justo lo que aporta el
 servidor.
 
-## 5. Dónde se guardan los datos — importante
+## 6. Dónde se guardan los datos — importante
 
 La app guarda los perfiles y el progreso en **IndexedDB, dentro del navegador**.
 No hay servidor de datos: el servidor de esta carpeta solo entrega archivos, no
@@ -115,7 +128,7 @@ Recomendación: elige **un** dispositivo como el que lleva el registro, y usa la
 exportación para copias. Mantener dos en paralelo sin sincronizar termina en
 dos historiales incompletos.
 
-## 6. Qué hace y qué no hace el servidor
+## 7. Qué hace y qué no hace el servidor
 
 - Sirve archivos de la carpeta `06-app/` y de nada más: cualquier ruta que
   intente salir de ahí recibe 403.
