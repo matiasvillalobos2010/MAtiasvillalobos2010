@@ -55,10 +55,12 @@ si quieres saber primero cómo se comprobó cada fuente y qué se descartó.
 
 ---
 
-## Dos cosas que conviene saber antes de empezar
+## Tres cosas que conviene saber antes de empezar
 
-**Dónde viven tus datos.** La app guarda perfiles y progreso en el navegador
-(IndexedDB), no en un servidor. Eso significa que **cada dirección tiene su
+**Te va a pedir una contraseña la primera vez.** La app crea una cuenta local y cifra tus datos con una clave derivada de esa contraseña. No se guarda en ninguna parte y **no hay forma de recuperarla**: si la olvidas, los datos no vuelven. Anótala donde guardes las que te importan.
+
+**Dónde viven tus datos.** La app guarda perfiles y progreso cifrados en el
+navegador (IndexedDB), no en un servidor. Eso significa que **cada dirección tiene su
 propia base de datos**: lo que registres abriendo `app.html` con doble clic no
 aparece en `localhost:8080`, ni en el móvil. Elige una sola forma de abrirla y
 quédate con ella. Para mover o respaldar: *Perfil → Copia de seguridad →

@@ -105,9 +105,13 @@ servidor.
 
 ## 6. Dónde se guardan los datos — importante
 
-La app guarda los perfiles y el progreso en **IndexedDB, dentro del navegador**.
-No hay servidor de datos: el servidor de esta carpeta solo entrega archivos, no
-recibe ni almacena nada.
+La app guarda los perfiles y el progreso en **IndexedDB, dentro del navegador**,
+**cifrados** con una clave derivada de tu contraseña (PBKDF2 + AES-GCM). No hay
+servidor de datos: el servidor de esta carpeta solo entrega archivos, no recibe
+ni almacena nada.
+
+La contraseña no se guarda en ningún sitio, así que **si la olvidas los datos no
+se recuperan**. Usa la exportación como copia de seguridad.
 
 Consecuencia práctica, y conviene tenerla clara antes de meter tres meses de
 entrenamientos:
@@ -134,9 +138,11 @@ dos historiales incompletos.
   intente salir de ahí recibe 403.
 - Escucha en `0.0.0.0`, es decir, en la red local. **No abre nada a internet**
   ni configura el router. Desde fuera de tu casa no es accesible.
-- No tiene contraseña. Cualquiera en tu wifi que sepa la dirección puede abrir
-  la app. Para uso doméstico es razonable; en una red compartida con
-  desconocidos, no lo dejes levantado.
+- **El servidor** no tiene contraseña: cualquiera en tu wifi que sepa la
+  dirección puede pedirle el archivo. Lo que sí tiene contraseña es **la app**,
+  que pide usuario y clave antes de mostrar nada y guarda los datos cifrados.
+  Es decir: pueden cargar la página, no leer tu historial. Aun así, en una red
+  compartida con desconocidos no lo dejes levantado.
 - No registra ni envía nada a ningún sitio.
 
 La app carga las tipografías desde Google Fonts. **Sin internet funciona igual**

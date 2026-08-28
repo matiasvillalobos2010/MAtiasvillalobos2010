@@ -69,7 +69,7 @@ Detalle en [`02-agente/recomendador-por-objetivo.md`](02-agente/recomendador-por
 
 | Sección | Qué hace |
 |---|---|
-| **Perfil** | Cuestionario de iniciación, lista de deportistas y copia de seguridad |
+| **Perfil** | Cuestionario de iniciación, lista de deportistas, sesión abierta y copia de seguridad |
 | **Hoy** | Tu objetivo, el reparto de bloques que le corresponde, y —siempre— **lo que ese plan no va a conseguir** |
 | **Ejercicios** | 32 fichas con animación de demostración, mapa muscular, errores frecuentes y progresiones — de los 77 de la biblioteca, [las que tienen ficha visual completa](03-datos/biblioteca-ejercicios.md) |
 | **Progreso** | Sesiones, carga semanal, métrica del objetivo y logros |
@@ -99,9 +99,38 @@ Las cuatro de historial (esguinces, dolor anterior de rodilla, LCA con alta, lum
 
 ---
 
+## Acceso y cifrado
+
+La app pide **usuario y contraseña** antes de mostrar nada, y el cifrado que hay detrás es real, no un candado dibujado:
+
+| Pieza | Cómo |
+|---|---|
+| Derivación de clave | **PBKDF2-HMAC-SHA256**, 210.000 iteraciones, sal aleatoria de 16 bytes por cuenta |
+| Cifrado de datos | **AES-GCM 256**, IV nuevo en cada escritura |
+| Implementación | **WebCrypto** del navegador, sin librerías externas |
+| Dónde vive la clave | **Solo en memoria.** Recargar la página obliga a entrar otra vez |
+
+**La contraseña no se guarda en ninguna parte**, ni en claro ni en hash reversible. Lo que se guarda es un *verificador*: un texto conocido cifrado con la clave. Comprobar la contraseña consiste en descifrarlo.
+
+Con esa misma clave se cifra el contenido de perfiles, sesiones y mediciones **antes** de escribirlos en IndexedDB. En disco quedan en claro solo `id` y `userId`, porque IndexedDB los necesita como clave e índice, y son identificadores aleatorios. Comprobado abriendo la base cruda desde el navegador: el nombre del deportista no aparece por ninguna parte.
+
+El error de acceso es **el mismo** para «usuario no existe» y «contraseña incorrecta», y en el primer caso se deriva igualmente una clave que se descarta. Distinguirlos —o responder al instante— le diría a cualquiera qué usuarios existen en ese navegador.
+
+### Lo que esto protege y lo que no
+
+**Protege** los datos en reposo: quien abra IndexedDB, copie el perfil del navegador o mire el disco ve ciphertext.
+
+**No protege** contra quien tenga tu contraseña, ni contra un dispositivo ya comprometido con un keylogger, ni convierte esto en autenticación de servidor: no hay servidor, así que no hay nada que autenticar contra nadie. Es cifrado local, que es exactamente lo que corresponde a una app sin backend.
+
+**No hay recuperación.** Si olvidas la contraseña, los datos no vuelven. Una puerta trasera para recuperarlos anularía el cifrado, así que no existe. La pantalla de alta lo dice antes de crear la cuenta.
+
+La **exportación sale en claro**, a propósito: tiene que poder importarse en otro dispositivo donde tu contraseña será otra. La app lo advierte en pantalla en vez de dejar que se asuma lo contrario.
+
+---
+
 ## Base de datos de progreso
 
-**IndexedDB, dentro del navegador**, con cuatro almacenes: `usuarios`, `sesiones`, `mediciones` y `ajustes`. Varios deportistas en el mismo dispositivo, cada uno con su cuestionario, su escenario y su historial; se cambia de perfil activo desde la sección Perfil.
+**IndexedDB, dentro del navegador**, con cinco almacenes: `cuentas`, `usuarios`, `sesiones`, `mediciones` y `ajustes`. Los tres del medio guardan su contenido **cifrado**; `cuentas` no, porque es justo lo que permite comprobar la contraseña. Varios deportistas en el mismo dispositivo, cada uno con su cuestionario, su escenario y su historial; se cambia de perfil activo desde la sección Perfil.
 
 No hay servidor de datos y es una decisión, no una carencia disimulada: una base con usuarios remotos exigiría backend, hosting y autenticación, y rompería la propiedad de que la app es un archivo que abres y funciona.
 
